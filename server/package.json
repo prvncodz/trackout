@@ -1,0 +1,24 @@
+{
+	"name": "trackout",
+	"version": "1.0.0",
+	"description": "",
+	"license": "ISC",
+	"author": "prvn",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
+		"format": "prettier --write src/*/*",
+		"start": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+	},
+	"dependencies": {
+		"dotenv": "^17.4.1",
+		"express": "^5.2.1",
+		"mongoose": "^9.4.1",
+		"zod": "^4.3.6"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.14",
+		"prettier": "^3.8.1"
+	}
+}
