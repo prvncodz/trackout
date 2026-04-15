@@ -1,10 +1,11 @@
 import './index.css'
+import LandingPage from './pages/LandingPage'
 
 function App() {
 
 	return (
 		<>
-<p className="bg-red-500">hello</p>
+			<LandingPage/>
 		</>
 	)
 }
