@@ -11,7 +11,7 @@ const Navbar = () => {
 				<li className="text-base text-gray-600 font-medium  cursor-pointer hover:text-gray-800 ease-in-out">How it works</li>
 			</ul>
 			<div className="flex gap-6">
-				<button className="text-base text-gray-600 font-medium  cursor-pointer">Log in </button>
+				<button className="text-base text-gray-600 font-medium   hover:text-gray-800 cursor-pointer">Log in </button>
 				<Button>
 					Get started
 				</Button>
