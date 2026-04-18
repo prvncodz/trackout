@@ -1,10 +1,12 @@
+import { Activity } from "lucide-react"
+
 const Logo = () => {
 	return (
-		<div className="flex">
+		<div className="flex items-center justify-center">
 			<div className="bg-near-black text-white p-1 px-2 rounded-sm flex justify-center items-center">
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity-icon lucide-activity"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></svg>
+				<Activity />
 			</div>
-			<h3 className="text-xl font-black text-near-black ml-3">Trackout</h3>
+			<h3 className="text-xl font-black text-near-black ml-3 text-center">Trackout</h3>
 		</div>
 	)
 }

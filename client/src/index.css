@@ -4,4 +4,5 @@
 @theme {
   --color-near-black:#111111;
 	--font-sans:'inter', sans-serif;
+	--color-line-color: var(--color-gray-200);
 }
