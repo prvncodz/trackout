@@ -39,6 +39,7 @@ const HeroSection = () => {
 	)
 }
 
+
 const Layout = ({ children }) => {
 	return (
 		<div className="w-full max-w-[60vw] h-auto">
@@ -52,7 +53,7 @@ const Layout = ({ children }) => {
 const DashboardMockup = () => {
 	return (
 		<div className="w-full h-120 bg-gray-200 rounded-lg flex items-center justify-center border border-line-color my-20">
-
+			<h2 className="text-gray-500 text-2xl font-medium">Dashboard Mockup</h2>
 		</div>
 	)
 }
