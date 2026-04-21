@@ -23,7 +23,7 @@ const HeroText = () => {
 
 const HeroSection = () => {
     return (
-        <section className="mt-110">
+        <section id="home" className="mt-40">
             <div className="flex flex-col items-center justify-center gap-5">
                 <LabelChip />
                 <HeroText />
@@ -43,10 +43,8 @@ const HeroSection = () => {
 
 const Layout = ({ children }) => {
     return (
-        <div className="w-full max-w-[60vw] h-[400vh] relative ">
-            <div className="sticky top-0 h-screen">
-                {children}
-            </div>
+        <div className="w-full max-w-[60vw] mx-auto relative ">
+            {children}
         </div>
     )
 }
@@ -60,10 +58,10 @@ const DashboardMockup = () => {
 
 const Features = () => {
     return (
-        <section className="my-15 h-200 w-full selection:bg-near-black selection:text-btn">
+        <section id="features" className="my-15 h-200 w-full selection:bg-near-black selection:text-btn">
             <h2 className="text-2xl font-bold  text-near-black mb-3 text-center">Train Smarter.Stay Consistent</h2>
             <p className="text-neutral-500 text-sm text-center">Everything you need,nothing you don't.</p>
-            <div className="relative">
+            <div className="relative mt-10">
                 <FeaturesCard Logo={<IconTreadmill size={30} />} title={"Log Your Workout"} description={"Log your workouts with ease, track your progress over time, and build real consistency through structured training"} className={"absolute top-10 left-10 z-0"} />
                 <FeaturesCard Logo={<TrendingUp />} title={"Track your workouts"} description={"See how your strength improves over time with clear and simple progress tracking."} className={"absolute top-75 left-[33%] z-10"} />
                 <FeaturesCard Logo={<Calendar />} title={"Stay Consistent"} description={"Build discipline with a structured routine and keep your training on track every day."} className={"absolute top-10 right-10 z-0"} />
@@ -71,7 +69,6 @@ const Features = () => {
         </section>
     )
 }
-
 
 
 const FeaturesCard = ({ Logo, title, description, className }) => {
@@ -86,7 +83,7 @@ const FeaturesCard = ({ Logo, title, description, className }) => {
 
 const Workflow = () => {
     return (
-        <section className="my-15">
+        <section id="how-it-works" className="my-15">
             <h2 className="text-2xl font-bold  text-near-black mb-3 text-center">Application Workflow</h2>
             <div className="relative flex w-full my-15 justify-between">
                 <WorkflowCard no={1} title={"Initialize Session"} description={"Select your program or start an empty log. Trackout your routine instantly."} />
@@ -120,10 +117,9 @@ const Footer = () => {
 
 
 
-
 const LandingPage = () => {
     return (
-        <div className="bg-neutral-50 w-full h-screen overflow-auto flex justify-center items-center flex-col selection:bg-near-black selection:text-btn-text">
+        <div className="bg-neutral-50 w-full flex justify-center items-center flex-col selection:bg-near-black selection:text-btn-text">
             <Navbar />
             <Layout>
                 <HeroSection />
