@@ -3,7 +3,8 @@ import Logo from "../ui/Logo"
 
 const Navbar = () => {
 	return (
-		<div className=" w-full h-18 bg-neutral-50 flex justify-between items-center px-30 py-2 border-b border-gray-200 backdrop-blur-4xl ">
+		<div className="sticky top-0 z-2 w-full h-18 bg-neutral-50/60 flex justify-between items-center px-30 py-2 border-b border-gray-200 backdrop-blur-lg transparent">
+			
 			<Logo />
 			<ul className="flex items-center gap-10">
 				<li className="text-base text-gray-600   cursor-pointer hover:text-gray-800 ease-in-out">Home</li>
