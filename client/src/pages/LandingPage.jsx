@@ -53,7 +53,7 @@ const Layout = ({ children }) => {
 
 const DashboardMockup = () => {
     return (
-        <div className="w-full h-120 bg-gray-200 rounded-lg flex items-center justify-center border border-line-color my-20">
+        <div className="w-full h-150 bg-gray-200 rounded-lg flex items-center justify-center border border-line-color my-20">
         </div>
     )
 }
@@ -110,7 +110,7 @@ const WorkflowCard = ({ no, title, description }) => {
 }
 const Footer = () => {
     return (
-        <footer className="mt-25  border-t border-line-color flex flex-col justify-center items-center py-5 w-full">
+        <footer className="mt-40  border-t border-line-color flex flex-col justify-center items-center py-5 w-full">
             <h2 className="font-serif text-gray-700 text-xl text-center w-full max-w-[80%]">"It removes emotion from the process. You are left only with the architecture of your own discipline and the numbers that prove it."
             </h2>
             <h5 className="text-center mt-3 text-xs text-neutral-500  ">DR. E. VANCE <br />SPORTS SCIENTIST / ATHLETE</h5>
