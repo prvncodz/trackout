@@ -70,25 +70,24 @@ const Features = () => {
             <h2 className="text-xl font-bold text-near-black mb-3 text-center md:text-3xl">Train Smarter. Stay Consistent.</h2>
             <p className="text-neutral-500 text-xs text-center">Everything you need,nothing you don't.</p>
 
-            {/* Mobile: flex column stack | Desktop: relative stagger */}
-            <div className="relative mt-15 flex flex-col items-center gap-4 md:block md:h-200">
+            <div className="relative mt-15 flex flex-col items-center gap-4 lg:block lg:h-200">
                 <FeaturesCard
                     Logo={<IconTreadmill size={30} />}
                     title={"Log Your Workout"}
                     description={"Log your workouts with ease, track your progress over time, and build real consistency through structured training"}
-                    className={"w-full max-w-sm md:absolute md:w-100 md:top-10 md:left-10 md:z-0"}
+                    className={"w-full max-w-sm lg:absolute lg:w-100 lg:top-10 lg:left-10 lg:z-0"}
                 />
                 <FeaturesCard
                     Logo={<TrendingUp />}
                     title={"Track your workouts"}
                     description={"See how your strength improves over time with clear and simple progress tracking."}
-                    className={"w-full max-w-sm md:absolute md:w-100 md:top-75 md:left-[33%] md:z-10"}
+                    className={"w-full max-w-sm lg:absolute lg:w-100 lg:top-75 lg:left-[33%] lg:z-10"}
                 />
                 <FeaturesCard
                     Logo={<Calendar />}
                     title={"Stay Consistent"}
                     description={"Build discipline with a structured routine and keep your training on track every day."}
-                    className={"w-full max-w-sm md:absolute md:w-100 md:top-10 md:right-10 md:z-0"}
+                    className={"w-full max-w-sm lg:absolute lg:w-100 lg:top-10 lg:right-10 lg:z-0"}
                 />
             </div>
         </section>
