@@ -2,6 +2,8 @@ import { Activity, Calendar, TrendingUp, TrendingUpDown } from "lucide-react"
 import Navbar from "../components/layout/Navbar"
 import Button from "../components/ui/Button"
 import { IconTreadmill } from "@tabler/icons-react"
+import { Navigate, useNavigate } from "react-router-dom"
+import { Link } from "react-scroll"
 
 const LabelChip = () => {
     return (
@@ -21,7 +23,9 @@ const HeroText = () => {
     )
 }
 
+
 const HeroSection = () => {
+    const navigate = useNavigate();
     return (
         <section id="home" className="mt-40">
             <div className="flex flex-col items-center justify-center gap-5">
@@ -29,12 +33,16 @@ const HeroSection = () => {
                 <HeroText />
             </div>
             <div className="flex items-center justify-center mt-10 gap-5">
-                <Button>
+                <Button onClick={() => navigate("/signin")}>
                     Get started for free
                 </Button>
-                <button className="h-10 w-auto p-2 px-8 text-near-black bg-gray-50 rounded-md flex justify-center items-center cursor-pointer font-semibold hover:bg-gray-100 hover:text-gray-900 active:scale-98 transition-all border border-gray-300">
+                <Link to="features"
+                    className="h-10 w-auto p-2 px-8 text-near-black bg-gray-50 rounded-md flex justify-center items-center cursor-pointer font-semibold hover:bg-gray-100 hover:text-gray-900 active:scale-98 transition-all border border-gray-300"
+                    smooth={true}
+                    offset={-140} duration={300}
+                >
                     How it works?
-                </button>
+                </Link>
             </div>
         </section>
     )
@@ -43,7 +51,7 @@ const HeroSection = () => {
 
 const Layout = ({ children }) => {
     return (
-        <div className="w-full max-w-[60vw] mx-auto relative ">
+        <div className="w-full md:max-w-[60vw] mx-auto relative ">
             {children}
         </div>
     )
@@ -83,8 +91,8 @@ const FeaturesCard = ({ Logo, title, description, className }) => {
 
 const Workflow = () => {
     return (
-        <section id="how-it-works" className="my-15">
-            <h2 className="text-2xl font-bold  text-near-black mb-3 text-center">Application Workflow</h2>
+        <section id="how-it-works" className="my-30">
+            <h2 className="text-3xl font-bold  text-near-black mb-3 text-center">Application Workflow</h2>
             <div className="relative flex w-full my-15 justify-between">
                 <WorkflowCard no={1} title={"Initialize Session"} description={"Select your program or start an empty log. Trackout your routine instantly."} />
                 <WorkflowCard no={2} title={"Log Your Sets"} description={"Add exercises, sets, reps, and weight as you go. Fast input, zero friction."} />
@@ -107,7 +115,7 @@ const WorkflowCard = ({ no, title, description }) => {
 }
 const Footer = () => {
     return (
-        <footer className="mt-40  border-t border-line-color flex flex-col justify-center items-center py-5 w-full">
+        <footer className="mt-70  border-t border-line-color flex flex-col justify-center items-center py-5 w-full">
             <h2 className="font-serif text-gray-700 text-xl text-center w-full max-w-[80%]">"It removes emotion from the process. You are left only with the architecture of your own discipline and the numbers that prove it."
             </h2>
             <h5 className="text-center mt-3 text-xs text-neutral-500  ">DR. E. VANCE <br />SPORTS SCIENTIST / ATHLETE</h5>
@@ -119,7 +127,7 @@ const Footer = () => {
 
 const LandingPage = () => {
     return (
-        <div className="bg-neutral-50 w-full flex justify-center items-center flex-col selection:bg-near-black selection:text-btn-text">
+        <div className="bg-neutral-50 w-full max-w-screen flex justify-center items-center flex-col selection:bg-near-black selection:text-btn-text">
             <Navbar />
             <Layout>
                 <HeroSection />

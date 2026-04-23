@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
-export default function InputField({
+const InputField = ({
     id,
     name,
     type = "text",
@@ -12,7 +12,7 @@ export default function InputField({
     error,
     disabled = false,
     className = "",
-}) {
+}) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const isPassword = type === "password";
@@ -38,7 +38,7 @@ export default function InputField({
                     onChange={onChange}
                     disabled={disabled}
                     className={`
-            w-full bg-gray-50 border rounded-lg px-4 py-3 text-sm text-gray-800
+            w-full bg-gray-50 border rounded-lg px-4 py-4 text-base text-gray-800
             placeholder:text-gray-400 outline-none transition-all duration-200
             focus:bg-white focus:border-gray-800 focus:ring-2 focus:ring-gray-800/10
             disabled:opacity-50 disabled:cursor-not-allowed
@@ -53,7 +53,7 @@ export default function InputField({
                         onClick={() => setShowPassword((v) => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                     >
-                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                 )}
             </div>
@@ -63,3 +63,4 @@ export default function InputField({
         </div>
     );
 }
+export default InputField; 
