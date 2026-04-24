@@ -1,6 +1,10 @@
+import SideBarLayout from "../components/layout/SideBar"
+
 const UserProfile = () => {
     return (
-        <div></div>
+        <div>
+            <SideBarLayout />
+        </div>
     )
 }
 

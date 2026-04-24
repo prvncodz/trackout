@@ -1,6 +1,10 @@
+import SideBarLayout from "../components/layout/SideBar"
+
 const DashboardPage = () => {
     return (
-        <div></div>
+        <div>
+            <SideBarLayout />
+        </div>
     )
 }
 

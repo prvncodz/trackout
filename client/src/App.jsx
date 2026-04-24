@@ -13,7 +13,6 @@ function App() {
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged);
     const isUserLogged = useAuth((state) => state.isUserLogged);
     useEffect(() => {
-        setIsUserLogged(true);
     }, [setIsUserLogged])
 
     return (
@@ -22,7 +21,6 @@ function App() {
                 <Route path="/" element={isUserLogged ? <HomePage /> : < LandingPage />} />
                 <Route path="/signin" element={<SigninPage />} />
                 <Route path="/signup" element={<SignupPage />} />
-                <Route path="/home/:id" element={<HomePage />} />
                 <Route path="/dashboard/:id" element={<DashboardPage />} />
                 <Route path="/profile/:id" element={<ProfilePage />} />
             </Routes>

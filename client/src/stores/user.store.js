@@ -2,7 +2,11 @@ import { create } from 'zustand'
 
 const useAuth = create(set => ({
     isUserLogged: false,
-    setIsUserLogged: (bool) => set({ isUserLogged: bool })
+    user: {},
+    userId: 1,
+    setIsUserLogged: (bool) => set({ isUserLogged: bool }),
+    setUser: (user) => set({ user: user }),
+    setUserId : (id) => set({ userId: id }),
 }))
 
 export { useAuth };

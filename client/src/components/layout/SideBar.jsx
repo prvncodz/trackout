@@ -3,13 +3,7 @@ import { useAppStore } from "../../stores/app.store.js";
 import Logo from "../ui/Logo";
 import { IconChartLine, IconHome2, IconUser } from "@tabler/icons-react";
 import gymimage from "../../assets/gym-hero.jpg"
-
-//Nav items
-const NAV_ITEMS = [
-    { label: "Home", icon: IconHome2, path: "/", page: "home" },
-    { label: "Dashboard", icon: IconChartLine, path: "/dashboard", page: "dashboard" },
-    { label: "Profile", icon: IconUser, path: "/profile", page: "profile" },
-];
+import { useAuth } from "../../stores/user.store.js";
 
 // UserInfo component  — receives avatarUrl + fullName from parent
 
@@ -20,24 +14,32 @@ const UserInfo = ({ avatarUrl, fullName }) => (
                 <img
                     src={avatarUrl}
                     alt={fullName}
-                    className="w-7 h-7 rounded-full object-cover ring-1 ring-gray-200 shrink-0"
+                    className="w-10 h-10 rounded-full object-cover ring-1 ring-gray-200 shrink-0"
                 />
             ) : (
-                <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600 shrink-0">
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600 shrink-0">
                     {fullName?.[0]?.toUpperCase() ?? "U"}
                 </div>
             )}
-            <span className="text-[13px] font-medium text-gray-700 truncate">
-                {fullName ?? "User"}
+            <span className="text-base font-medium text-gray-700 truncate">
+                {fullName ?? "Username"}
             </span>
         </div>
     </div>
 );
 
-const Sidebar = ({ avatarUrl, fullName }) => {
+const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const setCurPage = useAppStore((s) => s.setCurPage); // zustand
+    const userId = useAuth(s => s.userId);
+
+    //Nav items
+    const NAV_ITEMS = [
+        { label: "Home", icon: IconHome2, path: "/", page: "home" },
+        { label: "Dashboard", icon: IconChartLine, path: `/dashboard/${userId}`, page: "dashboard" },
+        { label: "Profile", icon: IconUser, path: `/profile/${userId}`, page: "profile" },
+    ];
 
     const handleNav = (item) => {
         setCurPage(item.page);
@@ -45,7 +47,7 @@ const Sidebar = ({ avatarUrl, fullName }) => {
     };
 
     return (
-        <div className="w-85 h-screen flex flex-col bg-white border-r border-line-color  ">
+        <div className={`w-85 h-screen flex flex-col bg-white border-r border-line-color  ${className}`}>
             <div className="mt-5 ml-0 w-full flex flex-start px-4">
                 <Logo className={"text-gray-800 font-extrabold text-xl"} />
             </div>
@@ -86,10 +88,13 @@ const Sidebar = ({ avatarUrl, fullName }) => {
     );
 };
 
+
 const SideBarLayout = ({ children }) => {
+    const user = useAuth(s => s.user);
     return (
         <div className="bg-neutral-50 h-screen w-screen flex overflow-hidden ">
-            <Sidebar avatarUrl={gymimage} fullName={"praveen pradhan"} />
+            <Sidebar avatarUrl={user?.avatar?.url} fullName={user?.fullname} className={"hidden lg:block"} />
+
             <div>
                 {children}
             </div>
