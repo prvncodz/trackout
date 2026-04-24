@@ -1,9 +1,15 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppStore } from "../../stores/app.store.js";
 import Logo from "../ui/Logo";
-import { IconChartLine, IconHome2, IconUser } from "@tabler/icons-react";
-import gymimage from "../../assets/gym-hero.jpg"
+import { IconChartLine, IconHome2, IconPencil, IconPencilPlus, IconUser } from "@tabler/icons-react";
 import { useAuth } from "../../stores/user.store.js";
+import Navbar from "./Navbar.jsx";
+import Button from "../ui/Button.jsx";
+import HamburgerButton from "../ui/HamburgerButton.jsx";
+import { useState } from "react";
+
+
+
 
 // UserInfo component  — receives avatarUrl + fullName from parent
 
@@ -89,12 +95,31 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
 };
 
 
+const NavbarForMobile = ({ className }) => {
+    const curPage = useAppStore((s) => s.curPage);
+    return (
+        <Navbar className={`${className} lg:hidden w-full relative`}>{/*for mobile & tablets view */}
+            <div className="flex items-center justify-between gap-3">
+                {curPage === "home" &&
+                    <Button>
+                        Create
+                        <span><IconPencilPlus size={18} className="ml-2" /></span>
+                    </Button>
+                }
+                <HamburgerButton />
+            </div>
+        </Navbar>
+
+    )
+}
+
 const SideBarLayout = ({ children }) => {
     const user = useAuth(s => s.user);
-    return (
-        <div className="bg-neutral-50 h-screen w-screen flex overflow-hidden ">
-            <Sidebar avatarUrl={user?.avatar?.url} fullName={user?.fullname} className={"hidden lg:block"} />
 
+    return (
+        <div className="bg-neutral-50 h-screen w-screen flex flex-col overflow-hidden lg:flex-row">
+            <Sidebar avatarUrl={user?.avatar?.url} fullName={user?.fullname} className={"hidden lg:flex"} />{/*for desktop view */}
+            <NavbarForMobile className={"lg:hidden"} />
             <div>
                 {children}
             </div>
