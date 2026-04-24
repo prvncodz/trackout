@@ -6,13 +6,20 @@ import ProfilePage from './pages/UserProfile.jsx'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import SigninPage from './pages/SigninPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
+import { useAuth } from './stores/user.store.js'
+import { useEffect } from 'react'
 
 function App() {
+    const setIsUserLogged = useAuth((state) => state.setIsUserLogged);
+    const isUserLogged = useAuth((state) => state.isUserLogged);
+    useEffect(() => {
+        setIsUserLogged(true);
+    }, [setIsUserLogged])
 
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<LandingPage />} />
+                <Route path="/" element={isUserLogged ? <HomePage /> : < LandingPage />} />
                 <Route path="/signin" element={<SigninPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/home/:id" element={<HomePage />} />

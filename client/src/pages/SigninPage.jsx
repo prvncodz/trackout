@@ -6,6 +6,7 @@ import InputField from "../components/ui/Inputfield.jsx";
 import gymImage from "../assets/gym-hero.jpg"
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useAuth } from "../stores/user.store.js";
 
 
 const SignInPage = () => {
@@ -101,7 +102,7 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
 
     return (
         <div className=" max-w-lg w-full  mx-auto tracking-normal ">
-            <Backbtn/>
+            <Backbtn />
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900 text-center md:text-left ">
                     Welcome Back
@@ -191,7 +192,7 @@ const Backbtn = () => {
     const navigate = useNavigate();
     return (
         <button className="absolute top-5 left-5 bg-gray-50 border border-line-color text-gray-700 rounded-full p-4 hover:bg-neutral-50 hover:text-gray-800" onClick={() => navigate("/")}>
-            <ArrowLeft/>
+            <ArrowLeft />
         </button>
     )
 }

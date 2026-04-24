@@ -1,9 +1,11 @@
-function HomePage() {
-	return (
-		<div>
+import SideBarLayout from "../components/layout/SideBar"
 
-		</div>
-	)
+function HomePage() {
+    return (
+        <SideBarLayout>
+           childreen ajayenge sareee 
+        </SideBarLayout>
+    )
 }
 
 export default HomePage
