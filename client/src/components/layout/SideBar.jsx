@@ -1,12 +1,11 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppStore } from "../../stores/app.store.js";
 import Logo from "../ui/Logo";
-import { IconChartLine, IconHome2, IconPencil, IconPencilPlus, IconUser } from "@tabler/icons-react";
+import { IconChartLine, IconHome2, IconPencilPlus, IconUser } from "@tabler/icons-react";
 import { useAuth } from "../../stores/user.store.js";
 import Navbar from "./Navbar.jsx";
 import Button from "../ui/Button.jsx";
 import HamburgerButton from "../ui/HamburgerButton.jsx";
-import { useState } from "react";
 
 
 
@@ -119,7 +118,8 @@ const SideBarLayout = ({ children }) => {
     return (
         <div className="bg-neutral-50 h-screen w-screen flex flex-col overflow-hidden lg:flex-row">
             <Sidebar avatarUrl={user?.avatar?.url} fullName={user?.fullname} className={"hidden lg:flex"} />{/*for desktop view */}
-            <NavbarForMobile className={"lg:hidden"} />
+            <NavbarForMobile className={"lg:hidden"} />{/*for mobile view */}
+
             <div>
                 {children}
             </div>
