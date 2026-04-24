@@ -51,7 +51,7 @@ const HeroSection = () => {
 
 const Layout = ({ children }) => {
     return (
-        <div className="w-full lg:max-w-[60vw] mx-auto relative ">
+        <div className="w-full lg:max-w-[60vw] mx-auto relative  overflow-hidden">
             {children}
         </div>
     )
@@ -143,7 +143,7 @@ const Footer = () => {
 
 const LandingPage = () => {
     return (
-        <div className="bg-neutral-50 w-full max-w-screen overflow-hidden flex justify-center items-center flex-col selection:bg-near-black selection:text-btn-text">
+        <div className="bg-neutral-50 w-full max-w-screen relative flex justify-center items-center flex-col selection:bg-near-black selection:text-btn-text">
             <Navbar />
             <Layout>
                 <HeroSection />
