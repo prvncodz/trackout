@@ -51,20 +51,20 @@ const Popup = () => {
         <ul className=" absolute top-10 right-0 z-10 w-50 bg-neutral-50 text-neutral-500 flex flex-col gap-5 border border-line-color p-5 shadow-md  rounded-xl">
             <li className="flex ">
                 <span>
-                    <IconPencil />
+                    <IconPencil size={24} />
                 </span>
                 <h3 className="ml-3"> Edit Log</h3>
             </li>
             <li className="flex ">
                 <span>
-                    <IconCopy />
+                    <IconCopy size={24} />
                 </span>
                 <h3 className="ml-3"> Duplicate Log</h3>
 
             </li>
             <li className="flex ">
                 <span>
-                    <IconTrash />
+                    <IconTrash size={24} />
                 </span>
                 <h3 className="ml-3"> Delete Log</h3>
 
@@ -89,10 +89,13 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
     )
 }
 
+
+
+
 const AllLogs = () => {
     const [ActiveLog, setActiveLog] = useState(null);
     return (
-        <div className="bg-neutral-50 w-[50vw] relative h-screen overflow-auto mx-auto flex flex-col justify-start items-end gap-3 border-r border-line-color px-10 py-10">
+        <div className="bg-neutral-50 w-200 shrink-0 relative h-screen overflow-auto mx-auto flex flex-col justify-start items-end gap-3 border-r border-line-color px-10 py-10">
             <Button className="hidden  lg:flex">
                 Create
                 <span><IconPencilPlus size={18} className="ml-2" /></span>
@@ -105,10 +108,26 @@ const AllLogs = () => {
     )
 }
 
+const ShowLog = ({ log }) => {
+    return (
+        <div className=" h-screen flex flex-1 overflow-hidden text-wrap  ">
+            Cursus ex fermentum, gravida, at in odio erat a turpis porta at. Tincidunt sed ac ac auctor consequat, tempor, feugiat et varius eu consequat. Dictum ac, erat, porttitor bibendum orci tellus in. Curabitur aliquet, ipsum, curabitur non. Platea lacus ex aenean dolor adipiscing faucibus dui, porta ut metus nam. Eget tempus velit, tempor eu suscipit odio tempor a nibh pellentesque consectetur. Faucibus felis, convallis et, urna dui massa lorem lectus feugiat sem duis. Condimentum dictum, nulla imperdiet pulvinar tempor, nulla pellentesque convallis eu consequat convallis. Cursus tempor, ante, risus ac cras nunc lorem maximus nec duis justo. Eu ut, ac erat id vulputate dictumst adipiscing consequat, posuere placerat amet. Eu, hac, elit est sed nullam tortor tempor tristique tristique vel dui. Fringilla eget aenean velit, id.
+        </div>
+    )
+}
+
+const HomePageContent = () => {
+    return (
+        <div className="flex justify-start items-start h-screen w-full">
+            <AllLogs />
+            <ShowLog />
+        </div>
+    )
+}
 const HomePage = () => {
     return (
         <SideBarLayout>
-            <AllLogs />
+            <HomePageContent />
         </SideBarLayout>
     )
 }
