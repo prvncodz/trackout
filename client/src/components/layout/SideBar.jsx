@@ -52,8 +52,8 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
     };
 
     return (
-        <div className={`w-85 shrink-0 h-screen flex flex-col bg-white border-r border-line-color   ${className}`}>
-            <div className="mt-5 ml-0 w-full flex flex-start px-4">
+        <div className={`w-90 shrink-0 h-screen p-3 flex flex-col bg-white border-r border-line-color   ${className}`}>
+            <div className="mt-3 ml-0 w-full flex flex-start px-4">
                 <Logo className={"text-gray-800 font-extrabold text-xl"} />
             </div>
 

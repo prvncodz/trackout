@@ -1,4 +1,4 @@
-import { IconCopy, IconDotsVertical, IconNotes, IconPencil, IconPencilPlus, IconTrash } from "@tabler/icons-react"
+import { IconCopy, IconDots, IconDotsVertical, IconNotes, IconPencil, IconPencilPlus, IconTrash } from "@tabler/icons-react"
 import SideBarLayout from "../components/layout/SideBar"
 import Button from "../components/ui/Button"
 import { useState } from "react";
@@ -78,7 +78,7 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
     return (
         <div className={`h-auto px-3 py-3 w-full border border-line-color bg-neutral-50 flex justify-between text-neutral-500 rounded-xl cursor-pointer ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`} >
             <IconNotes className="text-neutral-500" onClick={() => setActiveLog(log?._id)} />
-            <h3 className="w-full ml-5 truncate text-neutral-700" onClick={() => setActiveLog(log?._id)}>{log?.name || "Log title"} </h3>
+            <h3 className="w-full ml-5 truncate text-neutral-700" onClick={() => setActiveLog(p => p == null ? log._id : null)}>{log?.name || "Log title"} </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
                 {isOpen &&
@@ -92,10 +92,9 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
 
 
 
-const AllLogs = () => {
-    const [ActiveLog, setActiveLog] = useState(null);
+const AllLogs = ({ ActiveLog, setActiveLog }) => {
     return (
-        <div className="bg-neutral-50 w-200 shrink-0 relative h-screen overflow-auto mx-auto flex flex-col justify-start items-end gap-3 border-r border-line-color px-10 py-10">
+        <div className="bg-neutral-50 w-220 shrink-0 relative h-screen overflow-auto mx-auto flex flex-col justify-start items-end gap-3 border-r border-line-color px-5 py-10">
             <Button className="hidden  lg:flex">
                 Create
                 <span><IconPencilPlus size={18} className="ml-2" /></span>
@@ -108,19 +107,29 @@ const AllLogs = () => {
     )
 }
 
-const ShowLog = ({ log }) => {
+const ShowLog = ({ log, isActive }) => {
     return (
-        <div className=" h-screen flex flex-1 overflow-hidden text-wrap  ">
-            Cursus ex fermentum, gravida, at in odio erat a turpis porta at. Tincidunt sed ac ac auctor consequat, tempor, feugiat et varius eu consequat. Dictum ac, erat, porttitor bibendum orci tellus in. Curabitur aliquet, ipsum, curabitur non. Platea lacus ex aenean dolor adipiscing faucibus dui, porta ut metus nam. Eget tempus velit, tempor eu suscipit odio tempor a nibh pellentesque consectetur. Faucibus felis, convallis et, urna dui massa lorem lectus feugiat sem duis. Condimentum dictum, nulla imperdiet pulvinar tempor, nulla pellentesque convallis eu consequat convallis. Cursus tempor, ante, risus ac cras nunc lorem maximus nec duis justo. Eu ut, ac erat id vulputate dictumst adipiscing consequat, posuere placerat amet. Eu, hac, elit est sed nullam tortor tempor tristique tristique vel dui. Fringilla eget aenean velit, id.
+        <div className=" h-screen flex flex-1 overflow-hidden">
+            <button className={` ${isActive ? "flex" : "hidden"} bg-neutral-100 text-near-black  h-10 w-auto p-2 px-4 rounded-md  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-5 right-5 hover:bg-gray-100 hover:text-gray-800`}>
+                <IconDots />
+            </button>
+            <div className="flex flex-col gap-7 mt-20 px-4">
+                <h1>{log?.name}</h1>
+                <p>{log?.content}</p>
+            </div>
         </div>
     )
 }
 
 const HomePageContent = () => {
+    const [ActiveLog, setActiveLog] = useState(null);
     return (
         <div className="flex justify-start items-start h-screen w-full">
-            <AllLogs />
-            <ShowLog />
+            <AllLogs ActiveLog={ActiveLog} setActiveLog={setActiveLog} />
+            <ShowLog
+                log={allLogs.find(log => log._id === ActiveLog)}
+                isActive={ActiveLog !== null}
+            />
         </div>
     )
 }
