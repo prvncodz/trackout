@@ -77,9 +77,9 @@ const Popup = () => {
 const Log = ({ log, ActiveLog, setActiveLog }) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
-        <div className={`h-auto px-3 py-3 w-full border border-line-color bg-neutral-50 flex justify-between text-neutral-500 rounded-xl cursor-pointer ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`} >
+        <div className={`h-auto px-2.5 py-2.5 w-full border border-line-color bg-neutral-50 flex justify-between text-neutral-500 rounded-xl cursor-pointer ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`} >
             <IconNotes className="text-neutral-500" onClick={() => setActiveLog(p => p == null ? log._id : p == log?._id ? null : log._id)} />
-            <h3 className="w-full ml-5 truncate text-neutral-700" onClick={() => setActiveLog(p => p == null ? log._id : p == log?._id ? null : log._id)}>{log?.name || "Log title"} </h3>
+            <h3 className="w-full ml-5 truncate text-neutral-700 text-base text-left" onClick={() => setActiveLog(p => p == null ? log._id : p == log?._id ? null : log._id)}>{log?.name || "Log title"} </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
                 {isOpen &&
@@ -101,7 +101,7 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
                 Create
                 <span><IconPencilPlus size={18} className="ml-2" /></span>
             </Button>
-            <div className=" w-full h-auto flex flex-col justify-center items-center gap-3 mt-20">
+            <div className=" w-full h-auto flex flex-col justify-center items-center gap-3 mt-15">
                 {allLogs.map((log) => <Log key={log._id} log={log} ActiveLog={ActiveLog} setActiveLog={setActiveLog} />)
                 }
             </div>
@@ -115,7 +115,7 @@ const ShowLog = ({ log, isActive }) => {
             <div className={` flex-col gap-7 mt-20`}>
                 <SimpleEditor key={log?._id} content={log?.content} />
             </div>
-            <button className={` bg-neutral-100 text-near-black  h-10 w-auto p-2 px-4 rounded-md  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-5 right-5 hover:bg-gray-100 hover:text-gray-800`}>
+            <button className={` bg-white text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-5 right-5 hover:bg-gray-100 hover:text-gray-800`}>
                 <IconDots />
             </button>
         </div>
