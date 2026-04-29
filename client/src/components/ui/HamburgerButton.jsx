@@ -32,7 +32,7 @@ const HamburgerButton = ({ className = "", ...props }) => {
                         const isActive = location.pathname === item.path;
 
                         return (
-                            <button
+                            <li
                                 key={item.page}
                                 onClick={() => handleNav(item)}
                                 className={`
@@ -50,7 +50,7 @@ const HamburgerButton = ({ className = "", ...props }) => {
                                     className={isActive ? "text-gray-700" : "text-gray-400"}
                                 />
                                 {item.label}
-                            </button>
+                            </li>
                         );
                     })}
                 </nav>

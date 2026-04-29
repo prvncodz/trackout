@@ -105,7 +105,7 @@ const NavbarForMobile = ({ className }) => {
                         <span><IconPencilPlus size={18} className="ml-2" /></span>
                     </Button>
                 }
-                <HamburgerButton />
+                <HamburgerButton className="text-gray-700" />
             </div>
         </Navbar>
 

@@ -1,6 +1,6 @@
 import { useState } from "react"
-import axios from "axios";
-import Button from "../components/ui/Button.jsx";
+import axios from "../utils/axios.js"
+import Button from "../utils/axios.js";
 import { ToastContainer, useToast } from "../components/ui/Toast.jsx";
 import InputField from "../components/ui/Inputfield.jsx";
 import gymImage from "../assets/gym-hero.jpg"

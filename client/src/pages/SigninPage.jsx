@@ -1,5 +1,5 @@
 import { useState } from "react"
-import axios from "axios";
+import axios from "../utils/axios.js";
 import Button from "../components/ui/Button.jsx";
 import { ToastContainer, useToast } from "../components/ui/Toast.jsx";
 import InputField from "../components/ui/Inputfield.jsx";

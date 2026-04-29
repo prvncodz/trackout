@@ -1,48 +1,49 @@
 import { IconCopy, IconDots, IconDotsVertical, IconNotes, IconPencil, IconPencilPlus, IconTrash } from "@tabler/icons-react"
 import SideBarLayout from "../components/layout/SideBar"
 import Button from "../components/ui/Button"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { SimpleEditor } from "../components/tiptap-templates/simple/simple-editor";
 
 const allLogs = [
     {
         _id: "log_001_abc123",
-        Owner: "admin@system.io",
-        content: "Server initialized successfully on port 3000",
-        name: "System Boot",
-        createdAt: new Date("2024-04-01T08:00:00.000Z"),
-        updatedAt: new Date("2024-04-01T08:00:00.000Z"),
+        Owner: "trainer@fitness.io",
+        content: "Workout session started — Push Day (Chest, Shoulders, Triceps)",
+        name: "Session Start",
+        createdAt: new Date("2024-04-01T06:00:00.000Z"),
+        updatedAt: new Date("2024-04-01T06:00:00.000Z"),
     },
     {
         _id: "log_002_def456",
-        Owner: "security@system.io",
-        content: "Failed login attempt from IP 192.168.1.42",
-        name: "Auth Failure",
-        createdAt: new Date("2024-04-02T10:15:30.000Z"),
-        updatedAt: new Date("2024-04-02T10:16:00.000Z"),
+        Owner: "user_7729@fitness.io",
+        content: "Bench Press — 80kg x 8 reps x 3 sets completed",
+        name: "Exercise Log",
+        createdAt: new Date("2024-04-02T06:30:00.000Z"),
+        updatedAt: new Date("2024-04-02T06:35:00.000Z"),
     },
     {
         _id: "log_003_ghi789",
-        Owner: "db@system.io",
-        content: "Query on users collection took 3200ms — needs index",
-        name: "DB Query Slow",
-        createdAt: new Date("2024-04-03T14:22:10.000Z"),
-        updatedAt: new Date("2024-04-04T09:00:00.000Z"),
+        Owner: "user_7729@fitness.io",
+        content: "Workout duration exceeded 90 mins — consider reducing volume",
+        name: "Performance Warning",
+        createdAt: new Date("2024-04-03T07:45:00.000Z"),
+        updatedAt: new Date("2024-04-03T08:00:00.000Z"),
     },
     {
         _id: "log_004_jkl012",
-        Owner: "user_7729@app.io",
-        content: "User uploaded profile_photo.png — 2.4MB",
-        name: "File Upload",
-        createdAt: new Date("2024-04-05T17:45:00.000Z"),
-        updatedAt: new Date("2024-04-05T17:45:00.000Z"),
+        Owner: "user_7729@fitness.io",
+        content: "Bodyweight recorded — 72.5kg",
+        name: "Weight Log",
+        createdAt: new Date("2024-04-05T06:10:00.000Z"),
+        updatedAt: new Date("2024-04-05T06:10:00.000Z"),
     },
     {
         _id: "log_005_mno345",
-        Owner: "billing@system.io",
-        content: "Stripe payment of $49.99 confirmed — txn_8821xz",
-        name: "Payment Processed",
-        createdAt: new Date("2024-04-06T20:10:05.000Z"),
-        updatedAt: new Date("2024-04-06T20:12:00.000Z"),
+        Owner: "trainer@fitness.io",
+        content: "Workout session completed — total calories burned: 540 kcal",
+        name: "Session Complete",
+        createdAt: new Date("2024-04-06T07:15:00.000Z"),
+        updatedAt: new Date("2024-04-06T07:20:00.000Z"),
     },
 ];
 
@@ -77,8 +78,8 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
         <div className={`h-auto px-3 py-3 w-full border border-line-color bg-neutral-50 flex justify-between text-neutral-500 rounded-xl cursor-pointer ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`} >
-            <IconNotes className="text-neutral-500" onClick={() => setActiveLog(log?._id)} />
-            <h3 className="w-full ml-5 truncate text-neutral-700" onClick={() => setActiveLog(p => p == null ? log._id : null)}>{log?.name || "Log title"} </h3>
+            <IconNotes className="text-neutral-500" onClick={() => setActiveLog(p => p == null ? log._id : p == log?._id ? null : log._id)} />
+            <h3 className="w-full ml-5 truncate text-neutral-700" onClick={() => setActiveLog(p => p == null ? log._id : p == log?._id ? null : log._id)}>{log?.name || "Log title"} </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
                 {isOpen &&
@@ -94,7 +95,8 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
 
 const AllLogs = ({ ActiveLog, setActiveLog }) => {
     return (
-        <div className="bg-neutral-50 w-220 shrink-0 relative h-screen overflow-auto mx-auto flex flex-col justify-start items-end gap-3 border-r border-line-color px-5 py-10">
+        <div className="bg-neutral-50 w-180 shrink-0 relative h-screen overflow-auto mx-auto flex flex-col justify-start items-end gap-3 border-r border-line-color px-5 py-10">
+
             <Button className="hidden  lg:flex">
                 Create
                 <span><IconPencilPlus size={18} className="ml-2" /></span>
@@ -109,14 +111,13 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
 
 const ShowLog = ({ log, isActive }) => {
     return (
-        <div className=" h-screen flex flex-1 overflow-hidden">
-            <button className={` ${isActive ? "flex" : "hidden"} bg-neutral-100 text-near-black  h-10 w-auto p-2 px-4 rounded-md  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-5 right-5 hover:bg-gray-100 hover:text-gray-800`}>
+        <div className={` h-screen flex flex-1 overflow-hidden ${isActive ? "flex" : "hidden"}`}>
+            <div className={` flex-col gap-7 mt-20`}>
+                <SimpleEditor key={log?._id} content={log?.content} />
+            </div>
+            <button className={` bg-neutral-100 text-near-black  h-10 w-auto p-2 px-4 rounded-md  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-5 right-5 hover:bg-gray-100 hover:text-gray-800`}>
                 <IconDots />
             </button>
-            <div className="flex flex-col gap-7 mt-20 px-4">
-                <h1>{log?.name}</h1>
-                <p>{log?.content}</p>
-            </div>
         </div>
     )
 }
