@@ -136,8 +136,13 @@ const HomePageContent = () => {
                     />
                     {/* show logs in mobile as a bottom sheet*/}
                     <BottomSheet onClose={() => setActiveLog(null)} className="lg:hidden" setOpen={setActiveLog} open={ActiveLog}>
-                        log_005_mno345 lorem33
-                        Vestibulum id molestie massa ultricies, porttitor suscipit, suspendisse at egestas consequat leo. Faucibus, praesent, lacus morbi nisi euismod vitae feugiat nunc at nunc ultricies. Porttitor quam eleifend donec, ac ante eleifend, purus vitae blandit.
+                        <div className={` mt-20`}>
+                            <SimpleEditor content={allLogs.find(log => log._id === ActiveLog)?.content} />
+                        </div>
+                        <button className={` bg-gray-100 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-15 right-5 hover:bg-gray-100 hover:text-gray-800`}>
+                            <IconDots />
+                        </button>
+
                     </BottomSheet>
                 </>
             }

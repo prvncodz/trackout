@@ -5,7 +5,7 @@ const BottomSheet = ({ className = "", children, onClose, open, setOpen, ...prop
         <div className="flex flex-col lg:hidden relative ">
             <div className="fixed inset-0 z-10 bg-black/10 " onClick={onClose} />
             <motion.div
-                className="bg-neutral-50 rounded-t-3xl fixed bottom-0 left-0 z-20 w-full h-screen p-5"
+                className="bg-neutral-50 rounded-t-3xl fixed bottom-0 left-0 z-20 w-full h-screen"
                 drag="y"
                 dragConstraints={{ top: 0, bottom: 600 }}
                 onDragEnd={(e, info) => {
@@ -20,9 +20,9 @@ const BottomSheet = ({ className = "", children, onClose, open, setOpen, ...prop
                 {...props}
             >
                 <div className="w-20 h-2.5 bg-line-color rounded-full mx-auto my-5 " />
-                <p>
+                <div className="overflow-hidden text-wrap">
                     {children}
-                </p>
+                </div>
             </motion.div>
         </div>
     )
