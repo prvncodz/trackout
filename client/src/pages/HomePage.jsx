@@ -111,15 +111,17 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
     )
 }
 
-const ShowLog = ({ log, isActive, className = "" }) => {
-
-    function debounce(fn, delay) {
-        let id
-        return (...args) => {
-            clearTimeout(id)
-            id = setTimeout(() => fn(...args), delay)
-        }
+function debounce(fn, delay) {
+    let id
+    return (...args) => {
+        clearTimeout(id)
+        id = setTimeout(() => fn(...args), delay)
     }
+}
+
+
+const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
+
 
     async function handleSaveLog(content) {
         try {
@@ -132,24 +134,37 @@ const ShowLog = ({ log, isActive, className = "" }) => {
             console.log("error")
         }
     }
+
     const handleUpdate = useCallback(debounce((newContent) => handleSaveLog(newContent), 3000), [log?.id]);
 
-
     return (
-        <div className={` h-screen flex flex-1 overflow-hidden ${isActive ? "flex" : "hidden"} relative ${className}`}>
-            <div className={` flex-col gap-7 mt-20`}>
-                <SimpleEditor key={log?._id} content={log?.content} onUpdate={handleUpdate} />
+        <div>
+            <div className={` h-screen flex-1 overflow-hidden ${isActive ? "flex" : "hidden"} relative hidden lg:flex`}>
+                <div className={` flex-col gap-7 mt-20`}>
+                    <SimpleEditor key={log?._id} content={log?.content} onUpdate={handleUpdate} />
+                </div>
+                <div className=" absolute top-5 right-1 flex  gap-4 w-45 justify-end items-center">
+                    <button className={` bg-white text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all hover:bg-gray-100 hover:text-gray-800`}>
+                        <IconDots />
+                    </button>
+                </div>
             </div>
-            <div className=" absolute top-5 right-1 flex  gap-4 w-45 justify-end items-center">
-                <button className={` bg-white text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all hover:bg-gray-100 hover:text-gray-800`}>
+            {/* show logs in mobile as a bottom sheet*/}
+            <BottomSheet onClose={() => setActiveLog(null)} className="lg:hidden" setOpen={setActiveLog} open={isActive}>
+                <div className={` mt-20`}>
+                    <SimpleEditor key={log?._id} content={log?.content} onUpdate={handleUpdate} />
+                </div>
+                <button className={` bg-gray-100 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-15 right-5 hover:bg-gray-100 hover:text-gray-800`}>
                     <IconDots />
                 </button>
-            </div>
+            </BottomSheet>
+
         </div>
     )
 }
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState(null);
+
     return (
         <div className="flex flex-col justify-start items-start h-screen w-full lg:flex-row">
             <AllLogs ActiveLog={ActiveLog} setActiveLog={setActiveLog} />
@@ -158,18 +173,8 @@ const HomePageContent = () => {
                     <ShowLog
                         log={allLogs.find(log => log._id === ActiveLog)}
                         isActive={ActiveLog !== null}
-                        className="hidden lg:flex"
+                        setActiveLog={setActiveLog}
                     />
-                    {/* show logs in mobile as a bottom sheet*/}
-                    <BottomSheet onClose={() => setActiveLog(null)} className="lg:hidden" setOpen={setActiveLog} open={ActiveLog}>
-                        <div className={` mt-20`}>
-                            <SimpleEditor content={allLogs.find(log => log._id === ActiveLog)?.content} />
-                        </div>
-                        <button className={` bg-gray-100 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-15 right-5 hover:bg-gray-100 hover:text-gray-800`}>
-                            <IconDots />
-                        </button>
-
-                    </BottomSheet>
                 </>
             }
         </div>

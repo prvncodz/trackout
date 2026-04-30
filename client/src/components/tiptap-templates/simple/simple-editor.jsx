@@ -211,7 +211,7 @@ export function SimpleEditor({ content, onUpdate }) {
 
     useEffect(() => {
         if (content && editor) {
-            editor.commands.setContent(`<p>${content}</p>`);
+            editor.commands.setContent(`${content}`);
         }
     }, [content, editor])
 
