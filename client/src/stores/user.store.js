@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import gymhero from '../assets/gymhero.png';
+import gymhero from '../assets/gym-hero.jpg';
 
 const useAuth = create(set => ({
     isUserLogged: false,

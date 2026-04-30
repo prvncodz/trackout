@@ -5,7 +5,9 @@ const UserProfile = () => {
     return (
         <div>
             <SideBarLayout>
-                <ProfileCard/>
+                <div className="w-full flex-1 max-h-screen h-screen p-5 justify-center items-center">
+                    <ProfileCard />
+                </div>
             </SideBarLayout>
         </div>
     )

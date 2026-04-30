@@ -117,7 +117,7 @@ const SideBarLayout = ({ children }) => {
 
     return (
         <div className="bg-neutral-50 h-screen w-screen flex flex-col overflow-hidden lg:flex-row">
-            <Sidebar avatarUrl={user?.avatar?.url} fullName={user?.fullname} className={"hidden lg:flex"} />{/*for desktop view */}
+            <Sidebar avatarUrl={user?.avatar} fullName={user?.fullname} className={"hidden lg:flex"} />{/*for desktop view */}
             <NavbarForMobile className={"lg:hidden"} />{/*for mobile view */}
 
             <div className=" flex overflow-hidden w-full">
