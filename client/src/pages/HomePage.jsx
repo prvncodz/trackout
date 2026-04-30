@@ -6,48 +6,6 @@ import { SimpleEditor } from "../components/tiptap-templates/simple/simple-edito
 import BottomSheet from "@/components/ui/BottomSheet";
 import axios from "@/utils/axios.js";
 
-const allLogs = [
-    {
-        _id: "log_001_abc123",
-        Owner: "trainer@fitness.io",
-        content: "Workout session started — Push Day (Chest, Shoulders, Triceps)",
-        name: "Session Start",
-        createdAt: new Date("2024-04-01T06:00:00.000Z"),
-        updatedAt: new Date("2024-04-01T06:00:00.000Z"),
-    },
-    {
-        _id: "log_002_def456",
-        Owner: "user_7729@fitness.io",
-        content: "Bench Press — 80kg x 8 reps x 3 sets completed",
-        name: "Exercise Log",
-        createdAt: new Date("2024-04-02T06:30:00.000Z"),
-        updatedAt: new Date("2024-04-02T06:35:00.000Z"),
-    },
-    {
-        _id: "log_003_ghi789",
-        Owner: "user_7729@fitness.io",
-        content: "Workout duration exceeded 90 mins — consider reducing volume",
-        name: "Performance Warning",
-        createdAt: new Date("2024-04-03T07:45:00.000Z"),
-        updatedAt: new Date("2024-04-03T08:00:00.000Z"),
-    },
-    {
-        _id: "log_004_jkl012",
-        Owner: "user_7729@fitness.io",
-        content: "Bodyweight recorded — 72.5kg",
-        name: "Weight Log",
-        createdAt: new Date("2024-04-05T06:10:00.000Z"),
-        updatedAt: new Date("2024-04-05T06:10:00.000Z"),
-    },
-    {
-        _id: "log_005_mno345",
-        Owner: "trainer@fitness.io",
-        content: "Workout session completed — total calories burned: 540 kcal",
-        name: "Session Complete",
-        createdAt: new Date("2024-04-06T07:15:00.000Z"),
-        updatedAt: new Date("2024-04-06T07:20:00.000Z"),
-    },
-];
 
 const Popup = () => {
     return (
@@ -164,7 +122,20 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
 }
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState(null);
-
+    const [allLogs, setAllLogs] = useState([]);
+    useEffect(() => {
+        async function fetchAllLogs() {
+            try {
+                const res = await axios.get(`/logs/${user?._id}`);
+                if (res.status === 200) {
+                    setAllLogs(res.data?.data);
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        fetchAllLogs();
+    }, [])
     return (
         <div className="flex flex-col justify-start items-start h-screen w-full lg:flex-row">
             <AllLogs ActiveLog={ActiveLog} setActiveLog={setActiveLog} />
