@@ -118,7 +118,7 @@ const Popup = () => {
 const Log = ({ log, ActiveLog, setActiveLog }) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
-        <div className={`h-auto px-2.5 py-2.5 w-full border border-line-color bg-neutral-50 flex justify-between text-neutral-500 rounded-xl cursor-pointer ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`} >
+        <div className={`h-auto px-3 py-3 w-full border border-line-color bg-neutral-50 flex justify-between text-neutral-500 rounded-xl cursor-pointer ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`} >
             <IconNotes className="text-neutral-500" onClick={() => setActiveLog(p => p == null ? log._id : p == log?._id ? null : log._id)} />
             <h3 className="w-full ml-5 truncate text-neutral-700 text-base text-left" onClick={() => setActiveLog(p => p == null ? log._id : p == log?._id ? null : log._id)}>{log?.name || "Log title"} </h3>
             <div className="relative">
@@ -178,7 +178,7 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
     //
     return (
         <div>
-            <div className={` h-screen flex-1 overflow-hidden ${isActive ? "flex" : "hidden"} relative hidden lg:flex`}>
+            <div className={` h-screen flex-1 overflow-auto ${isActive ? "flex" : "hidden"} relative hidden lg:flex`}>
                 <div className={` flex-col gap-7 mt-20`}>
                     <SimpleEditor key={log?._id} content={log?.content} />
                 </div>
