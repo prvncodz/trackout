@@ -3,6 +3,7 @@ import SideBarLayout from "../components/layout/SideBar"
 import Button from "../components/ui/Button"
 import { useEffect, useState } from "react";
 import { SimpleEditor } from "../components/tiptap-templates/simple/simple-editor";
+import BottomSheet from "@/components/ui/BottomSheet";
 
 const allLogs = [
     {
@@ -109,9 +110,9 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
     )
 }
 
-const ShowLog = ({ log, isActive }) => {
+const ShowLog = ({ log, isActive, className = "" }) => {
     return (
-        <div className={` h-screen flex flex-1 overflow-hidden ${isActive ? "flex" : "hidden"}`}>
+        <div className={` h-screen flex flex-1 overflow-hidden ${isActive ? "flex" : "hidden"} relative ${className}`}>
             <div className={` flex-col gap-7 mt-20`}>
                 <SimpleEditor key={log?._id} content={log?.content} />
             </div>
@@ -121,16 +122,25 @@ const ShowLog = ({ log, isActive }) => {
         </div>
     )
 }
-
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState(null);
     return (
         <div className="flex flex-col justify-start items-start h-screen w-full lg:flex-row">
             <AllLogs ActiveLog={ActiveLog} setActiveLog={setActiveLog} />
-            <ShowLog
-                log={allLogs.find(log => log._id === ActiveLog)}
-                isActive={ActiveLog !== null}
-            />
+            {ActiveLog &&
+                <>
+                    <ShowLog
+                        log={allLogs.find(log => log._id === ActiveLog)}
+                        isActive={ActiveLog !== null}
+                        className="hidden lg:flex"
+                    />
+                    {/* show logs in mobile as a bottom sheet*/}
+                    <BottomSheet onClose={() => setActiveLog(null)} className="lg:hidden" setOpen={setActiveLog} open={ActiveLog}>
+                        log_005_mno345 lorem33
+                        Vestibulum id molestie massa ultricies, porttitor suscipit, suspendisse at egestas consequat leo. Faucibus, praesent, lacus morbi nisi euismod vitae feugiat nunc at nunc ultricies. Porttitor quam eleifend donec, ac ante eleifend, purus vitae blandit.
+                    </BottomSheet>
+                </>
+            }
         </div>
     )
 }
