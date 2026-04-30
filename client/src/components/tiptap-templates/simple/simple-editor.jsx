@@ -227,7 +227,7 @@ export function SimpleEditor({ content }) {
         <div className="simple-editor-wrapper w-full ">
             <EditorContext.Provider value={{ editor }}>
                 <Toolbar
-                    className="p-5 bg-neutral-50 dark:bg-neutral-800 rounded-xl mx-auto"
+                    className="p-5 bg-neutral-50 dark:bg-neutral-800 mx-auto"
                     ref={toolbarRef}
                     style={{
                         ...(isMobile
@@ -247,7 +247,6 @@ export function SimpleEditor({ content }) {
                             onBack={() => setMobileView("main")} />
                     )}
                 </Toolbar>
-
                 <EditorContent editor={editor} className="simple-editor-content" />
             </EditorContext.Provider>
         </div>

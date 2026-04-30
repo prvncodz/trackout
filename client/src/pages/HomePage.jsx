@@ -95,13 +95,13 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
 
 const AllLogs = ({ ActiveLog, setActiveLog }) => {
     return (
-        <div className="bg-neutral-50 w-180 shrink-0 relative h-screen overflow-auto mx-auto flex flex-col justify-start items-end gap-3 border-r border-line-color px-5 py-10">
+        <div className="bg-neutral-50 w-full lg:w-180 shrink-0 relative h-screen overflow-auto mx-auto flex flex-col justify-start items-end gap-3 border-r border-line-color px-5 py-10">
 
             <Button className="hidden  lg:flex">
                 Create
                 <span><IconPencilPlus size={18} className="ml-2" /></span>
             </Button>
-            <div className=" w-full h-auto flex flex-col justify-center items-center gap-3 mt-15">
+            <div className=" w-full h-auto flex flex-col justify-center items-center gap-3  lg:mt-15">
                 {allLogs.map((log) => <Log key={log._id} log={log} ActiveLog={ActiveLog} setActiveLog={setActiveLog} />)
                 }
             </div>
@@ -125,7 +125,7 @@ const ShowLog = ({ log, isActive }) => {
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState(null);
     return (
-        <div className="flex justify-start items-start h-screen w-full">
+        <div className="flex flex-col justify-start items-start h-screen w-full lg:flex-row">
             <AllLogs ActiveLog={ActiveLog} setActiveLog={setActiveLog} />
             <ShowLog
                 log={allLogs.find(log => log._id === ActiveLog)}
