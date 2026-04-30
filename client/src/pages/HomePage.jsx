@@ -136,7 +136,7 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
 
 const AllLogs = ({ ActiveLog, setActiveLog }) => {
     return (
-        <div className="bg-neutral-50 w-full lg:w-180 shrink-0 relative h-screen overflow-auto mx-auto flex flex-col justify-start items-end gap-3 border-r border-line-color px-5 py-10">
+        <div className="bg-neutral-50 w-full lg:w-180 shrink-0 relative h-screen overflow-auto  flex flex-col justify-start items-end gap-3 border-r border-line-color px-5 py-10">
 
             <Button className="hidden  lg:flex">
                 Create
@@ -203,8 +203,6 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
 }
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState(null);
-
-
 
     return (
         <div className="flex flex-col justify-start items-start h-screen w-full lg:flex-row">

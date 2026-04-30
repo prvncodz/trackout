@@ -120,7 +120,7 @@ const SideBarLayout = ({ children }) => {
             <Sidebar avatarUrl={user?.avatar?.url} fullName={user?.fullname} className={"hidden lg:flex"} />{/*for desktop view */}
             <NavbarForMobile className={"lg:hidden"} />{/*for mobile view */}
 
-            <div>
+            <div className=" flex overflow-hidden w-full">
                 {children}
             </div>
         </div>
