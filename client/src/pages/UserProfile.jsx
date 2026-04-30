@@ -3,7 +3,7 @@ import SideBarLayout from "../components/layout/SideBar"
 
 const UserProfile = () => {
     return (
-        <div className="p-5">
+        <div>
             <SideBarLayout>
                 <ProfileCard/>
             </SideBarLayout>

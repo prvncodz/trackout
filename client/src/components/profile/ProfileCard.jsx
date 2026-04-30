@@ -12,7 +12,7 @@ export default function ProfileCard() {
     ];
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 w-full max-w-screen mx-auto m-5">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 w-full max-w-screen mx-auto">
             {/* Top row: avatar + info + button */}
             <div className="flex items-start justify-between gap-4">
                 {/* Left: avatar + name + email */}
