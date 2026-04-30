@@ -1,9 +1,10 @@
 import { IconCopy, IconDots, IconDotsVertical, IconNotes, IconPencil, IconPencilPlus, IconTrash } from "@tabler/icons-react"
 import SideBarLayout from "../components/layout/SideBar"
 import Button from "../components/ui/Button"
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SimpleEditor } from "../components/tiptap-templates/simple/simple-editor";
 import BottomSheet from "@/components/ui/BottomSheet";
+import axios from "@/utils/axios.js";
 
 const allLogs = [
     {
@@ -111,14 +112,39 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
 }
 
 const ShowLog = ({ log, isActive, className = "" }) => {
+
+    function debounce(fn, delay) {
+        let id
+        return (...args) => {
+            clearTimeout(id)
+            id = setTimeout(() => fn(...args), delay)
+        }
+    }
+
+    async function handleSaveLog(content) {
+        try {
+            console.log("content", content);
+            const res = await axios.post(`/log/update/${log._id}`, { content });
+            if (res.status === 200) {
+                console.log("toast gets popped up");
+            }
+        } catch (err) {
+            console.log("error")
+        }
+    }
+    const handleUpdate = useCallback(debounce((newContent) => handleSaveLog(newContent), 3000), [log?.id]);
+
+
     return (
         <div className={` h-screen flex flex-1 overflow-hidden ${isActive ? "flex" : "hidden"} relative ${className}`}>
             <div className={` flex-col gap-7 mt-20`}>
-                <SimpleEditor key={log?._id} content={log?.content} />
+                <SimpleEditor key={log?._id} content={log?.content} onUpdate={handleUpdate} />
             </div>
-            <button className={` bg-white text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-5 right-5 hover:bg-gray-100 hover:text-gray-800`}>
-                <IconDots />
-            </button>
+            <div className=" absolute top-5 right-1 flex  gap-4 w-45 justify-end items-center">
+                <button className={` bg-white text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all hover:bg-gray-100 hover:text-gray-800`}>
+                    <IconDots />
+                </button>
+            </div>
         </div>
     )
 }

@@ -159,7 +159,7 @@ const MobileToolbarContent = ({
     </>
 )
 
-export function SimpleEditor({ content }) {
+export function SimpleEditor({ content, onUpdate }) {
     const isMobile = useIsBreakpoint()
     const { height } = useWindowSize()
     const [mobileView, setMobileView] = useState("main")
@@ -204,6 +204,9 @@ export function SimpleEditor({ content }) {
             }),
         ],
         content: content ? `<p>${content}</p>` : `<p>Start typing to enter text.</p>`,
+        onUpdate: ({ editor }) => {
+            onUpdate?.(editor.getHTML());
+        }
     })
 
     useEffect(() => {
