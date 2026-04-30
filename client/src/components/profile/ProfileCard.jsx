@@ -12,8 +12,10 @@ export default function ProfileCard() {
     ];
 
     return (
-        <div className="w-full flex-1 max-w-lg h-screen p-5">
-            hello
+        <div className="w-full flex-1 max-h-screen h-screen p-5">
+            <div className="">
+
+            </div>
         </div>
     );
 }
