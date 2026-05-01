@@ -21,13 +21,13 @@ export default function ProfileCard() {
             <div>
                 <h2 className="text-xl text-neutral-700 font-semibold text-center lg:text-left">{user.fullname ?? "User fullname"}</h2>
                 <p className="text-base text-neutral-500 text-center lg:text-left">{user.email ?? "example@abc.com"}</p>
-                <div className="flex gap-3 mt-8 w-screen overflow-auto px-4 py-2 lg:w-auto">
+                <div className="flex gap-3 mt-8 w-screen overflow-auto px-4 py-2 lg:w-auto no-scrollbar ">
                     {stats.map((stat, index) => (
                         <motion.div
                             key={index}
                             drag="x"
-                            
-                            className="flex flex-col justify-center shrink-0 items-center h-30 w-40 gap-3 bg-gray-50 rounded-2xl shadow-sm border inset-0 border-line-color stat">
+
+                            className="flex flex-col justify-center shrink-0 items-center h-30 w-40 gap-3 bg-gray-50 rounded-2xl shadow-sm border inset-0 border-line-color ">
                             <h3 className="text-base text-gray-700">{stat.label}</h3>
                             <p className="text-base text-gray-600">{stat.value}</p>
                         </motion.div>

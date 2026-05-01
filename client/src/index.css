@@ -10,9 +10,6 @@ body{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-::webkit-scrollbar{
-    display:none;
-}
 
 @theme {
     --color-near-black:#111111;
@@ -21,5 +18,15 @@ body{
     --color-btn-text: var(--color-gray-200);
     --font-serif: 'libertinus serif', serif;
     --font-poppins: 'poppins', sans-serif;
+    --color-muted:var(--color-neutral-500);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE + Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
