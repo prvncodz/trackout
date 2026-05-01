@@ -14,7 +14,7 @@ export default function ProfileCard() {
     ];
 
     return (
-        <div className="w-full h-auto flex flex-col justify-start gap-10 items-center relative lg:flex-row  lg:mt-10 lg:mx-10">
+        <div className="w-full h-auto flex flex-col justify-start gap-10 items-center relative lg:flex-row  lg:mt-10 ">
             <div className="size-60 bg-gray-100">
                 <img src={user?.avatar} />
             </div>
