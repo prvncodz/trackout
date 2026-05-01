@@ -1,5 +1,7 @@
 import Button from "@/components/ui/Button.jsx";
 import { useAuth } from "@/stores/user.store.js";
+import { motion } from "motion/react"
+
 
 export default function ProfileCard() {
     const { user } = useAuth();
@@ -12,23 +14,27 @@ export default function ProfileCard() {
     ];
 
     return (
-        <div className="w-full h-auto flex flex-col justify-center gap-10 items-center relative lg:flex-row  lg:mt-10">
+        <div className="w-full h-auto flex flex-col justify-start gap-10 items-center relative lg:flex-row  lg:mt-10 lg:mx-10">
             <div className="size-60 bg-gray-100">
                 <img src={user?.avatar} />
             </div>
             <div>
                 <h2 className="text-xl text-neutral-700 font-semibold text-center lg:text-left">{user.fullname ?? "User fullname"}</h2>
                 <p className="text-base text-neutral-500 text-center lg:text-left">{user.email ?? "example@abc.com"}</p>
-                <div className="flex gap-3 mt-10">
+                <div className="flex gap-3 mt-8 w-screen overflow-auto px-4 py-2 lg:w-auto">
                     {stats.map((stat, index) => (
-                        <div key={index} className="flex flex-col justify-center items-center h-30 w-40 gap-3 bg-gray-50 rounded-2xl shadow-sm ">
+                        <motion.div
+                            key={index}
+                            drag="x"
+                            
+                            className="flex flex-col justify-center shrink-0 items-center h-30 w-40 gap-3 bg-gray-50 rounded-2xl shadow-sm border inset-0 border-line-color stat">
                             <h3 className="text-base text-gray-700">{stat.label}</h3>
                             <p className="text-base text-gray-600">{stat.value}</p>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>
-            <Button className="w-full relative lg:w-auto lg:absolute lg:right-35 lg:top-0 ">
+            <Button className="w-full relative lg:w-auto lg:absolute lg:right-25 lg:top-0 ">
                 Edit Profile
             </Button>
         </div>

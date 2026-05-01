@@ -6,6 +6,14 @@
 @import './styles/_keyframe-animations.scss';
 @import "tailwindcss";
 
+body{
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+::webkit-scrollbar{
+    display:none;
+}
+
 @theme {
     --color-near-black:#111111;
 	--font-sans:'inter', sans-serif;
@@ -14,3 +22,4 @@
     --font-serif: 'libertinus serif', serif;
     --font-poppins: 'poppins', sans-serif;
 }
+
