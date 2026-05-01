@@ -179,23 +179,23 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
     return (
         <div>
             <div className={` h-screen flex-1 overflow-auto ${isActive ? "flex" : "hidden"} relative hidden lg:flex`}>
-                <div className={` flex-col gap-7 mt-20`}>
+                <div className={` flex-col gap-7 `}>
                     <SimpleEditor key={log?._id} content={log?.content} />
                 </div>
-                <div className=" absolute top-5 right-1 flex  gap-4 w-45 justify-end items-center">
-                    <button className={` bg-white text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all hover:bg-gray-100 hover:text-gray-800 z-20`}>
-                        <IconDots />
-                    </button>
-                </div>
+                {/* <div className=" absolute top-5 right-1 flex  gap-4 w-45 justify-end items-center"> */}
+                {/*     <button className={` bg-gray-50 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all hover:bg-gray-100 hover:text-gray-800 z-20`}> */}
+                {/*         <IconDots /> */}
+                {/*     </button> */}
+                {/* </div> */}
             </div>
             {/* show logs in mobile as a bottom sheet*/}
             <BottomSheet onClose={() => setActiveLog(null)} className="lg:hidden" setOpen={setActiveLog} open={isActive}>
-                <div className={` mt-20`}>
+                <div className={` mt-0`}>
                     <SimpleEditor key={log?._id} content={log?.content} />
                 </div>
-                <button className={` bg-gray-100 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-15 right-5 hover:bg-gray-100 hover:text-gray-800`}>
-                    <IconDots />
-                </button>
+                {/* <button className={` bg-gray-100 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-15 right-5 hover:bg-gray-100 hover:text-gray-800`}> */}
+                {/*     <IconDots /> */}
+                {/* </button> */}
             </BottomSheet>
 
         </div>
