@@ -24,16 +24,18 @@ function Calendar({
     const defaultClassNames = getDefaultClassNames();
 
     const sizeMap = {
-        lg: "[--cell-size:--spacing(12)]",
-        md: "[--cell-size:--spacing(14)]",
-        sm: "[--cell-size:--spacing(10)]",
+        lg: "lg:[--cell-size:--spacing(14)]",
+        md: "md:[--cell-size:--spacing(10)]",
+        sm: "[--cell-size:--spacing(8)]",
     }
     return (
         <DayPicker
             showOutsideDays={showOutsideDays}
             className={cn(
                 `group/calendar bg-background p-3 [--cell-radius:var(--radius-md)]  in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent flex flex-col justify-center items-center `,
-                sizeMap[size],
+                sizeMap.sm,
+                sizeMap.md,
+                sizeMap.lg,
                 String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
                 String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
                 className,
@@ -211,7 +213,7 @@ function CalendarDayButton({ className, day, modifiers, locale, ...props }) {
             data-range-middle={modifiers.range_middle}
             className={cn(
                 "group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-foreground relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 border-0 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) [&>span]:text-xs [&>span]:opacity-100",
-                "disabled:opacity-100 disabled:after:content-['.'] disabled:after:absolute disabled:after:bottom-1",
+                "disabled:opacity-100 disabled:after:content-['.'] disabled:after:absolute disabled:after:bottom-0.5 lg:disabled:after:bottom-1",
                 defaultClassNames.day,
                 className,
             )}
