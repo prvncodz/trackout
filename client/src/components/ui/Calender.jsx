@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { Calendar } from "./Cncalendar";
 
 const CalenderComponent = ({ className = "", size = "md", ...props }) => {
+    const bookedDates = Array.from(
+        { length: 15 },
+        (_, i) => new Date(new Date().getFullYear(), 4, 12 + i)
+    )
     return (
         <div
             className={`border-line-color flex shrink-0 flex-col items-start justify-center gap-4 rounded-2xl border overflow-hidden bg-neutral-50 p-5  ${size === "md" ? "size-110" : size === "lg" ? "size-auto" : "size-100"} ${className}`}
@@ -14,7 +19,12 @@ const CalenderComponent = ({ className = "", size = "md", ...props }) => {
             <div className="flex h-auto w-full items-center justify-center">
                 <Calendar
                     mode="single"
+                    disabled={bookedDates}
                     className="shadow-standard flex w-full rounded-lg bg-neutral-50"
+                    modifiers={{
+                        booked: bookedDates,
+                    }}
+                    size={"lg"}
                 />
             </div>
         </div>
