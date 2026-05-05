@@ -9,7 +9,7 @@ const UserProfile = () => {
         <div className="flex h-screen max-h-screen w-full flex-col gap-20 overflow-auto px-25 pt-10 pb-25">
           <ProfileCard />
           <div className="flex items-center justify-start">
-            <Calender className="h-120 w-auto" size="md" />
+            <Calender size={"lg"} />
           </div>
         </div>
       </SideBarLayout>

@@ -17,7 +17,7 @@ export default function ProfileCard() {
 
   return (
     <div className="relative flex h-auto w-full flex-col items-center justify-start gap-10 lg:mt-10 lg:flex-row">
-      <div className="size-60 bg-gray-100">
+      <div className="shadow-standard size-60 bg-gray-100">
         <img src={user?.avatar} />
       </div>
       <div>
@@ -31,7 +31,7 @@ export default function ProfileCard() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="shadow-standard border-line-color inset-0 flex h-30 w-40 shrink-0 flex-col items-center justify-center gap-3 rounded-2xl border bg-gray-50"
+              className="shadow-shad border-line-color inset-0 flex h-30 w-40 shrink-0 flex-col items-center justify-center gap-3 rounded-2xl border bg-gray-50"
             >
               <h3 className="text-base text-gray-700">{stat.label}</h3>
               <p className="text-base text-gray-600">{stat.value}</p>
