@@ -15,7 +15,7 @@ const CalenderComponent = ({ className = "", size = "md", ...props }) => {
             >
                 CONSISTENCY
             </h2>
-            <div className="flex h-auto w-full items-center justify-center   lg:px-10">
+            <div className="flex h-auto w-full items-center justify-center">
                 <Calendar
                     mode="single"
                     disabled={ActiveDates}
