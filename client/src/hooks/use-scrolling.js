@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 export function useScrolling(target, options = {}) {
-  const { debounce = 150, fallbackToDocument = true } = options
-  const [isScrolling, setIsScrolling] = useState(false)
+  const { debounce = 150, fallbackToDocument = true } = options;
+  const [isScrolling, setIsScrolling] = useState(false);
 
   useEffect(() => {
     // Resolve element or window
     const element =
       target && typeof Window !== "undefined" && target instanceof Window
         ? target
-        : ((target)?.current ?? window)
+        : (target?.current ?? window);
 
     // Mobile: fallback to document when using window
     const eventTarget =
@@ -17,47 +17,40 @@ export function useScrolling(target, options = {}) {
       element === window &&
       typeof document !== "undefined"
         ? document
-        : element
+        : element;
 
-    const on = (
-      el,
-      event,
-      handler
-    ) => el.addEventListener(event, handler, true)
+    const on = (el, event, handler) =>
+      el.addEventListener(event, handler, true);
 
-    const off = (
-      el,
-      event,
-      handler
-    ) => el.removeEventListener(event, handler)
+    const off = (el, event, handler) => el.removeEventListener(event, handler);
 
-    let timeout
-    const supportsScrollEnd = element === window && "onscrollend" in window
+    let timeout;
+    const supportsScrollEnd = element === window && "onscrollend" in window;
 
     const handleScroll = () => {
-      if (!isScrolling) setIsScrolling(true)
+      if (!isScrolling) setIsScrolling(true);
 
       if (!supportsScrollEnd) {
-        clearTimeout(timeout)
-        timeout = setTimeout(() => setIsScrolling(false), debounce)
+        clearTimeout(timeout);
+        timeout = setTimeout(() => setIsScrolling(false), debounce);
       }
-    }
+    };
 
-    const handleScrollEnd = () => setIsScrolling(false)
+    const handleScrollEnd = () => setIsScrolling(false);
 
-    on(eventTarget, "scroll", handleScroll)
+    on(eventTarget, "scroll", handleScroll);
     if (supportsScrollEnd) {
-      on(eventTarget, "scrollend", handleScrollEnd)
+      on(eventTarget, "scrollend", handleScrollEnd);
     }
 
     return () => {
-      off(eventTarget, "scroll", handleScroll)
+      off(eventTarget, "scroll", handleScroll);
       if (supportsScrollEnd) {
-        off(eventTarget, "scrollend", handleScrollEnd)
+        off(eventTarget, "scrollend", handleScrollEnd);
       }
-      clearTimeout(timeout)
+      clearTimeout(timeout);
     };
-  }, [target, debounce, fallbackToDocument, isScrolling])
+  }, [target, debounce, fallbackToDocument, isScrolling]);
 
-  return isScrolling
+  return isScrolling;
 }

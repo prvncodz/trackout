@@ -1,9 +1,9 @@
 "use client";
-import { useCallback, useEffect, useState } from "react"
-import { NodeSelection, TextSelection } from "@tiptap/pm/state"
+import { useCallback, useEffect, useState } from "react";
+import { NodeSelection, TextSelection } from "@tiptap/pm/state";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 
 // --- Lib ---
 import {
@@ -13,14 +13,14 @@ import {
   isNodeTypeSelected,
   isValidPosition,
   selectionWithinConvertibleTypes,
-} from "@/lib/tiptap-utils"
+} from "@/lib/tiptap-utils";
 
 // --- Icons ---
-import { HeadingOneIcon } from "@/components/tiptap-icons/heading-one-icon"
-import { HeadingTwoIcon } from "@/components/tiptap-icons/heading-two-icon"
-import { HeadingThreeIcon } from "@/components/tiptap-icons/heading-three-icon"
-import { HeadingFourIcon } from "@/components/tiptap-icons/heading-four-icon"
-import { HeadingFiveIcon } from "@/components/tiptap-icons/heading-five-icon"
+import { HeadingOneIcon } from "@/components/tiptap-icons/heading-one-icon";
+import { HeadingTwoIcon } from "@/components/tiptap-icons/heading-two-icon";
+import { HeadingThreeIcon } from "@/components/tiptap-icons/heading-three-icon";
+import { HeadingFourIcon } from "@/components/tiptap-icons/heading-four-icon";
+import { HeadingFiveIcon } from "@/components/tiptap-icons/heading-five-icon";
 import { HeadingSixIcon } from "@/components/tiptap-icons/heading-six-icon";
 
 export const headingIcons = {
@@ -30,7 +30,7 @@ export const headingIcons = {
   4: HeadingFourIcon,
   5: HeadingFiveIcon,
   6: HeadingSixIcon,
-}
+};
 
 export const HEADING_SHORTCUT_KEYS = {
   1: "ctrl+alt+1",
@@ -39,18 +39,18 @@ export const HEADING_SHORTCUT_KEYS = {
   4: "ctrl+alt+4",
   5: "ctrl+alt+5",
   6: "ctrl+alt+6",
-}
+};
 
 /**
  * Checks if heading can be toggled in the current editor state
  */
 export function canToggle(editor, level, turnInto = true) {
-  if (!editor || !editor.isEditable) return false
+  if (!editor || !editor.isEditable) return false;
   if (
     !isNodeInSchema("heading", editor) ||
     isNodeTypeSelected(editor, ["image"])
   )
-    return false
+    return false;
 
   if (!turnInto) {
     return level
@@ -70,7 +70,7 @@ export function canToggle(editor, level, turnInto = true) {
       "codeBlock",
     ])
   )
-    return false
+    return false;
 
   // Either we can set heading directly on the selection,
   // or we can clear formatting/nodes to arrive at a heading.
@@ -83,7 +83,7 @@ export function canToggle(editor, level, turnInto = true) {
  * Checks if heading is currently active
  */
 export function isHeadingActive(editor, level) {
-  if (!editor || !editor.isEditable) return false
+  if (!editor || !editor.isEditable) return false;
 
   if (Array.isArray(level)) {
     return level.some((l) => editor.isActive("heading", { level: l }));
@@ -98,19 +98,19 @@ export function isHeadingActive(editor, level) {
  * Toggles heading in the editor
  */
 export function toggleHeading(editor, level) {
-  if (!editor || !editor.isEditable) return false
+  if (!editor || !editor.isEditable) return false;
 
-  const levels = Array.isArray(level) ? level : [level]
-  const toggleLevel = levels.find((l) => canToggle(editor, l))
+  const levels = Array.isArray(level) ? level : [level];
+  const toggleLevel = levels.find((l) => canToggle(editor, l));
 
-  if (!toggleLevel) return false
+  if (!toggleLevel) return false;
 
   try {
-    const view = editor.view
-    let state = view.state
-    let tr = state.tr
+    const view = editor.view;
+    let state = view.state;
+    let tr = state.tr;
 
-    const blocks = getSelectedBlockNodes(editor)
+    const blocks = getSelectedBlockNodes(editor);
 
     // In case a selection contains multiple blocks, we only allow
     // toggling to nide if there's exactly one block selected
@@ -124,7 +124,7 @@ export function toggleHeading(editor, level) {
         "taskList",
         "blockquote",
         "codeBlock",
-      ]) && blocks.length === 1
+      ]) && blocks.length === 1;
 
     // No selection, find the the cursor position
     if (
@@ -134,52 +134,53 @@ export function toggleHeading(editor, level) {
       const pos = findNodePosition({
         editor,
         node: state.selection.$anchor.node(1),
-      })?.pos
-      if (!isValidPosition(pos)) return false
+      })?.pos;
+      if (!isValidPosition(pos)) return false;
 
-      tr = tr.setSelection(NodeSelection.create(state.doc, pos))
-      view.dispatch(tr)
-      state = view.state
+      tr = tr.setSelection(NodeSelection.create(state.doc, pos));
+      view.dispatch(tr);
+      state = view.state;
     }
 
-    const selection = state.selection
-    let chain = editor.chain().focus()
+    const selection = state.selection;
+    let chain = editor.chain().focus();
 
     // Handle NodeSelection
     if (selection instanceof NodeSelection) {
-      const firstChild = selection.node.firstChild?.firstChild
-      const lastChild = selection.node.lastChild?.lastChild
+      const firstChild = selection.node.firstChild?.firstChild;
+      const lastChild = selection.node.lastChild?.lastChild;
 
       const from = firstChild
         ? selection.from + firstChild.nodeSize
-        : selection.from + 1
+        : selection.from + 1;
 
       const to = lastChild
         ? selection.to - lastChild.nodeSize
-        : selection.to - 1
+        : selection.to - 1;
 
-      const resolvedFrom = state.doc.resolve(from)
-      const resolvedTo = state.doc.resolve(to)
+      const resolvedFrom = state.doc.resolve(from);
+      const resolvedTo = state.doc.resolve(to);
 
       chain = chain
         .setTextSelection(TextSelection.between(resolvedFrom, resolvedTo))
-        .clearNodes()
+        .clearNodes();
     }
 
     const isActive = levels.some((l) =>
-      editor.isActive("heading", { level: l }))
+      editor.isActive("heading", { level: l }),
+    );
 
     const toggle = isActive
       ? chain.setNode("paragraph")
-      : chain.setNode("heading", { level: toggleLevel })
+      : chain.setNode("heading", { level: toggleLevel });
 
-    toggle.run()
+    toggle.run();
 
-    editor.chain().focus().selectTextblockEnd().run()
+    editor.chain().focus().selectTextblockEnd().run();
 
-    return true
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -187,17 +188,17 @@ export function toggleHeading(editor, level) {
  * Determines if the heading button should be shown
  */
 export function shouldShowButton(props) {
-  const { editor, level, hideWhenUnavailable } = props
+  const { editor, level, hideWhenUnavailable } = props;
 
-  if (!editor) return false
+  if (!editor) return false;
 
   if (!hideWhenUnavailable) {
-    return true
+    return true;
   }
 
-  if (!editor.isEditable) return false
+  if (!editor.isEditable) return false;
 
-  if (!isNodeInSchema("heading", editor)) return false
+  if (!isNodeInSchema("heading", editor)) return false;
 
   if (!editor.isActive("code")) {
     if (Array.isArray(level)) {
@@ -206,7 +207,7 @@ export function shouldShowButton(props) {
     return canToggle(editor, level);
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -261,38 +262,38 @@ export function useHeading(config) {
     level,
     hideWhenUnavailable = false,
     onToggled,
-  } = config
+  } = config;
 
-  const { editor } = useTiptapEditor(providedEditor)
-  const [isVisible, setIsVisible] = useState(true)
-  const canToggleState = canToggle(editor, level)
-  const isActive = isHeadingActive(editor, level)
+  const { editor } = useTiptapEditor(providedEditor);
+  const [isVisible, setIsVisible] = useState(true);
+  const canToggleState = canToggle(editor, level);
+  const isActive = isHeadingActive(editor, level);
 
   useEffect(() => {
-    if (!editor) return
+    if (!editor) return;
 
     const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, level, hideWhenUnavailable }))
-    }
+      setIsVisible(shouldShowButton({ editor, level, hideWhenUnavailable }));
+    };
 
-    handleSelectionUpdate()
+    handleSelectionUpdate();
 
-    editor.on("selectionUpdate", handleSelectionUpdate)
+    editor.on("selectionUpdate", handleSelectionUpdate);
 
     return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate)
+      editor.off("selectionUpdate", handleSelectionUpdate);
     };
-  }, [editor, level, hideWhenUnavailable])
+  }, [editor, level, hideWhenUnavailable]);
 
   const handleToggle = useCallback(() => {
-    if (!editor) return false
+    if (!editor) return false;
 
-    const success = toggleHeading(editor, level)
+    const success = toggleHeading(editor, level);
     if (success) {
-      onToggled?.()
+      onToggled?.();
     }
-    return success
-  }, [editor, level, onToggled])
+    return success;
+  }, [editor, level, onToggled]);
 
   return {
     isVisible,
@@ -302,5 +303,5 @@ export function useHeading(config) {
     label: `Heading ${level}`,
     shortcutKeys: HEADING_SHORTCUT_KEYS[level],
     Icon: headingIcons[level],
-  }
+  };
 }

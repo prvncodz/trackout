@@ -1,13 +1,16 @@
-import Logo from "../ui/Logo"
-import "../../index.css"
+import Logo from "../ui/Logo";
+import "../../index.css";
 
 const Navbar = ({ children, className = "", ...props }) => {
-    return (
-        <nav className={`sticky top-0 z-20 w-screen h-16 bg-neutral-50/60 flex justify-between items-center shrink-0  px-4 md:h-18 lg:px-40 py-2 border-b border-gray-200 backdrop-blur-lg ${className}`} {...props}>
-            <Logo />
-            {children}
-        </nav>
-    )
-}
+  return (
+    <nav
+      className={`sticky top-0 z-20 flex h-16 w-screen shrink-0 items-center justify-between border-b border-gray-200 bg-neutral-50/60 px-4 py-2 backdrop-blur-lg md:h-18 lg:px-40 ${className}`}
+      {...props}
+    >
+      <Logo />
+      {children}
+    </nav>
+  );
+};
 
-export default Navbar
+export default Navbar;

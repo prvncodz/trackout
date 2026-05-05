@@ -1,24 +1,24 @@
-import { useCallback, useState } from "react"
+import { useCallback, useState } from "react";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 
 // --- Icons ---
-import { ChevronDownIcon } from "@/components/tiptap-icons/chevron-down-icon"
+import { ChevronDownIcon } from "@/components/tiptap-icons/chevron-down-icon";
 
 // --- Tiptap UI ---
 import { ListButton } from "@/components/tiptap-ui/list-button";
 
-import { useListDropdownMenu } from "@/components/tiptap-ui/list-dropdown-menu/use-list-dropdown-menu"
+import { useListDropdownMenu } from "@/components/tiptap-ui/list-dropdown-menu/use-list-dropdown-menu";
 
-import { Button } from "@/components/tiptap-ui-primitive/button"
+import { Button } from "@/components/tiptap-ui-primitive/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuGroup,
-} from "@/components/tiptap-ui-primitive/dropdown-menu"
+} from "@/components/tiptap-ui-primitive/dropdown-menu";
 
 export function ListDropdownMenu({
   editor: providedEditor,
@@ -28,23 +28,26 @@ export function ListDropdownMenu({
   modal = true,
   ...props
 }) {
-  const { editor } = useTiptapEditor(providedEditor)
-  const [isOpen, setIsOpen] = useState(false)
+  const { editor } = useTiptapEditor(providedEditor);
+  const [isOpen, setIsOpen] = useState(false);
 
   const { filteredLists, canToggle, isActive, isVisible, Icon } =
     useListDropdownMenu({
       editor,
       types,
       hideWhenUnavailable,
-    })
+    });
 
-  const handleOnOpenChange = useCallback((open) => {
-    setIsOpen(open)
-    onOpenChange?.(open)
-  }, [onOpenChange])
+  const handleOnOpenChange = useCallback(
+    (open) => {
+      setIsOpen(open);
+      onOpenChange?.(open);
+    },
+    [onOpenChange],
+  );
 
   if (!isVisible) {
-    return null
+    return null;
   }
 
   return (
@@ -60,7 +63,8 @@ export function ListDropdownMenu({
           data-disabled={!canToggle}
           aria-label="List options"
           tooltip="List"
-          {...props}>
+          {...props}
+        >
           <Icon className="tiptap-button-icon" />
           <ChevronDownIcon className="tiptap-button-dropdown-small" />
         </Button>
@@ -73,7 +77,8 @@ export function ListDropdownMenu({
                 editor={editor}
                 type={option.type}
                 text={option.label}
-                showTooltip={false} />
+                showTooltip={false}
+              />
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
@@ -82,4 +87,4 @@ export function ListDropdownMenu({
   );
 }
 
-export default ListDropdownMenu
+export default ListDropdownMenu;

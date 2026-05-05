@@ -12,7 +12,7 @@ export function Spacer({
       width: orientation === "vertical" ? "1px" : size,
       height: orientation === "horizontal" ? "1px" : size,
     }),
-  }
+  };
 
   return <div {...props} style={computedStyle} />;
 }

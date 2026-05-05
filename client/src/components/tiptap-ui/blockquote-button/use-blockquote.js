@@ -1,12 +1,12 @@
 "use client";
-import { useCallback, useEffect, useState } from "react"
-import { NodeSelection, TextSelection } from "@tiptap/pm/state"
+import { useCallback, useEffect, useState } from "react";
+import { NodeSelection, TextSelection } from "@tiptap/pm/state";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 
 // --- Icons ---
-import { BlockquoteIcon } from "@/components/tiptap-icons/blockquote-icon"
+import { BlockquoteIcon } from "@/components/tiptap-icons/blockquote-icon";
 
 // --- UI Utils ---
 import {
@@ -16,20 +16,20 @@ import {
   isNodeTypeSelected,
   isValidPosition,
   selectionWithinConvertibleTypes,
-} from "@/lib/tiptap-utils"
+} from "@/lib/tiptap-utils";
 
-export const BLOCKQUOTE_SHORTCUT_KEY = "mod+shift+b"
+export const BLOCKQUOTE_SHORTCUT_KEY = "mod+shift+b";
 
 /**
  * Checks if blockquote can be toggled in the current editor state
  */
 export function canToggleBlockquote(editor, turnInto = true) {
-  if (!editor || !editor.isEditable) return false
+  if (!editor || !editor.isEditable) return false;
   if (
     !isNodeInSchema("blockquote", editor) ||
     isNodeTypeSelected(editor, ["image"])
   )
-    return false
+    return false;
 
   if (!turnInto) {
     return editor.can().toggleWrap("blockquote");
@@ -47,7 +47,7 @@ export function canToggleBlockquote(editor, turnInto = true) {
       "codeBlock",
     ])
   )
-    return false
+    return false;
 
   // Either we can wrap in blockquote directly on the selection,
   // or we can clear formatting/nodes to arrive at a blockquote.
@@ -58,15 +58,15 @@ export function canToggleBlockquote(editor, turnInto = true) {
  * Toggles blockquote formatting for a specific node or the current selection
  */
 export function toggleBlockquote(editor) {
-  if (!editor || !editor.isEditable) return false
-  if (!canToggleBlockquote(editor)) return false
+  if (!editor || !editor.isEditable) return false;
+  if (!canToggleBlockquote(editor)) return false;
 
   try {
-    const view = editor.view
-    let state = view.state
-    let tr = state.tr
+    const view = editor.view;
+    let state = view.state;
+    let tr = state.tr;
 
-    const blocks = getSelectedBlockNodes(editor)
+    const blocks = getSelectedBlockNodes(editor);
 
     // In case a selection contains multiple blocks, we only allow
     // toggling to nide if there's exactly one block selected
@@ -80,7 +80,7 @@ export function toggleBlockquote(editor) {
         "taskList",
         "blockquote",
         "codeBlock",
-      ]) && blocks.length === 1
+      ]) && blocks.length === 1;
 
     // No selection, find the the cursor position
     if (
@@ -90,50 +90,50 @@ export function toggleBlockquote(editor) {
       const pos = findNodePosition({
         editor,
         node: state.selection.$anchor.node(1),
-      })?.pos
-      if (!isValidPosition(pos)) return false
+      })?.pos;
+      if (!isValidPosition(pos)) return false;
 
-      tr = tr.setSelection(NodeSelection.create(state.doc, pos))
-      view.dispatch(tr)
-      state = view.state
+      tr = tr.setSelection(NodeSelection.create(state.doc, pos));
+      view.dispatch(tr);
+      state = view.state;
     }
 
-    const selection = state.selection
+    const selection = state.selection;
 
-    let chain = editor.chain().focus()
+    let chain = editor.chain().focus();
 
     // Handle NodeSelection
     if (selection instanceof NodeSelection) {
-      const firstChild = selection.node.firstChild?.firstChild
-      const lastChild = selection.node.lastChild?.lastChild
+      const firstChild = selection.node.firstChild?.firstChild;
+      const lastChild = selection.node.lastChild?.lastChild;
 
       const from = firstChild
         ? selection.from + firstChild.nodeSize
-        : selection.from + 1
+        : selection.from + 1;
 
       const to = lastChild
         ? selection.to - lastChild.nodeSize
-        : selection.to - 1
+        : selection.to - 1;
 
-      const resolvedFrom = state.doc.resolve(from)
-      const resolvedTo = state.doc.resolve(to)
+      const resolvedFrom = state.doc.resolve(from);
+      const resolvedTo = state.doc.resolve(to);
 
       chain = chain
         .setTextSelection(TextSelection.between(resolvedFrom, resolvedTo))
-        .clearNodes()
+        .clearNodes();
     }
 
     const toggle = editor.isActive("blockquote")
       ? chain.lift("blockquote")
-      : chain.wrapIn("blockquote")
+      : chain.wrapIn("blockquote");
 
-    toggle.run()
+    toggle.run();
 
-    editor.chain().focus().selectTextblockEnd().run()
+    editor.chain().focus().selectTextblockEnd().run();
 
-    return true
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -141,23 +141,23 @@ export function toggleBlockquote(editor) {
  * Determines if the blockquote button should be shown
  */
 export function shouldShowButton(props) {
-  const { editor, hideWhenUnavailable } = props
+  const { editor, hideWhenUnavailable } = props;
 
-  if (!editor) return false
+  if (!editor) return false;
 
   if (!hideWhenUnavailable) {
-    return true
+    return true;
   }
 
-  if (!editor.isEditable) return false
+  if (!editor.isEditable) return false;
 
-  if (!isNodeInSchema("blockquote", editor)) return false
+  if (!isNodeInSchema("blockquote", editor)) return false;
 
   if (!editor.isActive("code")) {
     return canToggleBlockquote(editor);
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -201,38 +201,38 @@ export function useBlockquote(config) {
     editor: providedEditor,
     hideWhenUnavailable = false,
     onToggled,
-  } = config || {}
+  } = config || {};
 
-  const { editor } = useTiptapEditor(providedEditor)
-  const [isVisible, setIsVisible] = useState(true)
-  const canToggle = canToggleBlockquote(editor)
-  const isActive = editor?.isActive("blockquote") || false
+  const { editor } = useTiptapEditor(providedEditor);
+  const [isVisible, setIsVisible] = useState(true);
+  const canToggle = canToggleBlockquote(editor);
+  const isActive = editor?.isActive("blockquote") || false;
 
   useEffect(() => {
-    if (!editor) return
+    if (!editor) return;
 
     const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }))
-    }
+      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }));
+    };
 
-    handleSelectionUpdate()
+    handleSelectionUpdate();
 
-    editor.on("selectionUpdate", handleSelectionUpdate)
+    editor.on("selectionUpdate", handleSelectionUpdate);
 
     return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate)
+      editor.off("selectionUpdate", handleSelectionUpdate);
     };
-  }, [editor, hideWhenUnavailable])
+  }, [editor, hideWhenUnavailable]);
 
   const handleToggle = useCallback(() => {
-    if (!editor) return false
+    if (!editor) return false;
 
-    const success = toggleBlockquote(editor)
+    const success = toggleBlockquote(editor);
     if (success) {
-      onToggled?.()
+      onToggled?.();
     }
-    return success
-  }, [editor, onToggled])
+    return success;
+  }, [editor, onToggled]);
 
   return {
     isVisible,
@@ -242,5 +242,5 @@ export function useBlockquote(config) {
     label: "Blockquote",
     shortcutKeys: BLOCKQUOTE_SHORTCUT_KEY,
     Icon: BlockquoteIcon,
-  }
+  };
 }

@@ -1,27 +1,31 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 
 // --- Icons ---
-import { LinkIcon } from "@/components/tiptap-icons/link-icon"
+import { LinkIcon } from "@/components/tiptap-icons/link-icon";
 
 // --- Lib ---
-import { isMarkInSchema, isNodeTypeSelected, sanitizeUrl } from "@/lib/tiptap-utils";
+import {
+  isMarkInSchema,
+  isNodeTypeSelected,
+  sanitizeUrl,
+} from "@/lib/tiptap-utils";
 
 /**
  * Checks if a link can be set in the current editor state
  */
 export function canSetLink(editor) {
-  if (!editor || !editor.isEditable) return false
+  if (!editor || !editor.isEditable) return false;
 
   // The third argument 'true' checks whether the current selection is inside an image caption, and prevents setting a link there
   // If the selection is inside an image caption, we can't set a link
-  if (isNodeTypeSelected(editor, ["image"], true)) return false
+  if (isNodeTypeSelected(editor, ["image"], true)) return false;
   try {
     return editor.can().setMark("link");
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -29,7 +33,7 @@ export function canSetLink(editor) {
  * Checks if a link is currently active in the editor
  */
 export function isLinkActive(editor) {
-  if (!editor || !editor.isEditable) return false
+  if (!editor || !editor.isEditable) return false;
   return editor.isActive("link");
 }
 
@@ -37,20 +41,20 @@ export function isLinkActive(editor) {
  * Determines if the link button should be shown
  */
 export function shouldShowLinkButton(props) {
-  const { editor, hideWhenUnavailable } = props
+  const { editor, hideWhenUnavailable } = props;
 
-  if (!editor || !editor.isEditable) return false
+  if (!editor || !editor.isEditable) return false;
 
-  const linkInSchema = isMarkInSchema("link", editor)
+  const linkInSchema = isMarkInSchema("link", editor);
 
   // If hideWhenUnavailable is false, always show the button (even if disabled)
   if (!hideWhenUnavailable) {
-    return true
+    return true;
   }
 
   // hideWhenUnavailable is true: hide if link is not in schema
   if (!linkInSchema) {
-    return false
+    return false;
   }
 
   // hideWhenUnavailable is true: hide if we can't set a link (unless in code block)
@@ -58,82 +62,85 @@ export function shouldShowLinkButton(props) {
     return canSetLink(editor);
   }
 
-  return true
+  return true;
 }
 
 /**
  * Custom hook for handling link operations in a Tiptap editor
  */
 export function useLinkHandler(props) {
-  const { editor, onSetLink } = props
-  const [url, setUrl] = useState(null)
+  const { editor, onSetLink } = props;
+  const [url, setUrl] = useState(null);
 
   useEffect(() => {
-    if (!editor) return
+    if (!editor) return;
 
     // Get URL immediately on mount
-    const { href } = editor.getAttributes("link")
+    const { href } = editor.getAttributes("link");
 
     if (isLinkActive(editor) && url === null) {
-      setUrl(href || "")
+      setUrl(href || "");
     }
-  }, [editor, url])
+  }, [editor, url]);
 
   useEffect(() => {
-    if (!editor) return
+    if (!editor) return;
 
     const updateLinkState = () => {
-      const { href } = editor.getAttributes("link")
-      setUrl(href || "")
-    }
-
-    editor.on("selectionUpdate", updateLinkState)
-    return () => {
-      editor.off("selectionUpdate", updateLinkState)
+      const { href } = editor.getAttributes("link");
+      setUrl(href || "");
     };
-  }, [editor])
+
+    editor.on("selectionUpdate", updateLinkState);
+    return () => {
+      editor.off("selectionUpdate", updateLinkState);
+    };
+  }, [editor]);
 
   const setLink = useCallback(() => {
-    if (!url || !editor) return
+    if (!url || !editor) return;
 
-    const { selection } = editor.state
-    const isEmpty = selection.empty
+    const { selection } = editor.state;
+    const isEmpty = selection.empty;
 
-    let chain = editor.chain().focus()
+    let chain = editor.chain().focus();
 
-    chain = chain.extendMarkRange("link").setLink({ href: url })
+    chain = chain.extendMarkRange("link").setLink({ href: url });
 
     if (isEmpty) {
-      chain = chain.insertContent({ type: "text", text: url })
+      chain = chain.insertContent({ type: "text", text: url });
     }
 
-    chain.run()
+    chain.run();
 
-    setUrl(null)
+    setUrl(null);
 
-    onSetLink?.()
-  }, [editor, onSetLink, url])
+    onSetLink?.();
+  }, [editor, onSetLink, url]);
 
   const removeLink = useCallback(() => {
-    if (!editor) return
+    if (!editor) return;
     editor
       .chain()
       .focus()
       .extendMarkRange("link")
       .unsetLink()
       .setMeta("preventAutolink", true)
-      .run()
-    setUrl("")
-  }, [editor])
+      .run();
+    setUrl("");
+  }, [editor]);
 
-  const openLink = useCallback((target = "_blank", features = "noopener,noreferrer") => {
-    if (!url) return
+  const openLink = useCallback(
+    (target = "_blank", features = "noopener,noreferrer") => {
+      if (!url) return;
 
-    const safeUrl = sanitizeUrl(url, window.location.href)
-    if (safeUrl !== "#") {
-      window.open(safeUrl, target, features)
-    }
-  }, [url])
+      const safeUrl = sanitizeUrl(url, window.location.href);
+      if (safeUrl !== "#") {
+        window.open(safeUrl, target, features);
+      }
+    },
+    [url],
+  );
 
   return {
     url: url || "",
@@ -141,44 +148,46 @@ export function useLinkHandler(props) {
     setLink,
     removeLink,
     openLink,
-  }
+  };
 }
 
 /**
  * Custom hook for link popover state management
  */
 export function useLinkState(props) {
-  const { editor, hideWhenUnavailable = false } = props
+  const { editor, hideWhenUnavailable = false } = props;
 
-  const canSet = canSetLink(editor)
-  const isActive = isLinkActive(editor)
+  const canSet = canSetLink(editor);
+  const isActive = isLinkActive(editor);
 
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    if (!editor) return
+    if (!editor) return;
 
     const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowLinkButton({
-        editor,
-        hideWhenUnavailable,
-      }))
-    }
+      setIsVisible(
+        shouldShowLinkButton({
+          editor,
+          hideWhenUnavailable,
+        }),
+      );
+    };
 
-    handleSelectionUpdate()
+    handleSelectionUpdate();
 
-    editor.on("selectionUpdate", handleSelectionUpdate)
+    editor.on("selectionUpdate", handleSelectionUpdate);
 
     return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate)
+      editor.off("selectionUpdate", handleSelectionUpdate);
     };
-  }, [editor, hideWhenUnavailable])
+  }, [editor, hideWhenUnavailable]);
 
   return {
     isVisible,
     canSet,
     isActive,
-  }
+  };
 }
 
 /**
@@ -223,19 +232,19 @@ export function useLinkPopover(config) {
     editor: providedEditor,
     hideWhenUnavailable = false,
     onSetLink,
-  } = config || {}
+  } = config || {};
 
-  const { editor } = useTiptapEditor(providedEditor)
+  const { editor } = useTiptapEditor(providedEditor);
 
   const { isVisible, canSet, isActive } = useLinkState({
     editor,
     hideWhenUnavailable,
-  })
+  });
 
   const linkHandler = useLinkHandler({
     editor,
     onSetLink,
-  })
+  });
 
   return {
     isVisible,
@@ -244,5 +253,5 @@ export function useLinkPopover(config) {
     label: "Link",
     Icon: LinkIcon,
     ...linkHandler,
-  }
+  };
 }

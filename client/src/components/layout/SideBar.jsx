@@ -1,130 +1,146 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppStore } from "../../stores/app.store.js";
 import Logo from "../ui/Logo";
-import { IconChartLine, IconHome2, IconPencilPlus, IconUser } from "@tabler/icons-react";
+import {
+  IconChartLine,
+  IconHome2,
+  IconPencilPlus,
+  IconUser,
+} from "@tabler/icons-react";
 import { useAuth } from "../../stores/user.store.js";
 import Navbar from "./Navbar.jsx";
 import Button from "../ui/Button.jsx";
 import HamburgerButton from "../ui/HamburgerButton.jsx";
 
-
-
-
 // UserInfo component  — receives avatarUrl + fullName from parent
 
 const UserInfo = ({ avatarUrl, fullName }) => (
-    <div className="px-3 py-4 border-t border-gray-100">
-        <div className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-            {avatarUrl ? (
-                <img
-                    src={avatarUrl}
-                    alt={fullName}
-                    className="w-10 h-10 rounded-full object-cover ring-1 ring-gray-200 shrink-0"
-                />
-            ) : (
-                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600 shrink-0">
-                    {fullName?.[0]?.toUpperCase() ?? "U"}
-                </div>
-            )}
-            <span className="text-base font-medium text-gray-700 truncate">
-                {fullName ?? "Username"}
-            </span>
+  <div className="border-t border-gray-100 px-3 py-4">
+    <div className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50">
+      {avatarUrl ? (
+        <img
+          src={avatarUrl}
+          alt={fullName}
+          className="h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-gray-200"
+        />
+      ) : (
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-medium text-gray-600">
+          {fullName?.[0]?.toUpperCase() ?? "U"}
         </div>
+      )}
+      <span className="truncate text-base font-medium text-gray-700">
+        {fullName ?? "Username"}
+      </span>
     </div>
+  </div>
 );
 
 const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const setCurPage = useAppStore((s) => s.setCurPage); // zustand
-    const userId = useAuth(s => s.userId);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const setCurPage = useAppStore((s) => s.setCurPage); // zustand
+  const userId = useAuth((s) => s.userId);
 
-    //Nav items
-    const NAV_ITEMS = [
-        { label: "Home", icon: IconHome2, path: "/", page: "home" },
-        { label: "Dashboard", icon: IconChartLine, path: `/dashboard/${userId}`, page: "dashboard" },
-        { label: "Profile", icon: IconUser, path: `/profile/${userId}`, page: "profile" },
-    ];
+  //Nav items
+  const NAV_ITEMS = [
+    { label: "Home", icon: IconHome2, path: "/", page: "home" },
+    {
+      label: "Dashboard",
+      icon: IconChartLine,
+      path: `/dashboard/${userId}`,
+      page: "dashboard",
+    },
+    {
+      label: "Profile",
+      icon: IconUser,
+      path: `/profile/${userId}`,
+      page: "profile",
+    },
+  ];
 
-    const handleNav = (item) => {
-        setCurPage(item.page);
-        navigate(item.path);
-    };
+  const handleNav = (item) => {
+    setCurPage(item.page);
+    navigate(item.path);
+  };
 
-    return (
-        <div className={`w-90 shrink-0 h-screen p-3 flex flex-col bg-white border-r border-line-color   ${className}`}>
-            <div className="mt-3 ml-0 w-full flex flex-start px-4">
-                <Logo className={"text-gray-800 font-extrabold text-xl"} />
-            </div>
+  return (
+    <div
+      className={`border-line-color flex h-screen w-90 shrink-0 flex-col border-r bg-white p-3 ${className}`}
+    >
+      <div className="flex-start mt-3 ml-0 flex w-full px-4">
+        <Logo className={"text-xl font-extrabold text-gray-800"} />
+      </div>
 
-            {/* Nav */}
-            <nav className="flex-1 px-3 pt-1 space-y-0.8 mt-10 ml-1 ">
-                {NAV_ITEMS.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = location.pathname === item.path;
+      {/* Nav */}
+      <nav className="space-y-0.8 mt-10 ml-1 flex-1 px-3 pt-1">
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
 
-                    return (
-                        <button
-                            key={item.page}
-                            onClick={() => handleNav(item)}
-                            className={`
-                w-full flex items-center gap-3 px-3 py-4 rounded-lg text-left
-                text-lg font-medium transition-all duration-150
-                ${isActive
-                                    ? "bg-gray-50 text-gray-800 border border-line-color"
-                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-                                }
-              `}
-                        >
-                            <Icon
-                                size={24}
-                                strokeWidth={isActive ? 2 : 1}
-                                className={isActive ? "text-gray-700" : "text-gray-400"}
-                            />
-                            {item.label}
-                        </button>
-                    );
-                })}
-            </nav>
+          return (
+            <button
+              key={item.page}
+              onClick={() => handleNav(item)}
+              className={`flex w-full items-center gap-3 rounded-lg px-3 py-4 text-left text-lg font-medium transition-all duration-150 ${
+                isActive
+                  ? "border-line-color border bg-gray-50 text-gray-800"
+                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+              } `}
+            >
+              <Icon
+                size={24}
+                strokeWidth={isActive ? 2 : 1}
+                className={isActive ? "text-gray-700" : "text-gray-400"}
+              />
+              {item.label}
+            </button>
+          );
+        })}
+      </nav>
 
-            {/* User info pinned to bottom */}
-            <UserInfo avatarUrl={avatarUrl} fullName={fullName} />
-        </div>
-    );
+      {/* User info pinned to bottom */}
+      <UserInfo avatarUrl={avatarUrl} fullName={fullName} />
+    </div>
+  );
 };
 
-
 const NavbarForMobile = ({ className }) => {
-    const curPage = useAppStore((s) => s.curPage);
-    return (
-        <Navbar className={`${className} lg:hidden w-full relative`}>{/*for mobile & tablets view */}
-            <div className="flex items-center justify-between gap-3">
-                {curPage === "home" &&
-                    <Button>
-                        Create
-                        <span><IconPencilPlus size={18} className="ml-2" /></span>
-                    </Button>
-                }
-                <HamburgerButton className="text-gray-700" />
-            </div>
-        </Navbar>
-
-    )
-}
+  const curPage = useAppStore((s) => s.curPage);
+  return (
+    <Navbar className={`${className} relative w-full lg:hidden`}>
+      {/*for mobile & tablets view */}
+      <div className="flex items-center justify-between gap-3">
+        {curPage === "home" && (
+          <Button>
+            Create
+            <span>
+              <IconPencilPlus size={18} className="ml-2" />
+            </span>
+          </Button>
+        )}
+        <HamburgerButton className="text-gray-700" />
+      </div>
+    </Navbar>
+  );
+};
 
 const SideBarLayout = ({ children }) => {
-    const user = useAuth(s => s.user);
+  const user = useAuth((s) => s.user);
 
-    return (
-        <div className="bg-neutral-50 h-screen w-screen flex flex-col overflow-hidden lg:flex-row">
-            <Sidebar avatarUrl={user?.avatar} fullName={user?.fullname} className={"hidden lg:flex"} />{/*for desktop view */}
-            <NavbarForMobile className={"lg:hidden"} />{/*for mobile view */}
+  return (
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-neutral-50 lg:flex-row">
+      <Sidebar
+        avatarUrl={user?.avatar}
+        fullName={user?.fullname}
+        className={"hidden lg:flex"}
+      />
+      {/*for desktop view */}
+      <NavbarForMobile className={"lg:hidden"} />
+      {/*for mobile view */}
 
-            <div className=" flex  w-full">
-                {children}
-            </div>
-        </div>
-    )
-}
+      <div className="flex w-full">{children}</div>
+    </div>
+  );
+};
 
-export default SideBarLayout
+export default SideBarLayout;

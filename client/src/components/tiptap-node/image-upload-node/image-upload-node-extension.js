@@ -1,6 +1,6 @@
-import { mergeAttributes, Node } from "@tiptap/react"
-import { ReactNodeViewRenderer } from "@tiptap/react"
-import { ImageUploadNode as ImageUploadNodeComponent } from "@/components/tiptap-node/image-upload-node/image-upload-node"
+import { mergeAttributes, Node } from "@tiptap/react";
+import { ReactNodeViewRenderer } from "@tiptap/react";
+import { ImageUploadNode as ImageUploadNodeComponent } from "@/components/tiptap-node/image-upload-node/image-upload-node";
 
 /**
  * A Tiptap node extension that creates an image upload component.
@@ -27,7 +27,7 @@ export const ImageUploadNode = Node.create({
       onError: undefined,
       onSuccess: undefined,
       HTMLAttributes: {},
-    }
+    };
   },
 
   addAttributes() {
@@ -41,11 +41,11 @@ export const ImageUploadNode = Node.create({
       maxSize: {
         default: this.options.maxSize,
       },
-    }
+    };
   },
 
   parseHTML() {
-    return [{ tag: 'div[data-type="image-upload"]' }]
+    return [{ tag: 'div[data-type="image-upload"]' }];
   },
 
   renderHTML({ HTMLAttributes }) {
@@ -78,28 +78,28 @@ export const ImageUploadNode = Node.create({
   addKeyboardShortcuts() {
     return {
       Enter: ({ editor }) => {
-        const { selection } = editor.state
-        const { nodeAfter } = selection.$from
+        const { selection } = editor.state;
+        const { nodeAfter } = selection.$from;
 
         if (
           nodeAfter &&
           nodeAfter.type.name === "imageUpload" &&
           editor.isActive("imageUpload")
         ) {
-          const nodeEl = editor.view.nodeDOM(selection.$from.pos)
+          const nodeEl = editor.view.nodeDOM(selection.$from.pos);
           if (nodeEl && nodeEl instanceof HTMLElement) {
             // Since NodeViewWrapper is wrapped with a div, we need to click the first child
-            const firstChild = nodeEl.firstChild
+            const firstChild = nodeEl.firstChild;
             if (firstChild && firstChild instanceof HTMLElement) {
-              firstChild.click()
-              return true
+              firstChild.click();
+              return true;
             }
           }
         }
-        return false
+        return false;
       },
     };
   },
-})
+});
 
-export default ImageUploadNode
+export default ImageUploadNode;

@@ -1,25 +1,25 @@
 "use client";
-import { useCallback, useEffect, useState } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
+import { useCallback, useEffect, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
-import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
+import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
+import { useIsBreakpoint } from "@/hooks/use-is-breakpoint";
 
 // --- Lib ---
-import { isExtensionAvailable } from "@/lib/tiptap-utils"
+import { isExtensionAvailable } from "@/lib/tiptap-utils";
 
 // --- Icons ---
-import { ImagePlusIcon } from "@/components/tiptap-icons/image-plus-icon"
+import { ImagePlusIcon } from "@/components/tiptap-icons/image-plus-icon";
 
-export const IMAGE_UPLOAD_SHORTCUT_KEY = "mod+shift+i"
+export const IMAGE_UPLOAD_SHORTCUT_KEY = "mod+shift+i";
 
 /**
  * Checks if image can be inserted in the current editor state
  */
 export function canInsertImage(editor) {
-  if (!editor || !editor.isEditable) return false
-  if (!isExtensionAvailable(editor, "imageUpload")) return false
+  if (!editor || !editor.isEditable) return false;
+  if (!isExtensionAvailable(editor, "imageUpload")) return false;
 
   return editor.can().insertContent({ type: "imageUpload" });
 }
@@ -28,7 +28,7 @@ export function canInsertImage(editor) {
  * Checks if image is currently active
  */
 export function isImageActive(editor) {
-  if (!editor || !editor.isEditable) return false
+  if (!editor || !editor.isEditable) return false;
   return editor.isActive("imageUpload");
 }
 
@@ -36,8 +36,8 @@ export function isImageActive(editor) {
  * Inserts an image in the editor
  */
 export function insertImage(editor) {
-  if (!editor || !editor.isEditable) return false
-  if (!canInsertImage(editor)) return false
+  if (!editor || !editor.isEditable) return false;
+  if (!canInsertImage(editor)) return false;
 
   try {
     return editor
@@ -48,7 +48,7 @@ export function insertImage(editor) {
       })
       .run();
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -56,21 +56,21 @@ export function insertImage(editor) {
  * Determines if the image button should be shown
  */
 export function shouldShowButton(props) {
-  const { editor, hideWhenUnavailable } = props
+  const { editor, hideWhenUnavailable } = props;
 
-  if (!editor || !editor.isEditable) return false
+  if (!editor || !editor.isEditable) return false;
 
   if (!hideWhenUnavailable) {
-    return true
+    return true;
   }
 
-  if (!isExtensionAvailable(editor, "imageUpload")) return false
+  if (!isExtensionAvailable(editor, "imageUpload")) return false;
 
   if (!editor.isActive("code")) {
     return canInsertImage(editor);
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -114,48 +114,52 @@ export function useImageUpload(config) {
     editor: providedEditor,
     hideWhenUnavailable = false,
     onInserted,
-  } = config || {}
+  } = config || {};
 
-  const { editor } = useTiptapEditor(providedEditor)
-  const isMobile = useIsBreakpoint()
-  const [isVisible, setIsVisible] = useState(true)
-  const canInsert = canInsertImage(editor)
-  const isActive = isImageActive(editor)
+  const { editor } = useTiptapEditor(providedEditor);
+  const isMobile = useIsBreakpoint();
+  const [isVisible, setIsVisible] = useState(true);
+  const canInsert = canInsertImage(editor);
+  const isActive = isImageActive(editor);
 
   useEffect(() => {
-    if (!editor) return
+    if (!editor) return;
 
     const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }))
-    }
+      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }));
+    };
 
-    handleSelectionUpdate()
+    handleSelectionUpdate();
 
-    editor.on("selectionUpdate", handleSelectionUpdate)
+    editor.on("selectionUpdate", handleSelectionUpdate);
 
     return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate)
+      editor.off("selectionUpdate", handleSelectionUpdate);
     };
-  }, [editor, hideWhenUnavailable])
+  }, [editor, hideWhenUnavailable]);
 
   const handleImage = useCallback(() => {
-    if (!editor) return false
+    if (!editor) return false;
 
-    const success = insertImage(editor)
+    const success = insertImage(editor);
     if (success) {
-      onInserted?.()
+      onInserted?.();
     }
-    return success
-  }, [editor, onInserted])
+    return success;
+  }, [editor, onInserted]);
 
-  useHotkeys(IMAGE_UPLOAD_SHORTCUT_KEY, (event) => {
-    event.preventDefault()
-    handleImage()
-  }, {
-    enabled: isVisible && canInsert,
-    enableOnContentEditable: !isMobile,
-    enableOnFormTags: true,
-  })
+  useHotkeys(
+    IMAGE_UPLOAD_SHORTCUT_KEY,
+    (event) => {
+      event.preventDefault();
+      handleImage();
+    },
+    {
+      enabled: isVisible && canInsert,
+      enableOnContentEditable: !isMobile,
+      enableOnFormTags: true,
+    },
+  );
 
   return {
     isVisible,
@@ -165,5 +169,5 @@ export function useImageUpload(config) {
     label: "Add image",
     shortcutKeys: IMAGE_UPLOAD_SHORTCUT_KEY,
     Icon: ImagePlusIcon,
-  }
+  };
 }

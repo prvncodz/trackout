@@ -1,5 +1,5 @@
-import { mergeAttributes } from "@tiptap/react"
-import TiptapHorizontalRule from "@tiptap/extension-horizontal-rule"
+import { mergeAttributes } from "@tiptap/react";
+import TiptapHorizontalRule from "@tiptap/extension-horizontal-rule";
 
 export const HorizontalRule = TiptapHorizontalRule.extend({
   renderHTML() {
@@ -9,6 +9,6 @@ export const HorizontalRule = TiptapHorizontalRule.extend({
       ["hr"],
     ];
   },
-})
+});
 
-export default HorizontalRule
+export default HorizontalRule;

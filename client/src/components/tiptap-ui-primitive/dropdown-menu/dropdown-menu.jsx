@@ -1,25 +1,31 @@
-import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
-import { cn } from "@/lib/tiptap-utils"
-import { CheckIcon } from "@/components/tiptap-icons/check-icon"
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+import { cn } from "@/lib/tiptap-utils";
+import { CheckIcon } from "@/components/tiptap-icons/check-icon";
 
-import "@/components/tiptap-ui-primitive/dropdown-menu/dropdown-menu.scss"
+import "@/components/tiptap-ui-primitive/dropdown-menu/dropdown-menu.scss";
 
-function DropdownMenu({
-  ...props
-}) {
-  return (<DropdownMenuPrimitive.Root data-slot="tiptap-dropdown-menu" {...props} />);
+function DropdownMenu({ ...props }) {
+  return (
+    <DropdownMenuPrimitive.Root data-slot="tiptap-dropdown-menu" {...props} />
+  );
 }
 
-function DropdownMenuPortal({
-  ...props
-}) {
-  return (<DropdownMenuPrimitive.Portal data-slot="tiptap-dropdown-menu-portal" {...props} />);
+function DropdownMenuPortal({ ...props }) {
+  return (
+    <DropdownMenuPrimitive.Portal
+      data-slot="tiptap-dropdown-menu-portal"
+      {...props}
+    />
+  );
 }
 
-function DropdownMenuTrigger({
-  ...props
-}) {
-  return (<DropdownMenuPrimitive.Trigger data-slot="tiptap-dropdown-menu-trigger" {...props} />);
+function DropdownMenuTrigger({ ...props }) {
+  return (
+    <DropdownMenuPrimitive.Trigger
+      data-slot="tiptap-dropdown-menu-trigger"
+      {...props}
+    />
+  );
 }
 
 function DropdownMenuContent({
@@ -36,36 +42,31 @@ function DropdownMenuContent({
         align={align}
         className={cn("tiptap-dropdown-menu-content", className)}
         onCloseAutoFocus={(e) => e.preventDefault()}
-        {...props} />
+        {...props}
+      />
     </DropdownMenuPrimitive.Portal>
   );
 }
 
-function DropdownMenuGroup({
-  className,
-  ...props
-}) {
+function DropdownMenuGroup({ className, ...props }) {
   return (
     <DropdownMenuPrimitive.Group
       data-slot="tiptap-dropdown-menu-group"
       className={cn("tiptap-dropdown-menu-group", className)}
-      {...props} />
+      {...props}
+    />
   );
 }
 
-function DropdownMenuItem({
-  className,
-  inset,
-  variant = "default",
-  ...props
-}) {
+function DropdownMenuItem({ className, inset, variant = "default", ...props }) {
   return (
     <DropdownMenuPrimitive.Item
       data-slot="tiptap-dropdown-menu-item"
       data-inset={inset}
       data-variant={variant}
       className={cn("tiptap-dropdown-menu-item", className)}
-      {...props} />
+      {...props}
+    />
   );
 }
 
@@ -82,10 +83,12 @@ function DropdownMenuCheckboxItem({
       data-inset={inset}
       className={cn("tiptap-dropdown-menu-checkbox-item", className)}
       checked={checked}
-      {...props}>
+      {...props}
+    >
       <span
         className="tiptap-dropdown-menu-item-indicator"
-        data-slot="tiptap-dropdown-menu-checkbox-item-indicator">
+        data-slot="tiptap-dropdown-menu-checkbox-item-indicator"
+      >
         <DropdownMenuPrimitive.ItemIndicator>
           <CheckIcon />
         </DropdownMenuPrimitive.ItemIndicator>
@@ -95,27 +98,27 @@ function DropdownMenuCheckboxItem({
   );
 }
 
-function DropdownMenuRadioGroup({
-  ...props
-}) {
-  return (<DropdownMenuPrimitive.RadioGroup data-slot="tiptap-dropdown-menu-radio-group" {...props} />);
+function DropdownMenuRadioGroup({ ...props }) {
+  return (
+    <DropdownMenuPrimitive.RadioGroup
+      data-slot="tiptap-dropdown-menu-radio-group"
+      {...props}
+    />
+  );
 }
 
-function DropdownMenuRadioItem({
-  className,
-  children,
-  inset,
-  ...props
-}) {
+function DropdownMenuRadioItem({ className, children, inset, ...props }) {
   return (
     <DropdownMenuPrimitive.RadioItem
       data-slot="tiptap-dropdown-menu-radio-item"
       data-inset={inset}
       className={cn("tiptap-dropdown-menu-radio-item", className)}
-      {...props}>
+      {...props}
+    >
       <span
         className="tiptap-dropdown-menu-item-indicator"
-        data-slot="tiptap-dropdown-menu-radio-item-indicator">
+        data-slot="tiptap-dropdown-menu-radio-item-indicator"
+      >
         <DropdownMenuPrimitive.ItemIndicator>
           <CheckIcon />
         </DropdownMenuPrimitive.ItemIndicator>
@@ -125,76 +128,66 @@ function DropdownMenuRadioItem({
   );
 }
 
-function DropdownMenuLabel({
-  className,
-  inset,
-  ...props
-}) {
+function DropdownMenuLabel({ className, inset, ...props }) {
   return (
     <DropdownMenuPrimitive.Label
       data-slot="tiptap-dropdown-menu-label"
       data-inset={inset}
       className={cn("tiptap-dropdown-menu-label", className)}
-      {...props} />
+      {...props}
+    />
   );
 }
 
-function DropdownMenuSeparator({
-  className,
-  ...props
-}) {
+function DropdownMenuSeparator({ className, ...props }) {
   return (
     <DropdownMenuPrimitive.Separator
       data-slot="tiptap-dropdown-menu-separator"
       className={cn("tiptap-dropdown-menu-separator", className)}
-      {...props} />
+      {...props}
+    />
   );
 }
 
-function DropdownMenuShortcut({
-  className,
-  ...props
-}) {
+function DropdownMenuShortcut({ className, ...props }) {
   return (
     <span
       data-slot="tiptap-dropdown-menu-shortcut"
       className={cn("tiptap-dropdown-menu-shortcut", className)}
-      {...props} />
+      {...props}
+    />
   );
 }
 
-function DropdownMenuSub({
-  ...props
-}) {
-  return (<DropdownMenuPrimitive.Sub data-slot="tiptap-dropdown-menu-sub" {...props} />);
+function DropdownMenuSub({ ...props }) {
+  return (
+    <DropdownMenuPrimitive.Sub
+      data-slot="tiptap-dropdown-menu-sub"
+      {...props}
+    />
+  );
 }
 
-function DropdownMenuSubTrigger({
-  className,
-  inset,
-  children,
-  ...props
-}) {
+function DropdownMenuSubTrigger({ className, inset, children, ...props }) {
   return (
     <DropdownMenuPrimitive.SubTrigger
       data-slot="tiptap-dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn("tiptap-dropdown-menu-sub-trigger", className)}
-      {...props}>
+      {...props}
+    >
       {children}
     </DropdownMenuPrimitive.SubTrigger>
   );
 }
 
-function DropdownMenuSubContent({
-  className,
-  ...props
-}) {
+function DropdownMenuSubContent({ className, ...props }) {
   return (
     <DropdownMenuPrimitive.SubContent
       data-slot="tiptap-dropdown-menu-sub-content"
       className={cn("tiptap-dropdown-menu-sub-content", className)}
-      {...props} />
+      {...props}
+    />
   );
 }
 
@@ -214,4 +207,4 @@ export {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
-}
+};

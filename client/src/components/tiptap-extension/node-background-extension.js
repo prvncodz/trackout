@@ -1,21 +1,21 @@
-import { Extension } from "@tiptap/core"
-import { getSelectedNodesOfType } from "@/lib/tiptap-utils"
-import { updateNodesAttr } from "@/lib/tiptap-utils"
+import { Extension } from "@tiptap/core";
+import { getSelectedNodesOfType } from "@/lib/tiptap-utils";
+import { updateNodesAttr } from "@/lib/tiptap-utils";
 
 /**
  * Determines the target color for toggle operations
  */
 function getToggleColor(targets, inputColor) {
-  if (targets.length === 0) return null
+  if (targets.length === 0) return null;
 
   for (const target of targets) {
-    const currentColor = target.node.attrs?.backgroundColor ?? null
+    const currentColor = target.node.attrs?.backgroundColor ?? null;
     if (currentColor !== inputColor) {
-      return inputColor
+      return inputColor;
     }
   }
 
-  return null
+  return null;
 }
 
 export const NodeBackground = Extension.create({
@@ -34,7 +34,7 @@ export const NodeBackground = Extension.create({
         "tableHeader",
       ],
       useStyle: true,
-    }
+    };
   },
 
   addGlobalAttributes() {
@@ -46,25 +46,25 @@ export const NodeBackground = Extension.create({
             default: null,
 
             parseHTML: (element) => {
-              const styleColor = element.style?.backgroundColor
-              if (styleColor) return styleColor
+              const styleColor = element.style?.backgroundColor;
+              if (styleColor) return styleColor;
 
-              const dataColor = element.getAttribute("data-background-color")
-              return dataColor || null
+              const dataColor = element.getAttribute("data-background-color");
+              return dataColor || null;
             },
 
             renderHTML: (attributes) => {
-              const color = attributes.backgroundColor
-              if (!color) return {}
+              const color = attributes.backgroundColor;
+              if (!color) return {};
 
               if (this.options.useStyle) {
                 return {
                   style: `background-color: ${color}`,
-                }
+                };
               } else {
                 return {
                   "data-background-color": color,
-                }
+                };
               }
             },
           },
@@ -77,29 +77,29 @@ export const NodeBackground = Extension.create({
     /**
      * Generic command executor for background color operations
      */
-    const executeBackgroundCommand = (
-      getTargetColor
-    ) => {
+    const executeBackgroundCommand = (getTargetColor) => {
       return (inputColor) =>
-        ({
-          state,
-          tr
-        }) => {
-          const targets = getSelectedNodesOfType(state.selection, this.options.types)
+        ({ state, tr }) => {
+          const targets = getSelectedNodesOfType(
+            state.selection,
+            this.options.types,
+          );
 
-          if (targets.length === 0) return false
+          if (targets.length === 0) return false;
 
-          const targetColor = getTargetColor(targets, inputColor)
+          const targetColor = getTargetColor(targets, inputColor);
 
           return updateNodesAttr(tr, targets, "backgroundColor", targetColor);
         };
-    }
+    };
 
     return {
       /**
        * Set background color to specific value
        */
-      setNodeBackgroundColor: executeBackgroundCommand((_, inputColor) => inputColor || null),
+      setNodeBackgroundColor: executeBackgroundCommand(
+        (_, inputColor) => inputColor || null,
+      ),
 
       /**
        * Remove background color
@@ -109,7 +109,9 @@ export const NodeBackground = Extension.create({
       /**
        * Toggle background color (set if different/missing, unset if all have it)
        */
-      toggleNodeBackgroundColor: executeBackgroundCommand((targets, inputColor) => getToggleColor(targets, inputColor || "")),
+      toggleNodeBackgroundColor: executeBackgroundCommand(
+        (targets, inputColor) => getToggleColor(targets, inputColor || ""),
+      ),
     };
   },
-})
+});

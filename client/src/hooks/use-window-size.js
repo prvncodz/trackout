@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react"
-import { useThrottledCallback } from "@/hooks/use-throttled-callback"
+import { useEffect, useState } from "react";
+import { useThrottledCallback } from "@/hooks/use-throttled-callback";
 
 /**
  * Hook that tracks the window's visual viewport dimensions, position, and provides
@@ -19,13 +19,13 @@ export function useWindowSize() {
     offsetTop: 0,
     offsetLeft: 0,
     scale: 0,
-  })
+  });
 
   const handleViewportChange = useThrottledCallback(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") return;
 
-    const vp = window.visualViewport
-    if (!vp) return
+    const vp = window.visualViewport;
+    if (!vp) return;
 
     const {
       width = 0,
@@ -33,7 +33,7 @@ export function useWindowSize() {
       offsetTop = 0,
       offsetLeft = 0,
       scale = 0,
-    } = vp
+    } = vp;
 
     setWindowSize((prevState) => {
       if (
@@ -43,25 +43,25 @@ export function useWindowSize() {
         offsetLeft === prevState.offsetLeft &&
         scale === prevState.scale
       ) {
-        return prevState
+        return prevState;
       }
 
-      return { width, height, offsetTop, offsetLeft, scale }
-    })
-  }, 200)
+      return { width, height, offsetTop, offsetLeft, scale };
+    });
+  }, 200);
 
   useEffect(() => {
-    const visualViewport = window.visualViewport
-    if (!visualViewport) return
+    const visualViewport = window.visualViewport;
+    if (!visualViewport) return;
 
-    visualViewport.addEventListener("resize", handleViewportChange)
+    visualViewport.addEventListener("resize", handleViewportChange);
 
-    handleViewportChange()
+    handleViewportChange();
 
     return () => {
-      visualViewport.removeEventListener("resize", handleViewportChange)
+      visualViewport.removeEventListener("resize", handleViewportChange);
     };
-  }, [handleViewportChange])
+  }, [handleViewportChange]);
 
-  return windowSize
+  return windowSize;
 }
