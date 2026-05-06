@@ -95,7 +95,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
                                 } `}
                         >
                             <Icon
-                                size={24}
+                                size={23}
                                 strokeWidth={isActive ? 2 : 1}
                                 className={isActive ? "text-gray-700" : "text-gray-400"}
                             />
