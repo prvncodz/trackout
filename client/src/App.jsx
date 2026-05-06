@@ -13,6 +13,7 @@ function App() {
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged);
     const isUserLogged = useAuth((state) => state.isUserLogged);
     useEffect(() => {
+        setIsUserLogged(true);
     }, [setIsUserLogged]);
 
     return (

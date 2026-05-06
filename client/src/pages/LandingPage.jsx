@@ -51,7 +51,7 @@ const HeroSection = () => {
                 >
                     <Link
                         to="features"
-                        className="text-near-black flex h-10 w-auto cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-2 px-8 text-sm font-semibold transition-all hover:bg-gray-100 hover:text-gray-900 active:scale-98 md:text-base"
+                        className="text-near-black flex h-10 w-auto cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-2 px-8 text-sm font-semibold transition-all hover:bg-gray-50 hover:text-gray-900  active:scale-98 md:text-base"
                         smooth={true}
                         offset={-140}
                         duration={300}
@@ -70,10 +70,10 @@ const Layout = ({ children }) => {
         <motion.div
             className="relative mx-auto w-full overflow-hidden lg:max-w-[60vw]"
             initial={{
-                y:-10
+                y: -10
             }}
             animate={{
-                y:0
+                y: 0
             }}
         >
             {children}
