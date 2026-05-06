@@ -1,4 +1,4 @@
-import Calendar from "@/components/ui/Calender.jsx";
+import Calendar from "../components/ui/Calender.jsx";
 import SideBarLayout from "../components/layout/SideBar";
 import { useAuth } from "@/stores/user.store";
 
@@ -42,7 +42,7 @@ const DashboardPage = () => {
             <SideBarLayout>
                 <div className="flex flex-col overflow-auto no-scrollbar pb-25">
                     <Greetings />
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 lg:flex-col">
                         <div className="flex flex-col h-screen overflow-auto gap-6 lg:pl-15 ">
                             <Cards />
                             <div className="bg-neutral-50 border border-line-color h-120 rounded-2xl  "></div>
