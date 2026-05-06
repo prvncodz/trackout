@@ -10,26 +10,25 @@ import { useAuth } from "./stores/user.store.js";
 import { useEffect } from "react";
 
 function App() {
-  const setIsUserLogged = useAuth((state) => state.setIsUserLogged);
-  const isUserLogged = useAuth((state) => state.isUserLogged);
-  useEffect(() => {
-    setIsUserLogged(true);
-  }, [setIsUserLogged]);
+    const setIsUserLogged = useAuth((state) => state.setIsUserLogged);
+    const isUserLogged = useAuth((state) => state.isUserLogged);
+    useEffect(() => {
+    }, [setIsUserLogged]);
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={isUserLogged ? <HomePage /> : <LandingPage />}
-        />
-        <Route path="/signin" element={<SigninPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/dashboard/:id" element={<DashboardPage />} />
-        <Route path="/profile/:id" element={<ProfilePage />} />
-      </Routes>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route
+                    path="/"
+                    element={isUserLogged ? <HomePage /> : <LandingPage />}
+                />
+                <Route path="/signin" element={<SigninPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/dashboard/:id" element={<DashboardPage />} />
+                <Route path="/profile/:id" element={<ProfilePage />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
