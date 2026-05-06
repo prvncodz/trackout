@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAppStore } from "../../stores/app.store.js";
 import Logo from "../ui/Logo";
 import {
+    IconBrandTabler,
     IconChartLine,
     IconHome2,
     IconPencilPlus,
@@ -12,6 +13,7 @@ import Navbar from "./Navbar.jsx";
 import Button from "../ui/Button.jsx";
 import HamburgerButton from "../ui/HamburgerButton.jsx";
 import { motion } from "motion/react"
+import { Dumbbell, House, LogOut } from "lucide-react";
 
 // UserInfo component  — receives avatarUrl + fullName from parent
 
@@ -29,7 +31,12 @@ const UserInfo = ({ avatarUrl, fullName }) => (
                     {fullName?.[0]?.toUpperCase() ?? "U"}
                 </div>
             )}
-            <motion.span className="truncate text-sm font-medium text-gray-700">
+            <motion.span className="truncate text-sm font-medium text-gray-700"
+                whileHover={{
+                    x: 5
+                }}
+
+            >
                 {fullName ?? "Username"}
             </motion.span>
         </div>
@@ -44,10 +51,10 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
 
     //Nav items
     const NAV_ITEMS = [
-        { label: "Home", icon: IconHome2, path: "/", page: "home" },
+        { label: "Home", icon: Dumbbell, path: "/", page: "home" },
         {
             label: "Dashboard",
-            icon: IconChartLine,
+            icon: IconBrandTabler,
             path: `/dashboard/${userId}`,
             page: "dashboard",
         },
@@ -82,9 +89,9 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
                         <button
                             key={item.page}
                             onClick={() => handleNav(item)}
-                            className={`flex w-full items-center gap-3 rounded-lg px-3 py-3.5 text-left text-lg font-medium transition-all duration-200 ${isActive
-                                    ? "border-line-color border bg-gray-50 text-gray-800 shadow-standard"
-                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                            className={`flex w-full items-center gap-3 rounded-lg px-3 py-3.5 text-left text-lg font-medium transition-all duration-200 cursor-pointer ${isActive
+                                ? "border-line-color border bg-gray-50 text-gray-800 shadow-standard"
+                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
                                 } `}
                         >
                             <Icon
@@ -92,7 +99,13 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
                                 strokeWidth={isActive ? 2 : 1}
                                 className={isActive ? "text-gray-700" : "text-gray-400"}
                             />
-                            {item.label}
+                            <motion.div
+                                whileHover={{
+                                    x: 5
+                                }}
+                            >
+                                {item.label}
+                            </motion.div>
                         </button>
                     );
                 })}
