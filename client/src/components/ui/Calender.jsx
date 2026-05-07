@@ -7,11 +7,11 @@ const CalenderComponent = ({ className = "", size = "md", ...props }) => {
 
     return (
         <div
-            className={`border-line-color/70 flex shrink-0 flex-col items-start justify-center gap-4 rounded-2xl border overflow-hidden bg-white p-5 size-auto shadow-standard  ${className}`}
+            className={`border border-line-color/70 flex shrink-0 flex-col items-start justify-center gap-4 rounded-2xl  overflow-hidden bg-white p-5 size-auto shadow-standard  ${className}`}
             {...props}
         >
             <h2
-                className={`text-mockup-text flex items-center justify-center text-left text-xl font-bold cursor-default   ${size === "md" ? "text-[0.98rem] mt-3 lg:mt-5 lg:ml-5 font-normal" : size === "lg" ? "text-[1.1rem] mt-3 lg:mt-5 lg:ml-5" : "text-[0.9rem] mt-3 lg:mt-5 lg:ml-5"}`}
+                className={`text-mockup-text flex items-center justify-center  text-xl font-bold tracking-tight cursor-default   ${size === "md" ? "text-[0.98rem] mt-3 lg:mt-5 lg:ml-5 font-normal" : size === "lg" ? "text-[1.1rem] mt-3 lg:mt-5 lg:ml-5" : "text-[0.9rem] mt-3 lg:mt-5 lg:ml-5"}`}
             >
                 CONSISTENCY
             </h2>

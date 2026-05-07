@@ -16,6 +16,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 @theme {
   --color-near-black: #111111;
   --font-sans: "inter", sans-serif;

@@ -133,7 +133,7 @@ const chartConfig = {
     },
 }
 
-export default function ChartAreaInteractive() {
+export default function ChartAreaInteractive({ className }) {
     const [timeRange, setTimeRange] = React.useState("90d")
 
     const filteredData = chartData.filter((item) => {
@@ -151,17 +151,17 @@ export default function ChartAreaInteractive() {
     })
 
     return (
-        <Card className="pt-0">
-            <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+        <Card className={`pt-0 ${className}`}>
+            <CardHeader className="flex items-center gap-2 space-y-0 border-b border-line-color py-5 sm:flex-row">
                 <div className="grid flex-1 gap-1">
-                    <CardTitle>Area Chart - Interactive</CardTitle>
+                    <CardTitle>Volume Chart - interactive</CardTitle>
                     <CardDescription>
-                        Showing total visitors for the last 3 months
+                        Showing total reps and sets for the last 3 months
                     </CardDescription>
                 </div>
                 <Select value={timeRange} onValueChange={setTimeRange}>
                     <SelectTrigger
-                        className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
+                        className="hidden w-40 rounded-lg sm:ml-auto sm:flex"
                         aria-label="Select a value"
                     >
                         <SelectValue placeholder="Last 3 months" />
@@ -182,7 +182,7 @@ export default function ChartAreaInteractive() {
             <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
                 <ChartContainer
                     config={chartConfig}
-                    className="aspect-auto h-[350px] w-full"
+                    className="aspect-auto h-87.5 w-full"
                 >
                     <AreaChart data={filteredData}>
                         <defs>

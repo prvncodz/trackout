@@ -18,7 +18,7 @@ export default function ProfileCard() {
     return (
         <div className="relative flex h-auto w-full flex-col items-center justify-start gap-10 lg:mt-10 lg:flex-row">
             <div className="shadow-standard size-60 bg-gray-100 rounded-2xl overflow-hidden">
-                <img src={user?.avatar} />
+                <img src={user?.avatar} className="cursor-default"/>
             </div>
             <div>
                 <h2 className="text-center text-xl font-semibold text-neutral-700 cursor-default lg:text-left">
@@ -29,12 +29,17 @@ export default function ProfileCard() {
                 </p>
                 <div className="no-scrollbar mt-8 flex w-screen gap-3 overflow-auto scroll-smooth px-4 py-2 lg:w-auto lg:px-0">
                     {stats.map((stat, index) => (
-                        <div
-                            key={index}
-                            className="shadow-standard border-line-color inset-0 flex h-30 w-40 shrink-0 flex-col items-center justify-center gap-3 rounded-2xl border bg-gray-50"
-                        >
-                            <h3 className="text-sm text-gray-800 cursor-default ">{stat.label}</h3>
-                            <p className="text-sm text-gray-600 font-semibold cursor-default ">{stat.value}</p>
+                        <div className="bg-gray-50 border border-line-color/50 rounded-xl p-6 flex flex-col gap-3 w-fit min-w-[200px] ">
+                            <div className="flex items-center justify-between gap-4">
+                                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground cursor-default">
+                                    {stat.label}
+                                </p>
+
+                            </div>
+
+                            <div className="flex items-baseline gap-1 cursor-default">
+                                {stat.value}
+                            </div>
                         </div>
                     ))}
                 </div>

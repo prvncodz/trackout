@@ -103,6 +103,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
                                 whileHover={{
                                     x: 5
                                 }}
+                                className="w-full"
                             >
                                 {item.label}
                             </motion.div>
@@ -120,7 +121,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
 const NavbarForMobile = ({ className }) => {
     const curPage = useAppStore((s) => s.curPage);
     return (
-        <Navbar className={`${className} relative w-full lg:hidden`}>
+        <Navbar className={`${className} relative w-full overflow-hidden lg:hidden`}>
             {/*for mobile & tablets view */}
             <div className="flex items-center justify-between gap-3">
                 {curPage === "home" && (

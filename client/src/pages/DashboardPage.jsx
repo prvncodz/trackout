@@ -8,9 +8,10 @@ import { IconCampfireFilled, IconChartLine, IconClipboardData, IconFlameFilled }
 const Greetings = () => {
     const fullname = useAuth((s) => s.user.fullname);
     return (
-        <div className="flex flex-col justify-center items-center gap-3 p-10 cursor-default lg:p-0 lg:my-10 lg:justify-start lg:items-start lg:pl-20">
-            <h1 className="text-xl text-gray-700 text-center lg:text-left">Welcome again {fullname}</h1>
-            <p className="text-neutral-500 text-sm text-center lg:text-left ">A surgical-grade interface for serious training. No bloat, no friction — just pure data to drive your physical evolution.</p>
+        <div className="flex flex-col justify-center items-start gap-3 p-10 cursor-default lg:p-0 lg:my-10 lg:justify-start lg:items-start lg:pl-15">
+
+            <h1 className="text-xl text-gray-700 text-left ">Welcome again {fullname}</h1>
+            <p className="text-neutral-500 text-sm text-left ">A surgical-grade interface for serious training. No bloat, no friction — just pure data to drive your physical evolution.</p>
         </div>
     );
 }
@@ -24,10 +25,10 @@ const Cards = () => {
     ];
 
     return (
-        <div className="no-scrollbar flex flex-col items-center justify-center h-auto w-screen gap-5 overflow-x-auto overflow-y-hidden scroll-smooth px-4 py-4 p-10 cursor-default lg:w-auto lg:px-0 lg:flex-row">
+        <div className="no-scrollbar grid grid-cols-2 items-center justify-center h-auto w-full gap-3 overflow-hidden py-4   cursor-default lg:w-auto lg:px-0 lg:grid-cols-4">
             {stats.map((stat, index) => {
                 let Icon = stat.icon;
-                return <div className="bg-card border border-line-color/50 rounded-xl p-6 flex flex-col gap-3 w-fit min-w-[200px] ">
+                return <div key={index} className="bg-card border border-line-color/50 rounded-xl p-6 flex flex-col gap-3 w-fit min-w-48 ">
                     <div className="flex items-center justify-between gap-4">
                         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                             {stat.label}
@@ -64,25 +65,23 @@ const Cards = () => {
 
 const DashboardPage = () => {
     return (
-        <div>
-            <SideBarLayout>
-                <div className="flex flex-col overflow-auto no-scrollbar pb-25">
-                    <Greetings />
-                    <div className="flex gap-3 flex-col lg:flex-row">
-                        <div className="flex flex-col h-screen overflow-hidden no-scrollbar gap-6 lg:pl-15 ">
-                            <Cards />
-                            <div className="bg-line-color border border-line-color h-120 rounded-2xl  ">
-                                <ChartAreaInteractive />
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-10 h-screen px-5">
-                            <Calendar size={"sm"} />
-                            <div className="bg-neutral-50 border border-line-color h-120 w-full rounded-2xl  "></div>
+        <SideBarLayout>
+            <div className="flex flex-col overflow-auto no-scrollbar h-screen pb-25">
+                <Greetings />
+                <div className="flex gap-3  flex-col lg:flex-row">
+                    <div className="flex flex-col h-screen overflow-hidden no-scrollbar px-5 gap-6 lg:pl-10 ">
+                        <Cards />
+                        <div className=" h-120  rounded-2xl w-full bg-neutral-50">
+                            <ChartAreaInteractive className="border-line-color/50" />
                         </div>
                     </div>
+                    <div className="flex flex-col gap-10 px-5 h-screen lg:px-0">
+                        <Calendar size={"sm"} />
+                        <div className="bg-neutral-50 border border-line-color h-120 w-full rounded-2xl  "></div>
+                    </div>
                 </div>
-            </SideBarLayout>
-        </div>
+            </div>
+        </SideBarLayout>
     );
 };
 
