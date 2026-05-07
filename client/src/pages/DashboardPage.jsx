@@ -2,7 +2,7 @@ import Calendar from "../components/ui/Calender.jsx";
 import SideBarLayout from "../components/layout/SideBar";
 import { useAuth } from "@/stores/user.store";
 import ChartAreaInteractive from "@/components/dashboard/DashBoardChart.jsx";
-import { Dumbbell, TrendingUp } from "lucide-react";
+import { Dumbbell, TrendingDown, TrendingUp } from "lucide-react";
 import { IconCampfireFilled, IconChartLine, IconClipboardData, IconFlameFilled } from "@tabler/icons-react";
 
 const Greetings = () => {
@@ -15,12 +15,12 @@ const Greetings = () => {
     );
 }
 const Cards = () => {
-    const user=undefined;
+    const user = undefined;
     const stats = [
-        { label: "Total Volume", value: user?.height ? `${user.height}kg` : "—", icon: Dumbbell },
-        { label: "Current streak", value: user?.weight ? `${user.weight}` : "—", icon: IconFlameFilled },
-        { label: "Total PRs", value: user?.totalWorkouts ?? "—", icon: IconChartLine },
-        { label: "Total Workouts", value: user?.totalWorkouts ?? "—", icon: IconClipboardData },
+        { label: "Total Volume", value: user?.height ? `${user.height}kg` : "—", icon: Dumbbell, trending: false, trendingValue: 12 },
+        { label: "Current streak", value: user?.weight ? `${user.weight}` : "—", icon: IconFlameFilled, trending: true, trendingValue: 14 },
+        { label: "Total PRs", value: user?.totalWorkouts ?? "—", icon: IconChartLine, trending: true, trendingValue: 17 },
+        { label: "Total Workouts", value: user?.totalWorkouts ?? "—", icon: IconClipboardData, trending: false, trendingValue: 12 },
     ];
 
     return (
@@ -42,10 +42,17 @@ const Cards = () => {
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                        <span className="text-xs text-green-500 flex items-center gap-0.5">
-                            <TrendingUp className="w-3 h-3" />
-                            +12%
-                        </span>
+                        {stat.trending ?
+                            <span className="text-xs text-green-500 flex items-center gap-0.5">
+                                <TrendingUp className="w-3 h-3" />
+                                {stat.trendingValue}
+                            </span>
+                            :
+                            <span className="text-xs text-red-500 flex items-center gap-0.5">
+                                <TrendingDown className="w-3 h-3" />
+                                {stat.trendingValue}
+                            </span>
+                        }
                         <span className="text-xs text-muted-foreground">vs last week</span>
                     </div>
                 </div>
