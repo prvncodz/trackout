@@ -28,7 +28,7 @@ const Cards = () => {
         <div className="no-scrollbar grid grid-cols-2 items-center justify-center h-auto w-full gap-3 overflow-hidden py-4   cursor-default lg:w-auto lg:px-0 lg:grid-cols-4">
             {stats.map((stat, index) => {
                 let Icon = stat.icon;
-                return <div key={index} className="bg-card border border-line-color/50 rounded-xl p-6 flex flex-col gap-3 w-fit min-w-48 ">
+                return <div key={index} className="bg-card shadow-standard rounded-xl p-6 flex flex-col gap-3 w-fit min-w-48 ">
                     <div className="flex items-center justify-between gap-4">
                         <p className="text-xs font-medium uppercase tracking-wide text-mockup-text antialiased">
                             {stat.label}
@@ -175,12 +175,12 @@ const DashboardPage = () => {
                     <div className="flex flex-col h-screen overflow-hidden no-scrollbar px-5 gap-6 lg:pl-10 ">
                         <Cards />
                         <div className=" h-120  rounded-2xl w-full bg-neutral-50">
-                            <ChartAreaInteractive className="border-line-color/50" />
+                            <ChartAreaInteractive />
                         </div>
                     </div>
                     <div className="flex flex-col gap-10 px-5 h-screen lg:px-0">
                         <Calendar size={"md"} className="bg-white mt-3" />
-                        <div className="bg-neutral-50 border border-line-color h-auto w-full rounded-2xl  ">
+                        <div className="bg-neutral-50 shadow-standard h-auto w-full rounded-2xl  ">
                             <PreviousWorkout />
                         </div>
                     </div>

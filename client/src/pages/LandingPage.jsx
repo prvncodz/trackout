@@ -83,8 +83,8 @@ const Layout = ({ children }) => {
 
 const DashboardMockup = () => {
     return (
-        <div className=" my-20 p-5 mx-auto flex h-150 w-full items-center justify-center rounded-lg   overflow-hidden cursor-default select-none ">
-            <img src="../../public/Screenshot from 2026-05-08 15-01-22.png" className="w-full h-full cursor-default select-none shadow-md rounded-lg inset-0 " />
+        <div className=" my-20 p-5  ml-15 flex h-150 w-300 items-center justify-center rounded-lg   overflow-hidden cursor-default select-none lg:ml-0 lg:w-auto">
+            <img src="../../public/Screenshot from 2026-05-08 15-01-22.png" className="w-full h-full cursor-default select-none shadow-aesthetic rounded-lg  " />
         </div>
     );
 };
@@ -95,7 +95,7 @@ const Features = () => {
             id="features"
             className="selection:bg-near-black selection:text-btn my-15 w-full"
         >
-            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-3xl">
+            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl">
                 Train Smarter. Stay Consistent.
             </h2>
             <p className="text-center text-xs text-neutral-500">
@@ -152,7 +152,7 @@ const FeaturesCard = ({ Logo, title, description, className }) => {
 const Workflow = () => {
     return (
         <section id="how-it-works" className="my-20 md:my-30">
-            <h2 className="text-near-black md:3xl mb-3 text-center text-xl font-bold">
+            <h2 className="text-near-black md:text-2xl mb-3 text-center text-xl font-bold">
                 Application Workflow
             </h2>
             <div className="relative my-15 flex w-full flex-col justify-between md:flex-row">
@@ -218,7 +218,7 @@ const LandingPage = () => {
     const navigate = useNavigate();
     return (
         <motion.div
-            className="selection:bg-near-black selection:text-btn-text relative flex w-full max-w-screen   flex-col items-center justify-center bg-neutral-50"
+            className="selection:bg-near-black selection:text-btn-text relative flex w-full  flex-col items-center justify-center bg-neutral-50"
             initial={{
                 opacity: 0,
             }}

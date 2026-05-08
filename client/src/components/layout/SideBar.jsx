@@ -90,7 +90,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
                             key={item.page}
                             onClick={() => handleNav(item)}
                             className={`flex w-full items-center gap-3 rounded-lg px-3 py-3.5 text-left text-lg font-medium transition-all duration-200 cursor-pointer ${isActive
-                                ? "border-line-color border bg-gray-50 text-gray-800 shadow-standard"
+                                ? "border-line-color border bg-gray-50 text-gray-800"
                                 : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
                                 } `}
                         >
