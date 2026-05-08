@@ -448,11 +448,6 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
                         }
                     </div>
                 </div>
-                {/* <div className=" absolute top-5 right-1 flex  gap-4 w-45 justify-end items-center"> */}
-                {/*     <button className={` bg-gray-50 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all hover:bg-gray-100 hover:text-gray-800 z-20`}> */}
-                {/*         <IconDots /> */}
-                {/*     </button> */}
-                {/* </div> */}
             </div>
             {/* show logs in mobile as a bottom sheet*/}
             <BottomSheet
@@ -461,9 +456,9 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
                 setOpen={setActiveLog}
                 open={isActive}
             >
-                <div className={`mt-0 ${className}`}>
-                    <h1 className="text-xl font-bold antialiased text-left">{log?.name}</h1>
-                    <div className="my-15">
+                <div className={`mt-0 h-screen overflow-auto ${className}`}>
+                    <h1 className="text-xl font-bold antialiased text-left ml-5 mt-5 tracking-wide">{log?.name}</h1>
+                    <div className="my-15 mt-15">
                         {
                             exercises.length > 0 &&
                             exercises.map((exercise) => (
@@ -473,9 +468,7 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
                     </div>
 
                 </div>
-                {/* <button className={` bg-gray-100 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-15 right-5 hover:bg-gray-100 hover:text-gray-800`}> */}
-                {/*     <IconDots /> */}
-                {/* </button> */}
+
             </BottomSheet>
         </div>
     );
