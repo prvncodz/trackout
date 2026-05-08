@@ -9,7 +9,6 @@ import {
 import SideBarLayout from "../components/layout/SideBar";
 import Button from "../components/ui/Button";
 import { useCallback, useEffect, useState } from "react";
-import { SimpleEditor } from "../components/tiptap-templates/simple/simple-editor";
 import BottomSheet from "@/components/ui/BottomSheet";
 import axios from "@/utils/axios.js";
 
@@ -206,7 +205,6 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
                 className={`h-screen flex-1 overflow-auto ${isActive ? "flex" : "hidden"} relative hidden lg:flex`}
             >
                 <div className={`flex-col gap-7`}>
-                    <SimpleEditor key={log?._id} content={log?.content} />
                 </div>
                 {/* <div className=" absolute top-5 right-1 flex  gap-4 w-45 justify-end items-center"> */}
                 {/*     <button className={` bg-gray-50 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all hover:bg-gray-100 hover:text-gray-800 z-20`}> */}
@@ -222,7 +220,6 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
                 open={isActive}
             >
                 <div className={`mt-0`}>
-                    <SimpleEditor key={log?._id} content={log?.content} />
                 </div>
                 {/* <button className={` bg-gray-100 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-15 right-5 hover:bg-gray-100 hover:text-gray-800`}> */}
                 {/*     <IconDots /> */}

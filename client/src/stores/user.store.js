@@ -2,7 +2,7 @@ import { create } from "zustand";
 import gymhero from "../assets/gym-hero.jpg";
 
 const useAuth = create((set) => ({
-    isUserLogged: false,
+    isUserLogged: true,
     user: {
         _id: 1,
         fullname: "Praveen Pradhan",
