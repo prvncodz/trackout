@@ -83,7 +83,9 @@ const Layout = ({ children }) => {
 
 const DashboardMockup = () => {
     return (
-        <div className="border-line-color my-20 ml-15 flex h-150 w-full items-center justify-center rounded-lg border bg-gray-200"></div>
+        <div className=" my-20 p-5 mx-auto flex h-150 w-full items-center justify-center rounded-lg   overflow-hidden cursor-default select-none ">
+            <img src="../../public/Screenshot from 2026-05-08 15-01-22.png" className="w-full h-full cursor-default select-none shadow-md rounded-lg inset-0 " />
+        </div>
     );
 };
 

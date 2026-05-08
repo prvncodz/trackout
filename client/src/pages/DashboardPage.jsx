@@ -30,7 +30,7 @@ const Cards = () => {
                 let Icon = stat.icon;
                 return <div key={index} className="bg-card border border-line-color/50 rounded-xl p-6 flex flex-col gap-3 w-fit min-w-48 ">
                     <div className="flex items-center justify-between gap-4">
-                        <p className="text-xs font-medium uppercase tracking-wider text-mockup-text antialiased">
+                        <p className="text-xs font-medium uppercase tracking-wide text-mockup-text antialiased">
                             {stat.label}
                         </p>
                         <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
@@ -146,7 +146,7 @@ const PreviousWorkout = () => {
                                     <span className="text-[11px] text-gray-400 font-mono">{w.sets}</span>
                                     <span className="w-0.5 h-0.5 rounded-full bg-gray-300 shrink-0" />
                                     {w.pr && (
-                                        <span className="text-[9px] font-semibold tracking-wider text-white bg-[#1a1a1a] px-1.5 py-0.5 rounded uppercase">
+                                        <span className="text-[9px] font-semibold tracking-wide text-white bg-[#1a1a1a] px-1.5 py-0.5 rounded uppercase">
                                             PR
                                         </span>
                                     )}
