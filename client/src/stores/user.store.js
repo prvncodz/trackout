@@ -14,7 +14,7 @@ const useAuth = create((set) => ({
         streak: 30,
         activeDates: Array.from(
             { length: 15 },
-            (_, i) => new Date(new Date().getFullYear(), 4, 12 + i)
+            (_, i) => new Date(new Date().getFullYear(), 4, 1 + i)
         )
     },
     userId: 1,

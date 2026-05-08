@@ -76,7 +76,7 @@ const DashboardPage = () => {
                         </div>
                     </div>
                     <div className="flex flex-col gap-10 px-5 h-screen lg:px-0">
-                        <Calendar size={"sm"} />
+                        <Calendar size={"md"} className="bg-white mt-3" />
                         <div className="bg-neutral-50 border border-line-color h-120 w-full rounded-2xl  "></div>
                     </div>
                 </div>

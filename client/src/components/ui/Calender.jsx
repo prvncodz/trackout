@@ -7,7 +7,7 @@ const CalenderComponent = ({ className = "", size = "md", ...props }) => {
 
     return (
         <div
-            className={`border border-line-color/70 flex shrink-0 flex-col items-start justify-center gap-4 rounded-2xl  overflow-hidden bg-white p-5 size-auto shadow-standard  ${className}`}
+            className={`border border-line-color/70 flex shrink-0 flex-col items-start justify-center gap-4 rounded-2xl  overflow-hidden p-5 size-auto shadow-standard  ${className}`}
             {...props}
         >
             {/* <h2 */}
@@ -19,7 +19,7 @@ const CalenderComponent = ({ className = "", size = "md", ...props }) => {
                 <Calendar
                     mode="single"
                     disabled={ActiveDates}
-                    className="shadow-standard flex w-full rounded-lg bg-none"
+                    className={`shadow-standard flex w-full rounded-lg bg-none ${className}`}
                     modifiers={{
                         active: ActiveDates,
                     }}
