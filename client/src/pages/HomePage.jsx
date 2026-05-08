@@ -225,7 +225,7 @@ const ExerciseCard = ({ Curexercise, setExercises, className = "" }) => {
     };
 
     return (
-        <div className={`w-200 max-w-3xl  bg-white p-5 shadow-sm ${className}`}>
+        <div className={`w-full max-w-3xl  bg-white p-5 shadow-sm ${className}`}>
             {/* Header */}
             <div className="flex items-start justify-between">
                 <div>
@@ -397,8 +397,8 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
             ],
         },
         {
-            id: 1,
-            name: "45 Degree Leg Press",
+            id: 2,
+            name: "Leg Extension",
             category: "Legs",
             pb: "120kg",
             sets: [
@@ -408,8 +408,8 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
             ],
         },
         {
-            id: 1,
-            name: "45 Degree Leg Press",
+            id: 3,
+            name: "Lying Hamstring Curls",
             category: "Legs",
             pb: "120kg",
             sets: [
@@ -438,13 +438,13 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
 
 
     return (
-        <div>
+        <div className="w-full">
             <div
-                className={`h-screen flex-1 overflow-auto ${isActive ? "flex" : "hidden"} relative hidden lg:flex`}
+                className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"} relative hidden lg:flex `}
             >
-                <div className={`flex-col h-screen overflow-auto p-10 ${className}`}>
+                <div className={`flex-col h-screen overflow-auto p-10 ${className} w-full no-scrollbar`}>
                     <h1 className="text-xl font-bold antialiased text-left ml-2">{log?.name}</h1>
-                    <div className="my-15 flex flex-col">
+                    <div className="my-15 flex flex-col w-full">
                         {
                             exercises.length > 0 &&
                             exercises.map((exercise, index) => (
