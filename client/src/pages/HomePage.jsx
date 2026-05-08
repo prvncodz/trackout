@@ -1,10 +1,14 @@
 import {
+    IconCheck,
     IconCopy,
+    IconDots,
     IconDotsVertical,
+    IconNotebook,
     IconNotes,
     IconPencil,
     IconPencilPlus,
     IconTrash,
+    IconTrophy,
 } from "@tabler/icons-react";
 import SideBarLayout from "../components/layout/SideBar";
 import Button from "../components/ui/Button";
@@ -125,9 +129,9 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
         <div
-            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`}
+            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-white px-3 py-3 text-neutral-500 ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`}
         >
-            <IconNotes
+            <IconNotebook
                 className="text-neutral-500"
                 onClick={() =>
                     setActiveLog((p) =>
@@ -162,7 +166,7 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
                     <IconPencilPlus size={18} className="ml-2" />
                 </span>
             </Button>
-            <div className="flex h-auto w-full flex-col items-center justify-center gap-3 lg:mt-15">
+            <div className="flex h-auto w-full flex-col items-center justify-center gap-2 lg:mt-15">
                 {allLogs.map((log) => (
                     <Log
                         key={log._id}
@@ -184,7 +188,239 @@ function debounce(fn, delay) {
     };
 }
 
+const ExerciseCard = ({ Curexercise, setExercises, className = "" }) => {
+    const [editMode, setEditMode] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [exercise, setExercise] = useState(Curexercise || {
+
+        id: 1,
+        name: "45 Degree Leg Press",
+        category: "Legs",
+        pb: "120kg",
+        sets: [
+            { id: 1, reps: 20, kg: 5, rest: "00:30", done: false },
+            { id: 2, reps: 20, kg: 5, rest: "00:30", done: false },
+            { id: 3, reps: 20, kg: 5, rest: "00:30", done: false },
+        ],
+    }
+
+    );
+
+    const toggleDone = (id) => {
+        setExercise((prev) => ({
+            ...prev,
+            sets: prev.sets.map((set) =>
+                set.id === id ? { ...set, done: !set.done } : set
+            ),
+        }));
+    };
+
+    const updateSet = (id, field, value) => {
+        setExercise((prev) => ({
+            ...prev,
+            sets: prev.sets.map((set) =>
+                set.id === id ? { ...set, [field]: value } : set
+            ),
+        }));
+    };
+
+    return (
+        <div className={`w-200 max-w-3xl  bg-white p-5 shadow-sm ${className}`}>
+            {/* Header */}
+            <div className="flex items-start justify-between">
+                <div>
+                    {editMode ? (
+                        <input
+                            value={exercise.name}
+                            onChange={(e) =>
+                                setExercise({ ...exercise, name: e.target.value })
+                            }
+                            className="text-xl font-semibold outline-none border-b border-neutral-300"
+                        />
+                    ) : (
+                        <h2 className="text-xl font-semibold text-neutral-900">
+                            {exercise.name}
+                        </h2>
+                    )}
+
+                    {editMode ? (
+                        <input
+                            value={exercise.category}
+                            onChange={(e) =>
+                                setExercise({ ...exercise, category: e.target.value })
+                            }
+                            className="mt-1 text-sm text-neutral-500 outline-none border-b border-neutral-300"
+                        />
+                    ) : (
+                        <p className="mt-1 text-sm text-neutral-500">
+                            {exercise.category}
+                        </p>
+                    )}
+                </div>
+
+                {/* Menu */}
+                <div className="dropdown dropdown-end relative ">
+                    <button
+                        className="cursor-pointer rounded-xl p-2 transition bg-gray-50 size-10 flex justify-center items-center relative"
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        <IconDots size={20} />
+                    </button>
+                    {isOpen &&
+                        <div
+                            tabIndex={0}
+                            className="menu dropdown-content z-10 mt-2 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl absolute top-10 right-1"
+                        >
+                            <button
+                                onClick={() => setEditMode(!editMode)}
+                                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
+                            >
+                                <IconPencil size={18} />
+                                {editMode ? "Disable Edit" : "Edit Exercise"}
+                            </button>
+
+                            <button className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50" onClick={function () {
+                                setExercises(prev => prev.filter(e => e.id !== exercise.id));
+                            }}>
+                                <IconTrash size={18} />
+                                Delete
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            {/* PB */}
+            <div className="mt-5 flex items-center gap-2 text-sm text-neutral-700">
+                <IconNotes size={18} className="text-neutral-500" />
+                <span>
+                    {exercise.pb} is your PB
+                </span>
+            </div>
+
+            {/* Table */}
+            <div className="mt-6 overflow-hidden rounded-2xl border border-neutral-100">
+                {/* Header */}
+                <div className="grid grid-cols-5 border-b border-neutral-100 bg-neutral-50 px-4 py-3 text-sm font-medium text-neutral-500">
+                    <span>sets</span>
+                    <span>Reps</span>
+                    <span>Kg</span>
+                    <span>Rest</span>
+                    <span className="flex justify-center">
+                        <IconCheck size={18} />
+                    </span>
+                </div>
+
+                {/* Rows */}
+                {exercise.sets.map((set, index) => (
+                    <div
+                        key={set.id}
+                        className="grid grid-cols-5 items-center border-b border-neutral-100 px-4 py-4 last:border-none"
+                    >
+                        <span className="font-medium text-neutral-700">
+                            {String(index + 1).padStart(2, "0")}
+                        </span>
+
+                        {/* Reps */}
+                        {editMode ? (
+                            <input
+                                type="number"
+                                value={set.reps}
+                                onChange={(e) =>
+                                    updateSet(set.id, "reps", Number(e.target.value))
+                                }
+                                className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
+                            />
+                        ) : (
+                            <span>{set.reps}</span>
+                        )}
+
+                        {/* KG */}
+                        {editMode ? (
+                            <input
+                                type="number"
+                                value={set.kg}
+                                onChange={(e) =>
+                                    updateSet(set.id, "kg", Number(e.target.value))
+                                }
+                                className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
+                            />
+                        ) : (
+                            <span>{set.kg}</span>
+                        )}
+
+                        {/* Rest */}
+                        {editMode ? (
+                            <input
+                                value={set.rest}
+                                onChange={(e) =>
+                                    updateSet(set.id, "rest", e.target.value)
+                                }
+                                className="w-16 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
+                            />
+                        ) : (
+                            <span>{set.rest}</span>
+                        )}
+
+                        {/* Done */}
+                        <div className="flex justify-center">
+                            <button
+                                onClick={() => toggleDone(set.id)}
+                                className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.done
+                                    ? "border-black bg-black text-white"
+                                    : "border-neutral-300"
+                                    }`}
+                            >
+                                {set.done && <IconCheck size={14} />}
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+
+
 const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
+    const [exercises, setExercises] = useState([
+        {
+            id: 1,
+            name: "45 Degree Leg Press",
+            category: "Legs",
+            pb: "120kg",
+            sets: [
+                { id: 1, reps: 20, kg: 5, rest: "00:30", done: false },
+                { id: 2, reps: 20, kg: 5, rest: "00:30", done: false },
+                { id: 3, reps: 20, kg: 5, rest: "00:30", done: false },
+            ],
+        },
+        {
+            id: 1,
+            name: "45 Degree Leg Press",
+            category: "Legs",
+            pb: "120kg",
+            sets: [
+                { id: 1, reps: 20, kg: 5, rest: "00:30", done: false },
+                { id: 2, reps: 20, kg: 5, rest: "00:30", done: false },
+                { id: 3, reps: 20, kg: 5, rest: "00:30", done: false },
+            ],
+        },
+        {
+            id: 1,
+            name: "45 Degree Leg Press",
+            category: "Legs",
+            pb: "120kg",
+            sets: [
+                { id: 1, reps: 20, kg: 5, rest: "00:30", done: false },
+                { id: 2, reps: 20, kg: 5, rest: "00:30", done: false },
+                { id: 3, reps: 20, kg: 5, rest: "00:30", done: false },
+            ],
+        }
+
+    ]);
+
     // async function handleSaveLog(content) {
     //     try {
     //         console.log("content", content);
@@ -199,12 +435,23 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
     //
     // const handleUpdate = useCallback(debounce((newContent) => handleSaveLog(newContent), 3000), [log?.id]);
     //
+
+
     return (
         <div>
             <div
                 className={`h-screen flex-1 overflow-auto ${isActive ? "flex" : "hidden"} relative hidden lg:flex`}
             >
-                <div className={`flex-col gap-7`}>
+                <div className={`flex-col h-screen overflow-auto p-10 ${className}`}>
+                    <h1 className="text-xl font-bold antialiased text-left ml-2">{log?.name}</h1>
+                    <div className="my-15 flex flex-col">
+                        {
+                            exercises.length > 0 &&
+                            exercises.map((exercise, index) => (
+                                <ExerciseCard Curexercise={exercise} setExercises={setExercises} key={exercise.id} className={index === 0 ? "rounded-t-4xl" : "rounded-none"} />
+                            ))
+                        }
+                    </div>
                 </div>
                 {/* <div className=" absolute top-5 right-1 flex  gap-4 w-45 justify-end items-center"> */}
                 {/*     <button className={` bg-gray-50 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all hover:bg-gray-100 hover:text-gray-800 z-20`}> */}
@@ -219,7 +466,17 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
                 setOpen={setActiveLog}
                 open={isActive}
             >
-                <div className={`mt-0`}>
+                <div className={`mt-0 ${className}`}>
+                    <h1 className="text-xl font-bold antialiased text-left">{log?.name}</h1>
+                    <div className="my-15">
+                        {
+                            exercises.length > 0 &&
+                            exercises.map((exercise) => (
+                                <ExerciseCard exercise={exercise} setExercises={setExercises} key={exercise.id} />
+                            ))
+                        }
+                    </div>
+
                 </div>
                 {/* <button className={` bg-gray-100 text-near-black  h-10 w-10 p-2 rounded-full  justify-center items-center cursor-pointer font-semibold active:scale-98 transition-all absolute top-15 right-5 hover:bg-gray-100 hover:text-gray-800`}> */}
                 {/*     <IconDots /> */}
@@ -228,6 +485,9 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
         </div>
     );
 };
+
+
+
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState(null);
 
