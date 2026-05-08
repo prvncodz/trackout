@@ -102,25 +102,20 @@ const allLogs = [
 
 const Popup = () => {
     return (
-        <ul className="border-line-color absolute top-10 right-0 z-10 flex w-50 flex-col gap-5 rounded-xl border bg-neutral-50 p-5 text-neutral-500 shadow-md">
-            <li className="flex">
-                <span>
-                    <IconPencil size={24} />
-                </span>
-                <h3 className="ml-3"> Edit Log</h3>
-            </li>
-            <li className="flex">
-                <span>
-                    <IconCopy size={24} />
-                </span>
-                <h3 className="ml-3"> Duplicate Log</h3>
-            </li>
-            <li className="flex">
-                <span>
-                    <IconTrash size={24} />
-                </span>
-                <h3 className="ml-3"> Delete Log</h3>
-            </li>
+        <ul
+            className="menu dropdown-content z-10 mt-2 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-euphonious absolute top-10 right-1"
+        >
+            <button
+                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
+            >
+                <IconPencil size={18} />
+                Edit
+            </button>
+
+            <button className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50">
+                <IconTrash size={18} />
+                Delete
+            </button>
         </ul>
     );
 };
@@ -129,7 +124,7 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
         <div
-            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-white px-3 py-3 text-neutral-500 ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`}
+            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`}
         >
             <IconNotebook
                 className="text-neutral-500"
@@ -225,7 +220,7 @@ const ExerciseCard = ({ Curexercise, setExercises, className = "" }) => {
     };
 
     return (
-        <div className={`w-full max-w-3xl  bg-white p-5 shadow-sm ${className}`}>
+        <div className={`w-full max-w-3xl  bg-neutral-50 p-5  ${className}`}>
             {/* Header */}
             <div className="flex items-start justify-between">
                 <div>
@@ -442,13 +437,13 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
             <div
                 className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"} relative hidden lg:flex `}
             >
-                <div className={`flex-col h-screen overflow-auto p-10 ${className} w-full no-scrollbar`}>
-                    <h1 className="text-xl font-bold antialiased text-left ml-2">{log?.name}</h1>
+                <div className={`flex-col h-screen bg-neutral-50 overflow-auto p-10 ${className} w-full no-scrollbar`}>
+                    <h1 className="text-2xl font-bold antialiased text-left ml-2">{log?.name}</h1>
                     <div className="my-15 flex flex-col w-full">
                         {
                             exercises.length > 0 &&
-                            exercises.map((exercise, index) => (
-                                <ExerciseCard Curexercise={exercise} setExercises={setExercises} key={exercise.id} className={index === 0 ? "rounded-t-4xl" : "rounded-none"} />
+                            exercises.map((exercise) => (
+                                <ExerciseCard Curexercise={exercise} setExercises={setExercises} key={exercise.id} />
                             ))
                         }
                     </div>
