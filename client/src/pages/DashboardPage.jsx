@@ -8,7 +8,7 @@ import { IconCampfireFilled, IconChartLine, IconClipboardData, IconFlameFilled }
 const Greetings = () => {
     const fullname = useAuth((s) => s.user.fullname);
     return (
-        <div className="flex flex-col justify-center items-start gap-3 p-10 cursor-default lg:p-0 lg:my-10 lg:justify-start lg:items-start lg:pl-15">
+        <div className="flex flex-col justify-center items-start gap-3 p-10 cursor-default lg:p-0 lg:my-10 lg:justify-start lg:items-start lg:pl-10">
 
             <h1 className="text-xl text-gray-700 text-left ">Welcome again {fullname}</h1>
             <p className="text-neutral-500 text-sm text-left ">A surgical-grade interface for serious training. No bloat, no friction — just pure data to drive your physical evolution.</p>

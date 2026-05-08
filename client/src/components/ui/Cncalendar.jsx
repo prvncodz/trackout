@@ -24,18 +24,16 @@ function Calendar({
     const defaultClassNames = getDefaultClassNames();
 
     const sizeMap = {
-        lg: "lg:[--cell-size:--spacing(14)]",
-        md: "md:[--cell-size:--spacing(10)]",
-        sm: "[--cell-size:--spacing(8)]",
+        lg: "[--cell-size:--spacing(8)]  md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(12)]",
+        md: "[--cell-size:--spacing(6)] md:[--cell-size:--spacing(8)] lg:[--cell-size:--spacing(10)]",
+        sm: "[--cell-size:--spacing(4)] md:[--cell-size:--spacing(6)] lg:[--cell-size:--spacing(8)]",
     }
     return (
         <DayPicker
             showOutsideDays={showOutsideDays}
             className={cn(
                 `group/calendar bg-background p-3 [--cell-radius:var(--radius-md)]  in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent flex flex-col justify-center items-center `,
-                sizeMap.sm,
-                sizeMap.md,
-                sizeMap.lg,
+                sizeMap[size],
                 String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
                 String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
                 className,
