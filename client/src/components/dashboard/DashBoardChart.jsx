@@ -121,14 +121,14 @@ const chartData = [
 
 const chartConfig = {
     visitors: {
-        label: "Visitors",
+        label: "Volume",
     },
     desktop: {
-        label: "Desktop",
+        label: "Reps",
         color: "var(--chart-1)",
     },
     mobile: {
-        label: "Mobile",
+        label: "Weight",
         color: "var(--chart-2)",
     },
 }
@@ -154,8 +154,8 @@ export default function ChartAreaInteractive({ className }) {
         <Card className={`pt-0 ${className}`}>
             <CardHeader className="flex items-center gap-2 space-y-0 border-b border-line-color py-5 sm:flex-row">
                 <div className="grid flex-1 gap-1">
-                    <CardTitle>Volume Chart - interactive</CardTitle>
-                    <CardDescription>
+                    <CardTitle className={" font-sans antialiased text-mockup-text tracking-wide"}>Volume Chart - interactive</CardTitle>
+                    <CardDescription className={"font-sans antialiased"}>
                         Showing total reps and sets for the last 3 months
                     </CardDescription>
                 </div>
@@ -182,7 +182,7 @@ export default function ChartAreaInteractive({ className }) {
             <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
                 <ChartContainer
                     config={chartConfig}
-                    className="aspect-auto h-87.5 w-full"
+                    className="aspect-auto h-100 w-full"
                 >
                     <AreaChart data={filteredData}>
                         <defs>

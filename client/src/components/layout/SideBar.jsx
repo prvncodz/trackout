@@ -31,7 +31,7 @@ const UserInfo = ({ avatarUrl, fullName }) => (
                     {fullName?.[0]?.toUpperCase() ?? "U"}
                 </div>
             )}
-            <motion.span className="truncate text-sm font-medium text-gray-700"
+            <motion.span className="truncate text-sm font-medium text-gray-700 antialiased"
                 whileHover={{
                     x: 5
                 }}
@@ -97,13 +97,13 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
                             <Icon
                                 size={23}
                                 strokeWidth={isActive ? 2 : 1}
-                                className={isActive ? "text-gray-700" : "text-gray-400"}
+                                className={isActive ? "text-gray-700 antialiased" : " antialiased text-gray-400"}
                             />
                             <motion.div
                                 whileHover={{
                                     x: 5
                                 }}
-                                className="w-full"
+                                className="w-full subpixel-antialiased"
                             >
                                 {item.label}
                             </motion.div>
