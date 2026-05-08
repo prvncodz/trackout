@@ -121,7 +121,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
 const NavbarForMobile = ({ className }) => {
     const curPage = useAppStore((s) => s.curPage);
     return (
-        <Navbar className={`${className} relative w-full overflow-hidden lg:hidden`}>
+        <Navbar className={`${className} relative w-full`}>
             {/*for mobile & tablets view */}
             <div className="flex items-center justify-between gap-3">
                 {curPage === "home" && (

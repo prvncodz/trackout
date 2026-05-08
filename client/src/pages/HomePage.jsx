@@ -435,7 +435,7 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
     return (
         <div className="w-full">
             <div
-                className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"} relative hidden lg:flex `}
+                className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"}  hidden lg:flex `}
             >
                 <div className={`flex-col h-screen bg-neutral-50 overflow-auto p-10 ${className} w-full no-scrollbar`}>
                     <h1 className="text-2xl font-bold antialiased text-left ml-2">{log?.name}</h1>
