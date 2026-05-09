@@ -12,11 +12,10 @@ import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import Button from "@/components/ui/Button.jsx";
+import MyButton from "@/components/ui/Button.jsx"
+import { Button } from "@/components/ui/button.jsx";
 import { useAuth } from "@/stores/user.store.js";
-import { motion } from "motion/react";
 import { useState } from "react";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 
 export default function ProfileCard() {
     const { user } = useAuth();
@@ -63,9 +62,9 @@ export default function ProfileCard() {
             <Dialog>
                 <form>
                     <DialogTrigger asChild>
-                        <Button className="relative w-full lg:absolute lg:top-0 lg:right-25 lg:w-auto">
+                        <MyButton className="relative w-full lg:absolute lg:top-0 lg:right-25 lg:w-auto">
                             Edit Profile
-                        </Button>
+                        </MyButton>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-sm">
                         <DialogHeader>
@@ -77,16 +76,26 @@ export default function ProfileCard() {
                         </DialogHeader>
                         <FieldGroup>
                             <Field>
-                                <Label htmlFor="fullname">fullname</Label>
+                                <Label htmlFor="fullname">Fullname</Label>
                                 <Input id="fullname" name="fullname" defaultValue={user?.fullname} />
                             </Field>
                             <Field>
-                                <Label htmlFor="email">email</Label>
+                                <Label htmlFor="email">Email</Label>
                                 <Input id="email" name="email" defaultValue={user?.email} />
+                            </Field>
+                            <Field>
+                                <Label htmlFor="height">Height</Label>
+                                <Input id="height" name="height" defaultValue={user?.height} />
+                            </Field>
+                            <Field>
+                                <Label htmlFor="weight">Weight</Label>
+                                <Input id="weight" name="weight" defaultValue={user?.weight} />
                             </Field>
                         </FieldGroup>
                         <DialogFooter>
-                            <DialogClose render={<Button variant="outline">Cancel</Button>} />
+                            <DialogClose asChild>
+                                <Button variant="outline">Cancel</Button>
+                            </DialogClose>
                             <Button type="submit">Save changes</Button>
                         </DialogFooter>
                     </DialogContent>

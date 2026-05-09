@@ -144,18 +144,10 @@ const SideBarLayout = ({ children }) => {
     return (
         <motion.div
             className="flex h-screen w-screen flex-col overflow-hidden bg-neutral-50 lg:flex-row"
-            initial={{
-                opacity: 0,
-            }}
-            animate={{
-                opacity: 1,
-                duration: 0.3
-            }}
             exit={{
                 opacity: 0,
                 duration: 0.3
             }}
-
         >
             <Sidebar
                 avatarUrl={user?.avatar}

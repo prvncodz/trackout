@@ -10,11 +10,16 @@ import {
     IconTrash,
     IconTrophy,
 } from "@tabler/icons-react";
-import SideBarLayout from "../components/layout/SideBar";
-import Button from "../components/ui/Button";
+import SideBarLayout from "../components/layout/SideBar.jsx";
+import MyButton from "../components/ui/Button.jsx";
+import { Button } from "../components/ui/button.jsx";
 import { useCallback, useEffect, useState } from "react";
-import BottomSheet from "@/components/ui/BottomSheet";
+import BottomSheet from "@/components/ui/BottomSheet.jsx";
 import axios from "@/utils/axios.js";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Field, FieldGroup } from "@/components/ui/field";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const allLogs = [
     {
@@ -155,12 +160,40 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
 const AllLogs = ({ ActiveLog, setActiveLog }) => {
     return (
         <div className="border-line-color relative flex h-screen w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180">
-            <Button className="hidden lg:flex">
-                Create
-                <span>
-                    <IconPencilPlus size={18} className="ml-2" />
-                </span>
-            </Button>
+            <Dialog>
+                <form>
+                    <DialogTrigger asChild>
+                        <MyButton className="hidden lg:flex">
+                            Create
+                            <span>
+                                <IconPencilPlus size={18} className="ml-2" />
+                            </span>
+                        </MyButton>
+
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-sm">
+                        <DialogHeader>
+                            <DialogTitle>Create Log</DialogTitle>
+                            <DialogDescription>
+                                Make a workout log. Click save when you&apos;re
+                                done.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <FieldGroup>
+                            <Field>
+                                <Label htmlFor="name-1">Name</Label>
+                                <Input id="name-1" name="name" defaultValue="" />
+                            </Field>
+                        </FieldGroup>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <Button type="submit">Confirm</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </form>
+            </Dialog>
             <div className="flex h-auto w-full flex-col items-center justify-center gap-2 lg:mt-15">
                 {allLogs.map((log) => (
                     <Log
