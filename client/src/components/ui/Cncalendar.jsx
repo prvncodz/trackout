@@ -2,7 +2,7 @@ import * as React from "react";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
-import { Button, buttonVariants } from "./Cnbutton.jsx";
+import { Button, buttonVariants } from "./button.jsx";
 import {
     ChevronLeftIcon,
     ChevronRightIcon,
