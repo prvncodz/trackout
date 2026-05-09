@@ -118,7 +118,11 @@ const allLogs = [
 ];
 
 
-const Popup = ({ log }) => {
+const Popup = ({ log, setAllLogs }) => {
+    function handleDuplicateLog() {
+        console.log("log:",log)
+        setAllLogs(prev => [...prev, log]);
+    }
     return (
         <motion.ul
             className="menu dropdown-content z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-euphonious absolute top-10 right-1"
@@ -171,6 +175,7 @@ const Popup = ({ log }) => {
             </Dialog>
             <button
                 className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 w-full"
+                onClick={handleDuplicateLog}
             >
                 <IconCopy size={18} />
                 Duplicate Log
@@ -204,7 +209,7 @@ const Popup = ({ log }) => {
     );
 };
 
-const Log = ({ log, ActiveLog, setActiveLog }) => {
+const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
         <div
@@ -230,13 +235,15 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
             </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
-                {isOpen && <Popup log={log} />}
+                {isOpen && <Popup log={log} setAllLogs={setAllLogs} />}
             </div>
         </div>
     );
 };
 
+
 const AllLogs = ({ ActiveLog, setActiveLog }) => {
+    const [AllLogs, setAllLogs] = useState(allLogs);
     return (
         <div className="border-line-color relative flex h-screen w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180">
             <Dialog>
@@ -274,12 +281,13 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
                 </form>
             </Dialog>
             <div className="flex h-auto w-full flex-col items-center justify-center gap-2 lg:mt-15">
-                {allLogs.map((log) => (
+                {AllLogs.map((log) => (
                     <Log
                         key={log._id}
                         log={log}
                         ActiveLog={ActiveLog}
                         setActiveLog={setActiveLog}
+                        setAllLogs={setAllLogs}
                     />
                 ))}
             </div>
