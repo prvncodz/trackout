@@ -1,4 +1,16 @@
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogMedia,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import {
     IconCheck,
     IconCopy,
     IconDots,
@@ -20,6 +32,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { motion } from "motion/react"
 
 const allLogs = [
     {
@@ -105,23 +118,89 @@ const allLogs = [
 ];
 
 
-const Popup = () => {
+const Popup = ({ log }) => {
     return (
-        <ul
-            className="menu dropdown-content z-10 mt-2 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-euphonious absolute top-10 right-1"
+        <motion.ul
+            className="menu dropdown-content z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-euphonious absolute top-10 right-1"
+            initial={{
+                opacity: 0,
+            }}
+            animate={{
+                opacity: 1,
+                duration: 100
+            }}
+            exit={{
+                opacity: 0,
+                duration: 100
+            }}
         >
+
+            <Dialog>
+                <form>
+                    <DialogTrigger asChild>
+                        <button
+                            className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 w-full"
+                        >
+                            <IconPencil size={18} />
+                            Edit Log
+                        </button>
+
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-sm">
+                        <DialogHeader>
+                            <DialogTitle>Edit Log</DialogTitle>
+                            <DialogDescription>
+                                Make changes to the log. Click save when you&apos;re
+                                done.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <FieldGroup>
+                            <Field>
+                                <Label htmlFor="name-1">Name</Label>
+                                <Input id="name-1" name="name" defaultValue={log?.name} />
+                            </Field>
+                        </FieldGroup>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <Button type="submit">Save Changes</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </form>
+            </Dialog>
             <button
-                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
+                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 w-full"
             >
-                <IconPencil size={18} />
-                Edit
+                <IconCopy size={18} />
+                Duplicate Log
             </button>
 
-            <button className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50">
-                <IconTrash size={18} />
-                Delete
-            </button>
-        </ul>
+
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <button className="flex items-center gap-2 rounded-xl px-3 py-2 w-full text-sm text-red-500 hover:bg-red-50">
+                        <IconTrash size={18} />
+                        Delete Log
+                    </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent size="sm">
+                    <AlertDialogHeader>
+                        <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+                            <IconTrash />
+                        </AlertDialogMedia>
+                        <AlertDialogTitle>Delete log?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This will permanently delete this workout log.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+                        <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </motion.ul>
     );
 };
 
@@ -151,7 +230,7 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
             </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
-                {isOpen && <Popup />}
+                {isOpen && <Popup log={log} />}
             </div>
         </div>
     );
@@ -295,25 +374,56 @@ const ExerciseCard = ({ Curexercise, setExercises, className = "" }) => {
                         <IconDots size={20} />
                     </button>
                     {isOpen &&
-                        <div
+                        <motion.div
+
+                            initial={{
+                                opacity: 0,
+                            }}
+                            animate={{
+                                opacity: 1,
+                                duration: 100
+                            }}
+                            exit={{
+                                opacity: 0,
+                                duration: 100
+                            }}
                             tabIndex={0}
                             className="menu dropdown-content z-10 mt-2 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl absolute top-10 right-1"
                         >
                             <button
                                 onClick={() => setEditMode(!editMode)}
-                                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
+                                className="flex items-center gap-2 rounded-xl px-3 w-full py-2 text-sm hover:bg-neutral-100"
                             >
                                 <IconPencil size={18} />
                                 {editMode ? "Disable Edit" : "Edit Exercise"}
                             </button>
 
-                            <button className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50" onClick={function () {
-                                setExercises(prev => prev.filter(e => e.id !== exercise.id));
-                            }}>
-                                <IconTrash size={18} />
-                                Delete
-                            </button>
-                        </div>
+
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <button className="flex items-center gap-2 rounded-xl px-3 w-full py-2 text-sm text-red-500 hover:bg-red-50">
+                                        <IconTrash size={18} />
+                                        Delete Exercise
+                                    </button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent size="sm">
+                                    <AlertDialogHeader>
+                                        <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+                                            <IconTrash />
+                                        </AlertDialogMedia>
+                                        <AlertDialogTitle>Delete Exercise?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This will permanently delete this exercise log.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+                                        <AlertDialogAction variant="destructive" onClick={() => setExercises(prev => prev.filter(e => e.id !== exercise.id))}>Delete</AlertDialogAction>
+
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </motion.div>
                     }
                 </div>
             </div>
