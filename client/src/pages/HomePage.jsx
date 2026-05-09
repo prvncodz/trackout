@@ -230,10 +230,10 @@ const ExerciseCard = ({ Curexercise, setExercises, className = "" }) => {
                             onChange={(e) =>
                                 setExercise({ ...exercise, name: e.target.value })
                             }
-                            className="text-xl font-semibold outline-none border-b border-neutral-300"
+                            className="text-lg font-semibold outline-none border-b border-neutral-300"
                         />
                     ) : (
-                        <h2 className="text-xl font-semibold text-neutral-900">
+                        <h2 className="text-lg font-semibold text-neutral-900">
                             {exercise.name}
                         </h2>
                     )}
@@ -438,8 +438,7 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
                 className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"}  hidden lg:flex `}
             >
                 <div className={`flex-col h-screen bg-neutral-50 overflow-auto p-10 ${className} w-full no-scrollbar`}>
-                    <h1 className="text-2xl font-bold antialiased text-left ml-2">{log?.name}</h1>
-                    <div className="my-15 flex flex-col w-full">
+                    <div className=" flex flex-col w-full">
                         {
                             exercises.length > 0 &&
                             exercises.map((exercise) => (
@@ -458,7 +457,7 @@ const ShowLog = ({ log, isActive, setActiveLog, className = "" }) => {
             >
                 <div className={`mt-0 h-screen overflow-auto ${className}`}>
                     <h1 className="text-xl font-bold antialiased text-left ml-5 mt-5 tracking-wide">{log?.name}</h1>
-                    <div className="my-15 mt-15">
+                    <div className="my-10">
                         {
                             exercises.length > 0 &&
                             exercises.map((exercise) => (

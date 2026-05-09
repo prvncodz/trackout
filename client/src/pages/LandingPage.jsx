@@ -226,6 +226,10 @@ const LandingPage = () => {
                 opacity: 1,
                 duration: 0.3
             }}
+            exit={{
+                opacity: 0,
+                duration: 0.3
+            }}
         >
             <Navbar>
                 <ul className="hidden items-center gap-10 md:flex">
