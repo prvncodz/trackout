@@ -185,10 +185,10 @@ const SideBarLayout = ({ children }) => {
 
     return (
         <motion.div
-            className="flex h-screen w-screen flex-col overflow-hidden bg-neutral-50 lg:flex-row"
+            className="flex h-screen w-full overflow-hidden flex-col bg-neutral-50 lg:flex-row"
             exit={{
                 opacity: 0,
-                duration: 0.3
+                duration:0.3
             }}
         >
             <Sidebar
@@ -200,7 +200,7 @@ const SideBarLayout = ({ children }) => {
             <NavbarForMobile className={"lg:hidden"} />
             {/*for mobile view */}
 
-            <div className="flex w-full">{children}</div>
+            <div className="flex w-full no-scrollbar overflow-hidden">{children}</div>
         </motion.div>
     );
 };

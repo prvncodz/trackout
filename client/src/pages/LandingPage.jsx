@@ -93,7 +93,7 @@ const Features = () => {
     return (
         <section
             id="features"
-            className="selection:bg-near-black selection:text-btn my-15 w-full"
+            className="selection:bg-near-black selection:text-btn-color my-15 w-full lg:h-200 lg:my-35"
         >
             <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl">
                 Train Smarter. Stay Consistent.

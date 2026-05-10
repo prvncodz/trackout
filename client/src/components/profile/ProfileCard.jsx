@@ -62,7 +62,7 @@ export default function ProfileCard() {
             <Dialog>
                 <form>
                     <DialogTrigger asChild>
-                        <MyButton className="relative w-full lg:absolute lg:top-0 lg:right-25 lg:w-auto">
+                        <MyButton className="relative w-full  lg:absolute lg:top-0 lg:right-25 lg:w-auto">
                             Edit Profile
                         </MyButton>
                     </DialogTrigger>
