@@ -10,11 +10,11 @@ const CalenderComponent = ({ ...props }) => {
             className={`flex  flex-col items-center justify-center overflow-hidden rounded-2xl p-5 size-auto shadow-standard`}
             {...props}
         >
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center shadow-none">
                 <Calendar
                     mode="single"
                     disabled={ActiveDates}
-                    className={`flex w-auto rounded-lg justify-center items-center`}
+                    className={`w-full bg-neutral-50 shadow-none`}
                     modifiers={{
                         active: ActiveDates,
                     }}

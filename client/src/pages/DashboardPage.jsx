@@ -179,8 +179,11 @@ const DashboardPage = () => {
                         </div>
                     </div>
                     <div className="flex flex-col gap-10 px-5 h-screen lg:px-0">
-                        <Calendar size={"md"} className="bg-white mt-3" />
-                        <div className="bg-neutral-50 shadow-standard h-auto w-full rounded-2xl  ">
+
+                        <div className="bg-white shadow-standard h-auto w-full rounded-2xl p-5">
+                            <Calendar size={"md"} className="bg-white" />
+                        </div>
+                        <div className="bg-white shadow-standard h-auto w-full rounded-2xl  ">
                             <PreviousWorkout />
                         </div>
                     </div>
