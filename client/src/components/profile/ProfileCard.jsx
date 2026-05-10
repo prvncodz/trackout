@@ -32,7 +32,7 @@ export default function ProfileCard() {
 
     return (
         <div className="relative flex h-auto w-full flex-col items-center justify-start gap-10 lg:mt-10 lg:flex-row">
-            <div className="shadow-standard size-60 bg-gray-100 rounded-2xl overflow-hidden">
+            <div className="shadow-standard size-60 bg-gray-100 rounded-2xl overflow-hidden shrink-0">
                 <img src={user?.avatar} className="cursor-default" />
             </div>
             <div>
@@ -44,7 +44,7 @@ export default function ProfileCard() {
                 </p>
                 <div className="no-scrollbar mt-8 flex w-screen gap-3 overflow-auto scroll-smooth px-4 py-2 lg:w-auto lg:px-0">
                     {stats.map((stat, index) => (
-                        <div className="bg-gray-50 border border-line-color/50 rounded-xl p-6 flex flex-col gap-3 w-fit min-w-[200px] ">
+                        <div key={index} className="bg-gray-50 border border-line-color/50 rounded-xl p-6 flex flex-col gap-3 w-fit min-w-50 ">
                             <div className="flex items-center justify-between gap-4">
                                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground cursor-default">
                                     {stat.label}

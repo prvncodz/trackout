@@ -120,7 +120,6 @@ const allLogs = [
 
 const Popup = ({ log, setAllLogs }) => {
     function handleDuplicateLog() {
-        console.log("log:",log)
         setAllLogs(prev => [...prev, log]);
     }
     return (

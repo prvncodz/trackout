@@ -1,4 +1,17 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Field, FieldGroup } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useAppStore } from "../../stores/app.store.js";
 import Logo from "../ui/Logo";
 import {
@@ -10,7 +23,8 @@ import {
 } from "@tabler/icons-react";
 import { useAuth } from "../../stores/user.store.js";
 import Navbar from "./Navbar.jsx";
-import Button from "../ui/Button.jsx";
+import MyButton from "../ui/Button.jsx";
+import { Button } from "../ui/button.jsx";
 import HamburgerButton from "../ui/HamburgerButton.jsx";
 import { motion } from "motion/react"
 import { Dumbbell, House, LogOut } from "lucide-react";
@@ -76,7 +90,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
             className={`border-line-color flex h-screen w-90 shrink-0 flex-col border-r bg-white p-3 ${className}`}
         >
             <div className="flex-start mt-3 ml-0 flex w-full px-4">
-                <Logo className={"text-xl font-extrabold text-gray-800"} />
+                <Logo className={"text-xl font-extrabold text-gray-800 antialiased"} />
             </div>
 
             {/* Nav */}
@@ -125,12 +139,40 @@ const NavbarForMobile = ({ className }) => {
             {/*for mobile & tablets view */}
             <div className="flex items-center justify-between gap-3">
                 {curPage === "home" && (
-                    <Button>
-                        Create
-                        <span>
-                            <IconPencilPlus size={18} className="ml-2" />
-                        </span>
-                    </Button>
+                    <Dialog>
+                        <form>
+                            <DialogTrigger asChild>
+                                <MyButton>
+                                    Create
+                                    <span>
+                                        <IconPencilPlus size={18} className="ml-2" />
+                                    </span>
+                                </MyButton>
+
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-sm">
+                                <DialogHeader>
+                                    <DialogTitle>Create Log</DialogTitle>
+                                    <DialogDescription>
+                                        Make a workout log. Click save when you&apos;re
+                                        done.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <FieldGroup>
+                                    <Field>
+                                        <Label htmlFor="name">Name</Label>
+                                        <Input id="name" name="name" defaultValue="" />
+                                    </Field>
+                                </FieldGroup>
+                                <DialogFooter>
+                                    <DialogClose asChild>
+                                        <Button variant="outline">Cancel</Button>
+                                    </DialogClose>
+                                    <Button type="submit">Save changes</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </form>
+                    </Dialog>
                 )}
                 <HamburgerButton className="text-gray-700" />
             </div>
