@@ -7,7 +7,7 @@ const LogSchema = new Schema({
         ref: 'User'
     },
     exercises: [{
-        type: Schema.Types, ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Exercise'
     }],
     logName: {

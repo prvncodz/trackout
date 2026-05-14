@@ -8,7 +8,7 @@ const CollectionSchema = new Schema({
         required: true
     },
     logs: [{
-        type: Schema.Types.ObjecId,
+        type: Schema.Types.ObjectId,
         ref: "Log",
         required: true
     }],
