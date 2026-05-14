@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    previousWorkouts: [{
+        type: mongoose.Schema.ObjectId,
+        ref: 'Log'
+    }],
     password: {
         type: String,
         required: true
