@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose"
 
 
-const UserSchema = new mongoose.Schema({
+const UserSchema = new Schema({
     avatar: {
         url: String,
         public_id: String
@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
     previousWorkouts: [{
-        type: mongoose.Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Log'
     }],
     password: {
@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
     refreshToken: String
-}, { timestamps: true });
+}, { timestamps: true })
 
-const User = mongoose.model('User', UserSchema);
-export default User;
+const User = mongoose.model('User', UserSchema)
+export default User
