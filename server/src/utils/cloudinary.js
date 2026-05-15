@@ -53,5 +53,5 @@ const DeleteFromCloud = async (public_id) => {
     }
 }
 
-export { UploadToCloud }
+export { UploadToCloud, DeleteFromCloud }
 

@@ -4,23 +4,37 @@ import bycrypt from "bycrypt"
 const UserSchema = new Schema({
     avatar: {
         url: String,
-        public_id: String
+        public_id: String,
     },
     fullname: {
         type: String,
-        required: true
+        required: [true, "Fullname is required"],
+        unique: [true, "Fullname already taken"],
+        trim: true,
+        minlength: [3, "Name must be at least 3 characters long!"],
+        maxlength: [20, "Name cannot exceed 50 characters!"],
     },
     email: {
         type: String,
-        required: true
+        required: [true, "Email is required"],
+        unique: [true, "This email is already registered"],
+        trim: true,
+        lowercase: true,
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     height: {
         type: Number,
-        required: true
+        required: [true, "Height is required"],
+        trim: true,
+        minlength: [2, "Invalid height!"],
+        maxlength: [3, "Invalid height!"],
     },
     weight: {
         type: Number,
-        required: true
+        required: [true, "Weight is required"],
+        trim: true,
+        minlength: [2, "Invalid weight!"],
+        maxlength: [3, "Invalid weight!"],
     },
     previousWorkouts: [{
         type: Schema.Types.ObjectId,
@@ -28,9 +42,16 @@ const UserSchema = new Schema({
     }],
     password: {
         type: String,
-        required: true
+        required: [true, "Password is required"],
+        trim: true,
+        lowercase: [true, "Password must be in lowercase"],
+        unique: false,
     },
-    refreshToken: String
+    refreshToken: {
+        type: String,
+        unique: [true, "This refresh token is already in use"],
+        trim: true,
+    }
 }, { timestamps: true })
 
 const User = mongoose.model('User', UserSchema)
