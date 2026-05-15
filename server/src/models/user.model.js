@@ -46,6 +46,8 @@ const UserSchema = new Schema({
         trim: true,
         lowercase: [true, "Password must be in lowercase"],
         unique: false,
+        minlength: [3, "Password must be at least 3 characters long!"],
+        maxLength: [20, "Password must be less than 20 characters long!"]
     },
     refreshToken: {
         type: String,

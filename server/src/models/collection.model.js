@@ -10,11 +10,11 @@ const CollectionSchema = new Schema({
     logs: [{
         type: Schema.Types.ObjectId,
         ref: "Log",
-        required: true
     }],
     name: {
         type: String,
-        required: true
+        required: [true, "Collection name is required"],
+        trim: true,
     }
 }, { timestamps: true })
 
