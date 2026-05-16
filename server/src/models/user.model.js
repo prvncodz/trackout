@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose"
-import bycrypt from "bycrypt"
+import bcrypt from "bcrypt"
 
 const UserSchema = new Schema({
     avatar: {
@@ -45,29 +45,23 @@ const UserSchema = new Schema({
         required: [true, "Password is required"],
         trim: true,
         lowercase: [true, "Password must be in lowercase"],
-        unique: false,
         minlength: [3, "Password must be at least 3 characters long!"],
         maxLength: [20, "Password must be less than 20 characters long!"]
     },
     refreshToken: {
         type: String,
-        unique: [true, "This refresh token is already in use"],
-        trim: true,
     }
+
 }, { timestamps: true })
 
-const User = mongoose.model('User', UserSchema)
 
-User.pre('save', async function (next) {
+UserSchema.pre('save', async function () {
     if (this.isModified("password")) {
-        this.password = await bycrypt.hash(this.password, 10)
-        return next()
-    } else {
-        return next()
+        this.password = await bcrypt.hash(this.password, 10)
     }
 });
 
-User.methods.generateAccessToken = async function () {
+UserSchema.methods.generateAccessToken = async function () {
     return jwt.sign(
         {
             _id: this._id,
@@ -81,7 +75,7 @@ User.methods.generateAccessToken = async function () {
     )
 }
 
-User.methods.generateRefreshToken = async function () {
+UserSchema.methods.generateRefreshToken = async function () {
     return jwt.sign(
         {
             _id: this._id,
@@ -95,8 +89,9 @@ User.methods.generateRefreshToken = async function () {
     )
 }
 
-User.methods.isPasswordCorrect = async function (password) {
-    return await bycrypt.compare(password, this.password)
+UserSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password, this.password)
 }
 
+const User = mongoose.model('User', UserSchema)
 export default User

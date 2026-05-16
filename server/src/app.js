@@ -1,5 +1,6 @@
 import cookieParser from "cookie-parser";
 import express from "express"
+import cors from "cors"
 
 const app = express();
 app.use(express.json({ limit: "30kb" }));
@@ -11,5 +12,9 @@ app.use(cors({
     credentials: true
 }))
 app.use(cookieParser());
+
+import userRouter from "./routes/user.routes.js";
+
+app.use("/api/v1/user", userRouter)
 
 export default app;
