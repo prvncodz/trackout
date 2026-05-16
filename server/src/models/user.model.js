@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose"
 import bcrypt from "bcrypt"
-
+import jwt from "jsonwebtoken"
 const UserSchema = new Schema({
     avatar: {
         url: String,
@@ -43,10 +43,7 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: [true, "Password is required"],
-        trim: true,
-        lowercase: [true, "Password must be in lowercase"],
         minlength: [3, "Password must be at least 3 characters long!"],
-        maxLength: [20, "Password must be less than 20 characters long!"]
     },
     refreshToken: {
         type: String,
@@ -90,6 +87,9 @@ UserSchema.methods.generateRefreshToken = async function () {
 }
 
 UserSchema.methods.isPasswordCorrect = async function (password) {
+    if (!password) {
+        return false
+    }
     return await bcrypt.compare(password, this.password)
 }
 
