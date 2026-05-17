@@ -1,8 +1,9 @@
 import express from "express"
-import { DeleteSet, GetAllSetsOfExercise } from "../controllers/set.controller"
+import { CreateSet, DeleteSet, GetAllSetsOfExercise } from "../controllers/set.controller"
 
 const router = express.Router()
 
+router.post("/create-set/:exerciseId", CreateSet)
 router.get("/all-sets/:exerciseId", GetAllSetsOfExercise)
 router.delete("/delete-set/:setId", DeleteSet)
 

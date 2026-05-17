@@ -10,8 +10,8 @@ const SetSchema = new Schema({
         type: Number,
         required: true,
         unique: true,
-        minLength: [1, "Set number must be at least 1!"],
-        maxLength: [20, "Set number must be at most 20!"]
+        min: [1, "Set number must be at least 1!"],
+        max: [20, "Set number must be at most 20!"]
     },
     weight: {
         type: Number,
@@ -22,6 +22,10 @@ const SetSchema = new Schema({
         type: Number,
         required: true,
         minLength: [1, "Reps must be of at least 1 digit!"],
+    },
+    rest: {
+        type: String,
+        default: "00:30"
     },
     completed: Boolean
 }, { timestamps: true })

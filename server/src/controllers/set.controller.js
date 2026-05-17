@@ -2,6 +2,30 @@ import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import Set from "../models/set.model.js"
+import CreateSetSchema from "../schemas/set.schema.js";
+
+
+const CreateSet = asyncHandler(async (req, res) => {
+    const { exerciseId } = req.params
+    const { setNo, weight, reps, rest } = req.body
+    if (!exerciseId) {
+        throw new ApiError(400, "exercise id is required")
+    }
+
+    const allItems = { exerciseId, setNo, weight, reps }
+    if (rest) allItems.rest = rest
+    const input = CreateSetSchema.safeParse(allItems)
+    if (!input.success) {
+        throw new ApiError(400, input.error?.issues?.[0]?.message)
+    }
+    const createdSet = await Set.create(allItems)
+    if (!createdSet) {
+        throw new ApiError(500, "failed to create set")
+    }
+    return res
+        .status(201)
+        .json(new ApiResponse(201, createdSet, "set created successfully"))
+})
 
 const GetAllSetsOfExercise = asyncHandler(async (req, res) => {
     const { exerciseId } = req.params
@@ -31,4 +55,4 @@ const DeleteSet = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, deleted, "set deleted successfully"))
 })
 
-export { GetAllSetsOfExercise ,DeleteSet}
+export { GetAllSetsOfExercise, DeleteSet ,CreateSet}
