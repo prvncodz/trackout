@@ -13,6 +13,13 @@ const ExerciseSchema = new Schema({
         minlength: [3, "Exercise name must be at least 3 characters long!"],
         maxlength: [40, "Exercise name must be at most 50 characters long!"]
     },
+    muscleGroup: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: [3, "Exercise name must be at least 3 characters long!"],
+        maxlength: [40, "Exercise name must be at most 50 characters long!"]
+    },
     sets: [{
         type: Schema.Types.ObjectId,
         ref: "Set"
