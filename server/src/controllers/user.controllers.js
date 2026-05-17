@@ -234,6 +234,7 @@ const UpdateAccountInfo = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, user, "information updated successfully"));
 });
 
+
 const UserProfile = asyncHandler(async (req, res) => {
 
 })

@@ -16,7 +16,7 @@ app.use(cookieParser());
 import userRouter from "./routes/user.routes.js";
 import logRouter from "./routes/log.routes.js";
 import exerciseRouter from "./routes/exercise.routes.js"
-import setRouter from "../routes/set.routes.js"
+import setRouter from "./routes/set.routes.js"
 
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/log", logRouter)

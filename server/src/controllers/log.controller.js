@@ -151,4 +151,27 @@ const GetLogWithId = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, log, "log fetched successfully"))
 })
 
+const UpdateLog = asyncHandler(async (req, res) => {
+    const { logId } = req.params
+    const { logName } = req.body
+    if (!logId) {
+        throw new ApiError(400, "log id is required")
+    }
+    const log = await Log.findByIdAndUpdate(
+        logId,
+        {
+            $set: {
+                logName: logName
+            }
+        },
+        {
+            returnDocument: 'after'
+        }
+    )
+    if (!log) {
+        throw new ApiError(400, "log not found")
+    }
+    return res.status(200).json(new ApiResponse(200, log, "log updated successfully"))
+})
+
 export { CreateLog, GetAllLogs, GetLogWithId, MarkLogCompleted }

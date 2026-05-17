@@ -108,4 +108,4 @@ const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, Completed, "set's completed status toggled successfully"))
 })
 
-export { GetAllSetsOfExercise, DeleteSet, CreateSet, UpdateSet ,ToggleSetAsCompleted}
+export { GetAllSetsOfExercise, DeleteSet, CreateSet, UpdateSet, ToggleSetAsCompleted }
