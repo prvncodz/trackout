@@ -12,7 +12,7 @@ const CreateSet = asyncHandler(async (req, res) => {
         throw new ApiError(400, "exercise id is required")
     }
 
-    const allItems = { exerciseId, setNo, weight, reps }
+    let allItems = { exerciseId, setNo, weight, reps }
     if (rest) allItems.rest = rest
     const input = CreateSetSchema.safeParse(allItems)
     if (!input.success) {
@@ -55,4 +55,31 @@ const DeleteSet = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, deleted, "set deleted successfully"))
 })
 
-export { GetAllSetsOfExercise, DeleteSet ,CreateSet}
+const UpdateSet = asyncHandler(async (req, res) => {
+    const { setId } = req.params
+    if (!setId) {
+        throw new ApiError(400, "set id is required")
+    }
+    if (!req.body || Object.keys(req.body)?.length === 0) {
+        throw new ApiError(400, "no fields to update")
+    }
+    let feildsToUpdate = {}
+    req.body.forEach(item => {
+    if(item){
+        feildsToUpdate[item.name] = item.value
+    }
+    })
+
+    if(!fieldsToUpdate || fieldsToUpdate?.length === 0){
+        throw new ApiError(400, "no fields to update")
+    }
+
+    const updatedSet = await Set.findByIdAndUpdate(setId, { $set: feildsToUpdate }, { returnDocument: "after", runValidators: true })
+    if (!updatedSet) {
+        throw new ApiError(500, "failed to update set")
+    }
+    return res
+        .status(200)
+        .json(new ApiResponse(200, updatedSet, "set updated succccessfully"))
+})
+export { GetAllSetsOfExercise, DeleteSet, CreateSet ,UpdateSet}
