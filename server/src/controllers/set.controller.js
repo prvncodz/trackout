@@ -65,12 +65,12 @@ const UpdateSet = asyncHandler(async (req, res) => {
     }
     let feildsToUpdate = {}
     req.body.forEach(item => {
-    if(item){
-        feildsToUpdate[item.name] = item.value
-    }
+        if (item) {
+            feildsToUpdate[item.name] = item.value
+        }
     })
 
-    if(!fieldsToUpdate || fieldsToUpdate?.length === 0){
+    if (!fieldsToUpdate || fieldsToUpdate?.length === 0) {
         throw new ApiError(400, "no fields to update")
     }
 
@@ -82,4 +82,30 @@ const UpdateSet = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, updatedSet, "set updated succccessfully"))
 })
-export { GetAllSetsOfExercise, DeleteSet, CreateSet ,UpdateSet}
+
+const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
+    const { setId } = req.params
+    if (!setId) {
+        throw new ApiError(400, "set id is required")
+    }
+    const Completed = await Set.findByIdAndUpdate(
+        setId,
+        {
+            $set: {
+                completed: { $not: "completed" }
+            }
+        },
+        {
+            returnDocument: "after",
+        }
+    )
+    if (!Completed) {
+        throw new ApiError(500, "failed to toggle completed status in set")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, Completed, "set's completed status toggled successfully"))
+})
+
+export { GetAllSetsOfExercise, DeleteSet, CreateSet, UpdateSet ,ToggleSetAsCompleted}

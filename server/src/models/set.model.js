@@ -27,7 +27,10 @@ const SetSchema = new Schema({
         type: String,
         default: "00:30"
     },
-    completed: Boolean
+    completed: {
+        type: Boolean,
+        default: false
+    }
 }, { timestamps: true })
 
 const Set = mongoose.model('Set', SetSchema);
