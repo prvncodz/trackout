@@ -17,10 +17,6 @@ const LogSchema = new Schema({
         minlength: [3, "Log name must be at least 3 characters long!"],
         maxlength: [50, "Log name must be at most 50 characters long!"]
     },
-    note: {
-        type: String,
-        trim: true,
-    },
     completedAt: {
         type: Date
     }
