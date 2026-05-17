@@ -186,7 +186,7 @@ const UpdateUserAvatar = asyncHandler(async (req, res) => {
                 },
             },
         },
-        { new: true },
+        { returnDocument: 'after' }
     ).select("-password -refreshToken");
 
     if (fileToBeDeleted) {
@@ -225,7 +225,7 @@ const UpdateAccountInfo = asyncHandler(async (req, res) => {
             $set: UpdatedFields,
         },
         {
-            new: true,
+            returnDocument: 'after',
         },
     ).select("-password -refershToken");
 
