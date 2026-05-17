@@ -9,6 +9,6 @@ const router = express.Router()
 router.post("/create", auth, CreateLog)
 router.get("/all-logs/:userId", auth, GetAllLogs)
 router.patch("/mark-completed/:logId", auth, MarkLogCompleted)
-router.get("/log/:logId", auth, GetLogWithId)
+router.get("/:logId", auth, GetLogWithId)
 
 export default router

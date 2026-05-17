@@ -114,10 +114,38 @@ const GetLogWithId = asyncHandler(async (req, res) => {
     if (!logId) {
         throw new ApiError(400, "log id is required")
     }
-    const log = await Log
-        .findById(logId)
+    const log = await Log.aggregate([
+        {
+            $match: {
+                _id: logId
+            }
+        },
+        {
+            $lookup: {
+                from: "exercises",
+                localField: "exercises",
+                foreignField: "_id",
+                as: "exercises",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "sets",
+                            localField: "sets",
+                            foreignField: "_id",
+                            as: "sets"
+                        }
+                    }
+                ]
+            }
+        },
+    ])
 
-    if (!log) {
+
+    for await (const document of log) {
+        console.log(document);
+    }
+
+    if (!log[0]) {
         throw new ApiError(400, "log not found")
     }
     return res.status(200).json(new ApiResponse(200, log, "log fetched successfully"))
