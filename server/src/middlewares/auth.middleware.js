@@ -12,7 +12,7 @@ const auth = asyncHandler(async (req, res, next) => {
     if (!decodedToken) {
         throw new ApiError(401, "unauthorized request")
     }
-    const user = await User.findById(decodedToken?._id);
+    const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
     if (!user) {
         throw new ApiError(404, "user not found")
     }

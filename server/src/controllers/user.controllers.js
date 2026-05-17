@@ -3,22 +3,23 @@ import { userSignUpSchema, userSignInSchema } from "../schemas/user.schemas.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
 import asyncHandler from "../utils/asyncHandler.js"
+import { DeleteFromCloud, UploadToCloud } from "../utils/cloudinary.js"
 
 
 
-const generateAccessAndRefreshTokens = async (userId) => {
+const generateAccessAndRefreshTokens = asyncHandler(async (userId) => {
     try {
         const user = await User.findById(userId);
-        const accessToken = await user.generateAccessTokens();
-        const refreshToken = await user.generateRefreshTokens();
+        const accessToken = await user.generateAccessToken();
+        const refreshToken = await user.generateRefreshToken();
 
         user.refreshToken = refreshToken;
         await user.save({ validateBeforeSave: false });
         return { accessToken, refreshToken };
     } catch (error) {
-        throw new ApiError(500, "unable to generate access and refresh tokens");
+        throw new ApiError(500, error.message);
     }
-};
+});
 
 const SignUpUser = asyncHandler(async (req, res) => {
     const { fullname, email, height, weight, password } = req.body
@@ -84,7 +85,7 @@ const SignInUser = asyncHandler(async (req, res) => {
         throw new ApiError(401, "wrong password")
     }
 
-    const { accessToken, refreshToken } = generateAccessAndRefreshTokens(user?._id);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user?._id);
     const loggedUser = await User.findById(user?._id).select("-password -refreshToken")
 
     if (!loggedUser) {
@@ -116,7 +117,7 @@ const LogOutUser = asyncHandler(async (req, res) => {
         .status(200)
         .clearCookie("accessToken")
         .clearCookie("refreshToken")
-        .json(new ApiResponse(200, null, "user logged out successfully"))
+        .json(new ApiResponse(200, {}, "user logged out successfully"))
 })
 
 
@@ -136,7 +137,7 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
     if (!decodedToken) {
         throw new ApiError(400, "unauthorized request")
     }
-    const { accessToken, refreshToken } = generateAccessAndRefreshTokens(decodedToken?._id);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(decodedToken?._id);
     const loggedUser = await User.findById(decodedToken?._id).select("-password -refreshToken")
 
     if (!loggedUser) {
@@ -162,10 +163,87 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
             "tokens updated successfully"))
 })
 
+
+const UpdateUserAvatar = asyncHandler(async (req, res) => {
+    const filePath = req.files?.[0]?.path
+    if (!filePath) {
+        throw new ApiError(400, "file doesn't exists")
+    }
+    const avatar = await UploadToCloud(filePath)
+    if (!avatar) {
+        throw new ApiError(401, "clodinary upload of avatar failed");
+    }
+    const user = req.user;
+    const fileToBeDeleted = user?.avatar?.public_id;
+    const updateAvatar = await User.findByIdAndUpdate(
+        user?._id,
+        {
+            $set: {
+                avatar: {
+                    public_id: avatar?.public_id,
+                    url: avatar?.secure_url,
+                },
+            },
+        },
+        { new: true },
+    ).select("-password -refreshTokens");
+
+    if (fileToBeDeleted) {
+        try {
+            await DeleteFromCloud(fileToBeDeleted);
+        } catch (err) {
+            throw new ApiError(504, "error while deleting file From Cloud");
+        }
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, updateAvatar, "avatar updated successfully"));
+})
+
+
+const UpdateAccountInfo = asyncHandler(async (req, res) => {
+    const { fullname, email, height, weight } = req.body;
+    const UpdatedFields = {};
+    if (fullname) {
+        UpdatedFields.fullName = fullname;
+    }
+    if (email) {
+        UpdatedFields.email = email;
+    }
+    if (height) {
+        UpdatedFields.height = height;
+    }
+    if (weight) {
+        UpdatedFields.weight = weight;
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: UpdatedFields,
+        },
+        {
+            new: true,
+        },
+    ).select("-password -refershToken");
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, user, "information updated successfully"));
+});
+
+const UserProfile = asyncHandler(async (req, res) => {
+
+})
+
 export {
     SignUpUser,
     SignInUser,
     LogOutUser,
     CurrentUser,
     UpdateAccessAndRefreshTokens,
+    UpdateUserAvatar,
+    UpdateAccountInfo,
+    UserProfile
 }
