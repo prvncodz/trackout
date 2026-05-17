@@ -1,6 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-import { file } from "zod";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -40,16 +39,17 @@ const UploadToCloud = async (filepath) => {
 
 const DeleteFromCloud = async (public_id) => {
     if (!public_id) {
-        return null;
+        return false;
     }
     try {
         console.log("deleting file from cloud...")
         await cloudinary.uploader.destroy(public_id)
+        console.log("file deleted from cloud")
         return true;
     } catch (error) {
         console.log("failed to delete file from cloud")
         console.error(error.message)
-        return null
+        return false
     }
 }
 

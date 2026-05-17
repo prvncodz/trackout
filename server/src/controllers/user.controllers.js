@@ -4,7 +4,7 @@ import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import { DeleteFromCloud, UploadToCloud } from "../utils/cloudinary.js"
-
+import jwt from "jsonwebtoken"
 
 
 const generateAccessAndRefreshTokens = asyncHandler(async (userId) => {
@@ -129,7 +129,7 @@ const CurrentUser = asyncHandler(async (req, res) => {
 
 const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
 
-    const token = req.cookies?.accessToken || req.headers['authorization']?.split(" ")?.[1]
+    const token = req.cookies?.refreshToken;
     if (!token) {
         throw new ApiError(400, "invalid refresh token")
     }
@@ -159,13 +159,14 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
         .cookie("refreshToken", refreshToken, RtOptions)
         .json(new ApiResponse(
             200,
-            loggedUser,
-            "tokens updated successfully"))
+            { loggedUser, refreshToken, accessToken },
+            "tokens updated successfully"
+        ))
 })
 
 
 const UpdateUserAvatar = asyncHandler(async (req, res) => {
-    const filePath = req.files?.[0]?.path
+    const filePath = req.file?.path
     if (!filePath) {
         throw new ApiError(400, "file doesn't exists")
     }
@@ -186,7 +187,7 @@ const UpdateUserAvatar = asyncHandler(async (req, res) => {
             },
         },
         { new: true },
-    ).select("-password -refreshTokens");
+    ).select("-password -refreshToken");
 
     if (fileToBeDeleted) {
         try {
