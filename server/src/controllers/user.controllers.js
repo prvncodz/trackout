@@ -34,7 +34,7 @@ const SignUpUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, result?.error?.issues?.[0]?.message)
     }
 
-    const userExists = await User.findOne({ fullname });
+    const userExists = await User.findOne({ fullname }).lean();
     if (userExists) {
         throw new ApiError(400, "user with this fullname already exists")
     }
@@ -47,7 +47,7 @@ const SignUpUser = asyncHandler(async (req, res) => {
         password
     })
 
-    const createdUser = await User.findById(user?._id).select("-password")
+    const createdUser = await User.findById(user?._id).lean().select("-password")
 
     if (!createdUser) {
         console.error("user creation failed");
@@ -86,7 +86,7 @@ const SignInUser = asyncHandler(async (req, res) => {
     }
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user?._id);
-    const loggedUser = await User.findById(user?._id).select("-password -refreshToken")
+    const loggedUser = await User.findById(user?._id).lean().select("-password -refreshToken")
 
     if (!loggedUser) {
         throw new ApiError(401, "user not found")
@@ -138,7 +138,7 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
         throw new ApiError(400, "unauthorized request")
     }
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(decodedToken?._id);
-    const loggedUser = await User.findById(decodedToken?._id).select("-password -refreshToken")
+    const loggedUser = await User.findById(decodedToken?._id).lean().select("-password -refreshToken")
 
     if (!loggedUser) {
         throw new ApiError(401, "user not found")
@@ -187,7 +187,7 @@ const UpdateUserAvatar = asyncHandler(async (req, res) => {
             },
         },
         { returnDocument: 'after' }
-    ).select("-password -refreshToken");
+    ).lean().select("-password -refreshToken");
 
     if (fileToBeDeleted) {
         try {
@@ -227,7 +227,7 @@ const UpdateAccountInfo = asyncHandler(async (req, res) => {
         {
             returnDocument: 'after',
         },
-    ).select("-password -refershToken");
+    ).lean().select("-password -refershToken");
 
     return res
         .status(200)

@@ -19,7 +19,8 @@ const AddExerciseToLog = asyncHandler(async (req, res) => {
         logId,
         name,
         muscleGroup
-    })
+    }).lean()
+
     if (!exercise) {
         throw new apiError(500, "failed to add exercise to log");
     }
@@ -28,7 +29,7 @@ const AddExerciseToLog = asyncHandler(async (req, res) => {
         logId,
         { $push: { exercises: exercise?._id } },
         { returnDocument: "after", runValidators: true }
-    )
+    ).lean()
     if (!updatedLog) {
         throw new ApiError(500, "failed to add exercise to log")
     }
@@ -49,7 +50,7 @@ const UpdateExercise = asyncHandler(async (req, res) => {
     if (muscleGroup) feildsToUpdate.muscleGroup = muscleGroup
     if (note) feildsToUpdate.note = note
 
-    const updatedExercise = await Exercise.findByIdAndUpdate(exerciseId, { $set: feildsToUpdate }, { returnDocument: "after", runValidators: true })
+    const updatedExercise = await Exercise.findByIdAndUpdate(exerciseId, { $set: feildsToUpdate }, { returnDocument: "after", runValidators: true }).lean()
     if (!updatedExercise) {
         throw new ApiError(500, "failed to update exercise")
     }
@@ -65,7 +66,7 @@ const DeleteExerciseFromLog = asyncHandler(async (req, res) => {
         throw new ApiError(400, "log id and exercise id is required")
     }
 
-    const exercise = await Exercise.findById(exerciseId)
+    const exercise = await Exercise.findById(exerciseId).lean()
 
     if (!exercise) {
         throw new ApiError(500, "failed to delete exercise")
@@ -75,7 +76,7 @@ const DeleteExerciseFromLog = asyncHandler(async (req, res) => {
         try {
             const allsets = exercise?.sets
             allsets.forEach(async (set) =>
-                await Set.findByIdAndDelete(set)
+                await Set.findByIdAndDelete(set).lean()
             )
         } catch (err) {
             throw new ApiError(500, "failed to delete sets")
@@ -92,13 +93,13 @@ const DeleteExerciseFromLog = asyncHandler(async (req, res) => {
         {
             returnDocument: "after"
         }
-    )
+    ).lean()
 
     if (!UpdatedLog) {
-        throw new ApiError(500, "failed to delete exercise")
+        throw new ApiError(500, "failed to delete exercise from log")
     }
 
-    const deleted = await Exercise.findByIdAndDelete(exerciseId)
+    const deleted = await Exercise.findByIdAndDelete(exerciseId).lean()
     if (!deleted) {
         throw new ApiError(500, "failed to delete exercise")
     }

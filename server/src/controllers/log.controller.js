@@ -15,7 +15,8 @@ const CreateLog = asyncHandler(async (req, res) => {
     const log = await Log.create({
         logName,
         owner: req.user?._id
-    })
+    }).lean()
+
     if (!log) {
         throw new ApiError(400, "failed to create log")
     }
@@ -27,7 +28,7 @@ const CreateLog = asyncHandler(async (req, res) => {
 
 const GetAllLogs = asyncHandler(async (req, res) => {
 
-    const { userId } = req.params
+    const userId = req.params?.userId || req.user?._id
     const { page = 1, limit = 10 } = req.query
     const pageNum = Number(page) || 1;
     const limitNum = Number(limit) || 10;
@@ -47,7 +48,8 @@ const GetAllLogs = asyncHandler(async (req, res) => {
         .find({ owner: userId })
         .skip(skipNum)
         .limit(limitNum)
-        .sort({ createdAt: -1 })
+        .sort({ createdAt: 1 })
+        .lean()
 
     if (!logs) {
         throw new ApiError(400, "failed to get all logs")
@@ -69,7 +71,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         {
             _id: logId,
             completedAt: { $exists: true }
-        })
+        }).lean()
 
     if (log) {
         throw new ApiError(400, "log already had marked as completed")
@@ -85,7 +87,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         {
             returnDocument: "after"
         }
-    )
+    ).lean()
     if (!markedLog) {
         throw new ApiError(404, "log not found")
     }
@@ -100,7 +102,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
                 }
             }
         }
-    )
+    ).lean()
 
     if (!user) {
         throw new ApiError(404, "user not found")
@@ -164,7 +166,8 @@ const UpdateLog = asyncHandler(async (req, res) => {
         {
             returnDocument: 'after'
         }
-    )
+    ).lean()
+
     if (!log) {
         throw new ApiError(400, "log not found")
     }
@@ -179,7 +182,7 @@ const DeleteLog = asyncHandler(async (req, res) => {
     const log = await Log.aggregate([
         {
             $match: {
-                _id: logId
+                _id: new mongoose.Types.ObjectId(logId),
             }
         },
         {
@@ -191,14 +194,14 @@ const DeleteLog = asyncHandler(async (req, res) => {
             }
         }
     ])
-    if (!log[0]) {
+    if (!log) {
         throw new ApiError(400, "log not found")
     }
     if (log[0]?.exercises?.sets?.length) {
         try {
             const allsets = log[0]?.exercises?.sets
             allsets.forEach(async (set) =>
-                await Set.findByIdAndDelete(set)
+                await Set.findByIdAndDelete(set).lean()
             )
         } catch (err) {
             throw new ApiError(500, "failed to delete sets")
@@ -208,14 +211,14 @@ const DeleteLog = asyncHandler(async (req, res) => {
         try {
             const allExercises = log[0]?.exercises
             allExercises.forEach(async (ex) =>
-                await Exercise.findByIdAndDelete(ex?._id)
+                await Exercise.findByIdAndDelete(ex?._id).lean()
             )
         } catch (err) {
             throw new ApiError(500, "failed to delete exercises")
         }
     }
 
-    const deletedLog = await Log.findByIdAndDelete(logId)
+    const deletedLog = await Log.findByIdAndDelete(logId).lean()
     if (!deletedLog) {
         throw new ApiError(500, "failed to delete log")
     }
@@ -224,18 +227,16 @@ const DeleteLog = asyncHandler(async (req, res) => {
 })
 
 const DuplicateLog = asyncHandler(async (req, res) => {
-    //get log id 
-    // get the log
     const { logId } = req.params
     if (!logId) {
         throw new ApiError(400, "log id is required")
     }
-    const log = await Log.findById(logId)
+    const log = await Log.findById(logId).lean()
     if (!log) {
         throw new ApiError(404, "log not found")
     }
     const { _id, completedAt, createdAt, updatedAt, ...copy } = log
-    const newLog = await Log.create(copy)
+    const newLog = await Log.create(copy).lean()
     if (!newLog) {
         throw new ApiError(400, "failed to create log")
     }

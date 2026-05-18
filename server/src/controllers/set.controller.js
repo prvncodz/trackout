@@ -19,7 +19,7 @@ const CreateSet = asyncHandler(async (req, res) => {
         throw new ApiError(400, input.error?.issues?.[0]?.message, input.error?.issues?.[0])
     }
     //create set
-    const createdSet = await Set.create(allItems)
+    const createdSet = await Set.create(allItems).lean()
     if (!createdSet) {
         throw new ApiError(500, "failed to create set")
     }
@@ -32,7 +32,7 @@ const CreateSet = asyncHandler(async (req, res) => {
             }
         },
         { returnDocument: "after", runValidators: true }
-    )
+    ).lean()
     if (!updatedExercise) {
         throw new ApiError(500, "failed to add set to exercise")
     }
@@ -57,13 +57,13 @@ const DeleteSet = asyncHandler(async (req, res) => {
             }
         },
         { returnDocument: "after", runValidators: true }
-    )
+    ).lean()
     if (!UpdatedExercise) {
         throw new ApiError(500, "failed to delete set from exercise")
     }
 
 
-    const deleted = await Set.findByIdAndDelete(setId)
+    const deleted = await Set.findByIdAndDelete(setId).lean()
     if (!deleted) {
         throw new ApiError(500, "failed to delete set")
     }
@@ -91,7 +91,7 @@ const UpdateSet = asyncHandler(async (req, res) => {
         throw new ApiError(400, "no fields to update")
     }
 
-    const updatedSet = await Set.findByIdAndUpdate(setId, { $set: fieldsToUpdate }, { returnDocument: "after", runValidators: true })
+    const updatedSet = await Set.findByIdAndUpdate(setId, { $set: fieldsToUpdate }, { returnDocument: "after", runValidators: true }).lean()
     if (!updatedSet) {
         throw new ApiError(500, "failed to update set")
     }
