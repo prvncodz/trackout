@@ -5,7 +5,7 @@ import Log from "../models/log.model.js";
 import User from "../models/user.model.js";
 import Set from "../models/set.model.js";
 import Exercise from "../models/exercise.model.js";
-
+import mongoose from "mongoose";
 
 const CreateLog = asyncHandler(async (req, res) => {
     const { logName } = req.body
@@ -119,7 +119,7 @@ const GetLogWithId = asyncHandler(async (req, res) => {
     const log = await Log.aggregate([
         {
             $match: {
-                _id: logId
+                _id: new mongoose.Types.ObjectId(logId)
             }
         },
         {
@@ -142,8 +142,8 @@ const GetLogWithId = asyncHandler(async (req, res) => {
         },
     ])
 
-
-    if (!log[0]) {
+    console.log("log", log)
+    if (!log) {
         throw new ApiError(400, "log not found")
     }
     return res.status(200).json(new ApiResponse(200, log, "log fetched successfully"))

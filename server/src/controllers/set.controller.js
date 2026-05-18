@@ -3,7 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import Set from "../models/set.model.js"
 import CreateSetSchema from "../schemas/set.schema.js";
-
+import Exercise from "../models/exercise.model.js";
 
 const CreateSet = asyncHandler(async (req, res) => {
     const { exerciseId } = req.params
@@ -16,11 +16,25 @@ const CreateSet = asyncHandler(async (req, res) => {
     if (rest) allItems.rest = rest
     const input = CreateSetSchema.safeParse(allItems)
     if (!input.success) {
-        throw new ApiError(400, input.error?.issues?.[0]?.message)
+        throw new ApiError(400, input.error?.issues?.[0]?.message, input.error?.issues?.[0])
     }
+    //create set
     const createdSet = await Set.create(allItems)
     if (!createdSet) {
         throw new ApiError(500, "failed to create set")
+    }
+    //add set to the exercise
+    const updatedExercise = await Exercise.findByIdAndUpdate(
+        exerciseId,
+        {
+            $push: {
+                sets: createdSet?._id
+            }
+        },
+        { returnDocument: "after", runValidators: true }
+    )
+    if (!updatedExercise) {
+        throw new ApiError(500, "failed to add set to exercise")
     }
     return res
         .status(201)

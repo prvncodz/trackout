@@ -2,6 +2,7 @@ import Exercise from "../models/exercise.model.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
+import Log from "../models/log.model.js";
 
 const GetAllExercises = asyncHandler(async (req, res) => {
     const { logId } = req.params
@@ -15,7 +16,7 @@ const GetAllExercises = asyncHandler(async (req, res) => {
     }
     return res
         .status(200)
-        .json(new ApiResponse(200, allExercises, "all exercises"))
+        .json(new ApiResponse(200, allExercises, "all exercises from lod fetched successfully"))
 })
 
 const AddExerciseToLog = asyncHandler(async (req, res) => {
@@ -27,7 +28,7 @@ const AddExerciseToLog = asyncHandler(async (req, res) => {
     if (!name || !muscleGroup) {
         throw new ApiError(400, "exercise name and muscle group is required")
     }
-
+    //create the exercise
     const exercise = await Exercise.create({
         logId,
         name,
@@ -36,6 +37,16 @@ const AddExerciseToLog = asyncHandler(async (req, res) => {
     if (!exercise) {
         throw new apiError(500, "failed to add exercise to log");
     }
+    //add exercise to log
+    const updatedLog = await Log.findByIdAndUpdate(
+        logId,
+        { $push: { exercises: exercise?._id } },
+        { returnDocument: "after", runValidators: true }
+    )
+    if (!updatedLog) {
+        throw new ApiError(500, "failed to add exercise to log")
+    }
+
     return res
         .status(200)
         .json(new ApiResponse(200, exercise, "exercises added to log successfully"))
@@ -68,8 +79,24 @@ const DeleteExerciseFromLog = asyncHandler(async (req, res) => {
         throw new ApiError(400, "log id and exercise id is required")
     }
 
-    const deleted = await Exercise.findByIdAndDelete(exerciseId)
+    const exercise = await Exercise.findById(exerciseId)
 
+    if (!exercise) {
+        throw new ApiError(500, "failed to delete exercise")
+    }
+
+    if (exercise?.sets?.length > 0) {
+        try {
+            const allsets = exercise?.sets
+            allsets.forEach(async (set) =>
+                await Set.findByIdAndDelete(set)
+            )
+        } catch (err) {
+            throw new ApiError(500, "failed to delete sets")
+        }
+    }
+
+    const deleted = await Exercise.findByIdAndDelete(exerciseId)
     if (!deleted) {
         throw new ApiError(500, "failed to delete exercise")
     }
