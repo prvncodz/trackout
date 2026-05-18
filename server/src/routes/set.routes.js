@@ -1,5 +1,5 @@
 import express from "express"
-import { CreateSet, DeleteSet, GetAllSetsOfExercise, ToggleSetAsCompleted, UpdateSet } from "../controllers/set.controller.js"
+import { CreateSet, DeleteSet, ToggleSetAsCompleted, UpdateSet } from "../controllers/set.controller.js"
 
 const router = express.Router()
 

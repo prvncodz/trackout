@@ -1,5 +1,5 @@
 import express from "express"
-import { AddExerciseToLog, DeleteExerciseFromLog, GetAllExercises, UpdateExercise } from "../controllers/exercise.controller.js"
+import { AddExerciseToLog, DeleteExerciseFromLog, UpdateExercise } from "../controllers/exercise.controller.js"
 
 const router = express.Router()
 
