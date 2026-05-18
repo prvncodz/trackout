@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.post("/create/:exerciseId", CreateSet)
 router.get("/all-sets/:exerciseId", GetAllSetsOfExercise)
-router.delete("/delete-set/:setId", DeleteSet)
+router.delete("/delete-set/:setId/:exerciseId", DeleteSet)
 router.patch("/update-set/:setId", UpdateSet)
 router.patch("/toggle-set-completed/:setId", ToggleSetAsCompleted)
 

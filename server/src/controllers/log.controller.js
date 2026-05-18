@@ -142,7 +142,6 @@ const GetLogWithId = asyncHandler(async (req, res) => {
         },
     ])
 
-    console.log("log", log)
     if (!log) {
         throw new ApiError(400, "log not found")
     }

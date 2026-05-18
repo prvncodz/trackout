@@ -47,7 +47,7 @@ const GetAllSetsOfExercise = asyncHandler(async (req, res) => {
         throw new ApiError(400, "exercise id is required")
     }
     const sets = await Set.find({ exerciseId })
-    if (!sets.length) {
+    if (!sets) {
         throw new ApiError(500, "unable to get sets of this exercise")
     }
     return res
@@ -86,24 +86,24 @@ const DeleteSet = asyncHandler(async (req, res) => {
 
 const UpdateSet = asyncHandler(async (req, res) => {
     const { setId } = req.params
+    const { weight, reps, rest } = req.body
+
     if (!setId) {
         throw new ApiError(400, "set id is required")
     }
-    if (!req.body || Object.keys(req.body)?.length === 0) {
+    if (!req.body) {
         throw new ApiError(400, "no fields to update")
     }
-    let feildsToUpdate = {}
-    req.body.forEach(item => {
-        if (item) {
-            feildsToUpdate[item.name] = item.value
-        }
-    })
+    let fieldsToUpdate = {}
+    if (weight) fieldsToUpdate.weight = weight
+    if (reps) fieldsToUpdate.reps = reps
+    if (rest) fieldsToUpdate.rest = rest
 
     if (!fieldsToUpdate || fieldsToUpdate?.length === 0) {
         throw new ApiError(400, "no fields to update")
     }
 
-    const updatedSet = await Set.findByIdAndUpdate(setId, { $set: feildsToUpdate }, { returnDocument: "after", runValidators: true })
+    const updatedSet = await Set.findByIdAndUpdate(setId, { $set: fieldsToUpdate }, { returnDocument: "after", runValidators: true })
     if (!updatedSet) {
         throw new ApiError(500, "failed to update set")
     }
@@ -117,24 +117,17 @@ const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
     if (!setId) {
         throw new ApiError(400, "set id is required")
     }
-    const Completed = await Set.findByIdAndUpdate(
-        setId,
-        {
-            $set: {
-                completed: { $not: "completed" }
-            }
-        },
-        {
-            returnDocument: "after",
-        }
-    )
-    if (!Completed) {
-        throw new ApiError(500, "failed to toggle completed status in set")
+    const set = await Set.findById(setId)
+    if (!set) {
+        throw new ApiError(500, "set not found")
     }
+    set.completed = !set.completed
+    await set.save()
+
 
     return res
         .status(200)
-        .json(new ApiResponse(200, Completed, "set's completed status toggled successfully"))
+        .json(new ApiResponse(200, set, "set's completed status toggled successfully"))
 })
 
 export { GetAllSetsOfExercise, DeleteSet, CreateSet, UpdateSet, ToggleSetAsCompleted }

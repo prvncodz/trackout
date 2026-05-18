@@ -9,7 +9,6 @@ const SetSchema = new Schema({
     setNo: {
         type: Number,
         required: true,
-        unique: true,
         min: [1, "Set number must be at least 1!"],
         max: [20, "Set number must be at most 20!"]
     },
