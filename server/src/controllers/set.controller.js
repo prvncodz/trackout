@@ -41,19 +41,7 @@ const CreateSet = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, createdSet, "set created successfully"))
 })
 
-const GetAllSetsOfExercise = asyncHandler(async (req, res) => {
-    const { exerciseId } = req.params
-    if (!exerciseId) {
-        throw new ApiError(400, "exercise id is required")
-    }
-    const sets = await Set.find({ exerciseId })
-    if (!sets) {
-        throw new ApiError(500, "unable to get sets of this exercise")
-    }
-    return res
-        .status(200)
-        .json(new ApiResponse(200, sets, "sets of exercise fetched successfully"))
-})
+
 
 const DeleteSet = asyncHandler(async (req, res) => {
     const { setId, exerciseId } = req.params
@@ -130,4 +118,4 @@ const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, set, "set's completed status toggled successfully"))
 })
 
-export { GetAllSetsOfExercise, DeleteSet, CreateSet, UpdateSet, ToggleSetAsCompleted }
+export { DeleteSet, CreateSet, UpdateSet, ToggleSetAsCompleted }

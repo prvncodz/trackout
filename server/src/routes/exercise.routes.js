@@ -4,7 +4,6 @@ import { AddExerciseToLog, DeleteExerciseFromLog, GetAllExercises, UpdateExercis
 const router = express.Router()
 
 router.post("/create/:logId", AddExerciseToLog)
-router.get("/all-exercises/:logId", GetAllExercises)
 router.patch("/update-exercise/:exerciseId", UpdateExercise)
 router.delete("/delete-exercise/:logId/:exerciseId", DeleteExerciseFromLog)
 
