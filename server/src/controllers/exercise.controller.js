@@ -96,6 +96,22 @@ const DeleteExerciseFromLog = asyncHandler(async (req, res) => {
         }
     }
 
+    const UpdatedLog = await Log.findByIdAndUpdate(
+        exercise?.logId,
+        {
+            $pull: {
+                exercises: exerciseId
+            }
+        },
+        {
+            returnDocument: "after"
+        }
+    )
+
+    if (!UpdatedLog) {
+        throw new ApiError(500, "failed to delete exercise")
+    }
+
     const deleted = await Exercise.findByIdAndDelete(exerciseId)
     if (!deleted) {
         throw new ApiError(500, "failed to delete exercise")

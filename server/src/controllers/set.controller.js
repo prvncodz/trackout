@@ -56,10 +56,25 @@ const GetAllSetsOfExercise = asyncHandler(async (req, res) => {
 })
 
 const DeleteSet = asyncHandler(async (req, res) => {
-    const { setId } = req.params
-    if (!setId) {
-        throw new ApiError(400, "set id is required")
+    const { setId, exerciseId } = req.params
+    if (!setId || !exerciseId) {
+        throw new ApiError(400, "set id and exercise id is required")
     }
+
+    const UpdatedExercise = await Exercise.findByIdAndUpdate(
+        exerciseId,
+        {
+            $pull: {
+                sets: setId
+            }
+        },
+        { returnDocument: "after", runValidators: true }
+    )
+    if (!UpdatedExercise) {
+        throw new ApiError(500, "failed to delete set from exercise")
+    }
+
+
     const deleted = await Set.findByIdAndDelete(setId)
     if (!deleted) {
         throw new ApiError(500, "failed to delete set")
