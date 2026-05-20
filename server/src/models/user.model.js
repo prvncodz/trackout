@@ -37,10 +37,6 @@ const UserSchema = new Schema({
         minlength: [2, "Invalid weight!"],
         maxlength: [3, "Invalid weight!"],
     },
-    previousWorkouts: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Log'
-    }],
     password: {
         type: String,
         required: [true, "Password is required"],
