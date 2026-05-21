@@ -2,7 +2,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import Log from "../models/log.model.js";
-import CompletedWorkouts from "../models/completedWorkouts.model.js";
+import CompletedWorkout from "../models/completedWorkouts.model.js";
 import Set from "../models/set.model.js";
 import Exercise from "../models/exercise.model.js";
 import mongoose from "mongoose";
@@ -94,6 +94,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         throw new ApiError(404, "log not found")
     }
 
+    // add log to previous workouts of user
     const prevWorkout = await CompletedWorkout.create({
         owner: req?.user?._id,
         name: markedLog?.logName,
@@ -104,6 +105,18 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
 
     if (!prevWorkout) {
         throw new ApiError(400, "failed to mark log as completed")
+    }
+
+    // add activity
+    const todaysDate = Date.now()
+    const isActiveDay = await Activity.findOne({ createdAt: todaysDate })
+    if (!isActiveDay) {
+        const newActivity = await Activity.create({
+            owner: markedLog?.owner,
+        })
+        if (!newActivity) {
+            throw new ApiError(500, "failed to create activity")
+        }
     }
 
     return res

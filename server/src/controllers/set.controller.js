@@ -111,7 +111,18 @@ const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
     }
     set.completed = !set.completed
     await set.save()
-
+    if (set.completed) {
+        const todaysDate = Date.now()
+        const isActiveDay = await Activity.findOne({ createdAt: todaysDate })
+        if (!isActiveDay) {
+            const newActivity = await Activity.create({
+                owner: set?.owner,
+            })
+            if (!newActivity) {
+                throw new ApiError(500, "failed to create activity")
+            }
+        }
+    }
 
     return res
         .status(200)
