@@ -28,3 +28,6 @@ const CompletedWorkoutsSchema = new Schema({
         min: [1, "minimum 1 set is required to mark log as completed"],
     },
 }, { timestamps: true })
+
+const CompletedWorkouts = mongoose.model('CompletedWorkouts', CompletedWorkoutsSchema)
+export default CompletedWorkouts

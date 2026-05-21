@@ -236,7 +236,56 @@ const UpdateAccountInfo = asyncHandler(async (req, res) => {
 
 
 const UserProfile = asyncHandler(async (req, res) => {
-
+    const user = req.user;
+    if (!user) {
+        throw new ApiError(400, "user is undefined")
+    }
+    const userProfile = await User.aggregate([
+        {
+            $match: {
+                _id: user?.id
+            }
+        },
+        {
+            $lookup: {
+                from: "completedworkouts",
+                localField: "_id",
+                foreignField: "owner",
+                as: "completedWorkouts"
+            }
+        },
+        {
+            lookup: {
+                from: "activedates",
+                localField: "_id",
+                foreignField: "user",
+                as: "activeDates"
+            }
+        },
+        {
+            $addFields: {
+                totalWorkouts: { $count: "$completedWorkouts" },
+                activeDays: { $count: "$activeDates" },
+                activeDates: "$activeDates"
+            }
+        },
+        {
+            $project: {
+                avatar: 1,
+                fullname: 1,
+                email: 1,
+                height: 1,
+                weight: 1,
+                totalWorkouts: 1,
+                activeDays: 1,
+                activeDates: 1
+            }
+        }
+    ])
+    if (!userProfile.length) {
+        throw new ApiError(400, "user not found")
+    }
+    return res.status(200).json(new ApiResponse(200, userProfile[0], "user profile found successfully"))
 })
 
 export {

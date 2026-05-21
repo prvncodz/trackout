@@ -2,7 +2,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import Log from "../models/log.model.js";
-import User from "../models/user.model.js";
+import CompletedWorkouts from "../models/completedWorkouts.model.js";
 import Set from "../models/set.model.js";
 import Exercise from "../models/exercise.model.js";
 import mongoose from "mongoose";
@@ -92,21 +92,11 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         throw new ApiError(404, "log not found")
     }
 
-    const user = await User.findByIdAndUpdate(  //push the log to previousWorkouts of user as user have completd it
-        log?.owner,
-        {
-            $push: {
-                previousWorkouts: {
-                    $each: [logId],
-                    $position: 0
-                }
-            }
-        }
-    ).lean()
-
-    if (!user) {
-        throw new ApiError(404, "user not found")
-    }
+    const prevWorkout = await CompletedWorkout.create({
+        owner:req?.user?._id,
+        name:markedLog?.logName,
+        muscleGroup:markedLog?.muscleGroup
+    }).lean()
 
     return res
         .status(200)

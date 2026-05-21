@@ -1,6 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
 const SetSchema = new Schema({
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     exerciseId: {
         type: Schema.Types.ObjectId,
         ref: 'Exercise',
