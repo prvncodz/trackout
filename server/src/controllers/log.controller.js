@@ -68,6 +68,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
     }
     const completedDate = Date.now()
 
+    //if log already marked as completed then throw error
     const log = await Log.find(
         {
             _id: logId,
@@ -77,7 +78,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
     if (log) {
         throw new ApiError(400, "log already had marked as completed")
     }
-
+    // else mark log as completed
     const markedLog = await Log.findByIdAndUpdate(
         logId,
         {

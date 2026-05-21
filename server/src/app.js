@@ -17,10 +17,12 @@ import userRouter from "./routes/user.routes.js";
 import logRouter from "./routes/log.routes.js";
 import exerciseRouter from "./routes/exercise.routes.js"
 import setRouter from "./routes/set.routes.js"
+import dashboardRouter from "./routes/dashboard.routes.js"
 
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/log", logRouter)
 app.use("/api/v1/exercise", exerciseRouter)
 app.use("/api/v1/set", setRouter)
+app.use("/api/v1/dashboard", dashboardRouter)
 
 export default app;

@@ -264,9 +264,13 @@ const UserProfile = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
-                totalWorkouts: { $count: "$completedWorkouts" },
-                activeDays: { $count: "$activeDates" },
-                activeDates: "$activeDates"
+                activeDates: {
+                    $map: {
+                        input: "$activeDays",
+                        as: "day",
+                        in: "$$day.createdAt"
+                    }
+                }
             }
         },
         {
@@ -276,8 +280,6 @@ const UserProfile = asyncHandler(async (req, res) => {
                 email: 1,
                 height: 1,
                 weight: 1,
-                totalWorkouts: 1,
-                activeDays: 1,
                 activeDates: 1
             }
         }
