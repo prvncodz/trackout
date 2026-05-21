@@ -295,30 +295,33 @@ const DeleteUser = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "user is undefined")
     }
-    const allSetsDeleted = await Set.deleteMany({ owner: user?._id }).lean()
-    if (!allSetsDeleted) {
-        throw new ApiError(400, "error while deleting all sets by user")
-    }
-    const allExercisesDeleted = await Exercise.deleteMany({ owner: user?._id }).lean()
-    if (!allExercisesDeleted) {
-        throw new ApiError(400, "error while deleting all exercises by user ")
-    }
-    const allLogsDeleted = await Log.deleteMany({ owner: user?._id }).lean()
-    if (!allLogsDeleted) {
-        throw new ApiError(400, "error while deleting all logs by user")
-    }
-    const allWorkoutsDeleted = await CompletedWorkout.deleteMany({ owner: user?._id }).lean()
-    if (!allWorkoutsDeleted) {
-        throw new ApiError(400, "error while deleting completed workouts")
-    }
-    const allActiveDatesDeleted = await ActiveDate.deleteMany({ user: user?._id }).lean()
-    if (!allActiveDatesDeleted) {
-        throw new ApiError(400, "error while deleting active dates")
+    const [
+        allSetsDeleted,
+        allExercisesDeleted,
+        allLogsDeleted,
+        allWorkoutsDeleted,
+        allActiveDatesDeleted,
+    ] = await Promise.all([
+        Set.deleteMany({ owner: user?._id }),
+        Exercise.deleteMany({ owner: user?._id }),
+        Log.deleteMany({ owner: user?._id }),
+        CompletedWorkout.deleteMany({ owner: user?._id }),
+        ActiveDate.deleteMany({ user: user?._id }),
+    ])
+
+    if (
+        !allSetsDeleted.acknowledged ||
+        !allExercisesDeleted.acknowledged ||
+        !allLogsDeleted.acknowledged ||
+        !allWorkoutsDeleted.acknowledged ||
+        !allActiveDatesDeleted.acknowledged
+    ) {
+        throw new ApiError(500, "Error while deleting user data")
     }
 
-    const userDeleted = await User.findByIdAndDelete(user?._id).lean()
+    const userDeleted = await User.findByIdAndDelete(user?._id)
     if (!userDeleted) {
-        throw new ApiError(400, "error while deleting user")
+        throw new ApiError(404, "User not found or already deleted")
     }
     return res.status(200).json(new ApiResponse(200, userDeleted, "user deleted successfully"))
 })
