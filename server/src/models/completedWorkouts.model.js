@@ -30,4 +30,5 @@ const CompletedWorkoutsSchema = new Schema({
 }, { timestamps: true })
 
 const CompletedWorkouts = mongoose.model('CompletedWorkouts', CompletedWorkoutsSchema)
+
 export default CompletedWorkouts

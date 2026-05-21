@@ -62,6 +62,7 @@ const GetAllLogs = asyncHandler(async (req, res) => {
 
 const MarkLogCompleted = asyncHandler(async (req, res) => {
     const { logId } = req.params
+    const { isPr } = req.body
     if (!logId) {
         throw new ApiError(400, "log id is required");
     }
@@ -88,15 +89,22 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
             returnDocument: "after"
         }
     ).lean()
+
     if (!markedLog) {
         throw new ApiError(404, "log not found")
     }
 
     const prevWorkout = await CompletedWorkout.create({
-        owner:req?.user?._id,
-        name:markedLog?.logName,
-        muscleGroup:markedLog?.muscleGroup
+        owner: req?.user?._id,
+        name: markedLog?.logName,
+        muscleGroup: markedLog?.muscleGroup,
+        isPr,
+        noOfSets: markedLog?.sets?.length
     }).lean()
+
+    if (!prevWorkout) {
+        throw new ApiError(400, "failed to mark log as completed")
+    }
 
     return res
         .status(200)
