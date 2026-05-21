@@ -290,6 +290,39 @@ const UserProfile = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, userProfile[0], "user profile found successfully"))
 })
 
+const DeleteUser = asyncHandler(async (req, res) => {
+    const user = req.user;
+    if (!user) {
+        throw new ApiError(400, "user is undefined")
+    }
+    const allSetsDeleted = await Set.deleteMany({ owner: user?._id }).lean()
+    if (!allSetsDeleted) {
+        throw new ApiError(400, "error while deleting all sets by user")
+    }
+    const allExercisesDeleted = await Exercise.deleteMany({ owner: user?._id }).lean()
+    if (!allExercisesDeleted) {
+        throw new ApiError(400, "error while deleting all exercises by user ")
+    }
+    const allLogsDeleted = await Log.deleteMany({ owner: user?._id }).lean()
+    if (!allLogsDeleted) {
+        throw new ApiError(400, "error while deleting all logs by user")
+    }
+    const allWorkoutsDeleted = await CompletedWorkout.deleteMany({ owner: user?._id }).lean()
+    if (!allWorkoutsDeleted) {
+        throw new ApiError(400, "error while deleting completed workouts")
+    }
+    const allActiveDatesDeleted = await ActiveDate.deleteMany({ user: user?._id }).lean()
+    if (!allActiveDatesDeleted) {
+        throw new ApiError(400, "error while deleting active dates")
+    }
+
+    const userDeleted = await User.findByIdAndDelete(user?._id).lean()
+    if (!userDeleted) {
+        throw new ApiError(400, "error while deleting user")
+    }
+    return res.status(200).json(new ApiResponse(200, userDeleted, "user deleted successfully"))
+})
+
 export {
     SignUpUser,
     SignInUser,
@@ -298,5 +331,6 @@ export {
     UpdateAccessAndRefreshTokens,
     UpdateUserAvatar,
     UpdateAccountInfo,
-    UserProfile
+    UserProfile,
+    DeleteUser
 }

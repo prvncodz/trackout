@@ -1,4 +1,4 @@
-import { SignInUser, SignUpUser, LogOutUser, CurrentUser, UpdateAccessAndRefreshTokens, UpdateUserAvatar, UpdateAccountInfo, UserProfile } from "../controllers/user.controllers.js";
+import { SignInUser, SignUpUser, LogOutUser, CurrentUser, UpdateAccessAndRefreshTokens, UpdateUserAvatar, UpdateAccountInfo, UserProfile, DeleteUser } from "../controllers/user.controllers.js";
 import express from "express"
 import auth from "../middlewares/auth.middleware.js"
 import { upload } from "../middlewares/multer.middleware.js"
@@ -18,5 +18,6 @@ router.put("/update-user-avatar",
     UpdateUserAvatar);
 router.patch("/update-user-info", auth, UpdateAccountInfo);
 router.get("/get-user-profile", auth, UserProfile);
+router.delete("/delete-user", auth, DeleteUser);
 
 export default router;
