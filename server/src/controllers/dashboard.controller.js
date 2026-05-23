@@ -110,6 +110,25 @@ const DashBoardController = asyncHandler(async (req, res) => {
                 as: "allPrs"
             }
         },
+        // recent 5 workouts
+        {
+            $lookup: {
+                from: "completedworkouts",
+                localField: "_id",
+                foreignField: "owner",
+                pipeline: [
+                    {
+                        $sort: {
+                            createdAt: -1
+                        }
+                    },
+                    {
+                        $limit: 5
+                    }
+                ],
+                as: "recentWorkouts"
+            }
+        },
         // add extra feilds to the docs
         {
             $addFields: {
@@ -125,7 +144,7 @@ const DashBoardController = asyncHandler(async (req, res) => {
                     }
                 },
                 chartStats: {},
-                recentWorkouts: {},
+                recentWorkouts: "$recentWorkouts",
             },
         },
         // project the wanted dashboard stats of user
