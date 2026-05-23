@@ -102,6 +102,7 @@ const UpdateSet = asyncHandler(async (req, res) => {
 
 const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
     const { setId } = req.params
+    const {isPr} = req.body
     if (!setId) {
         throw new ApiError(400, "set id is required")
     }
@@ -110,6 +111,7 @@ const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
         throw new ApiError(500, "set not found")
     }
     set.completed = !set.completed
+    if(isPr) set.isPr = !set.isPr
     await set.save()
     if (set.completed) {
         const todaysDate = Date.now()

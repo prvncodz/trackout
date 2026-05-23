@@ -18,10 +18,6 @@ const CompletedWorkoutsSchema = new Schema({
         type: String,
         required: true
     },
-    isPr: {
-        type: Boolean,
-        default: false
-    },
     noOfSets: {
         type: Number,
         required: true,
