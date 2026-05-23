@@ -40,6 +40,7 @@ const DashBoardController = asyncHandler(async (req, res) => {
                 sortBy: { createdAt: -1 },
             },
         },
+        // calculate user's workout consistency
         {
             $reduce: {
                 input: "$activeDays",
@@ -55,7 +56,7 @@ const DashBoardController = asyncHandler(async (req, res) => {
                                 if: "$$value.started",
                                 then: {
                                     $cond: {
-                                        if: {
+                                        if: {// previous day -1 = current day then increase the streak else we found a gap so return the streak
                                             $eq: [
                                                 { $dateTrunc: { date: { $dateSubtract: { startDate: "$$value.prevDate", unit: "day", amount: 1 } }, unit: "day" } },
                                                 { $dateTrunc: { date: "$$this", unit: "day" } },
@@ -143,7 +144,9 @@ const DashBoardController = asyncHandler(async (req, res) => {
                         in: "$$day.createdAt"
                     }
                 },
-                chartStats: {},
+                chartStats: {
+
+                },
                 recentWorkouts: "$recentWorkouts",
             },
         },

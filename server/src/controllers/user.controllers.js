@@ -243,19 +243,11 @@ const UserProfile = asyncHandler(async (req, res) => {
     const userProfile = await User.aggregate([
         {
             $match: {
-                _id: user?.id
+                _id: user?._id
             }
         },
         {
             $lookup: {
-                from: "completedworkouts",
-                localField: "_id",
-                foreignField: "owner",
-                as: "completedWorkouts"
-            }
-        },
-        {
-            lookup: {
                 from: "activedates",
                 localField: "_id",
                 foreignField: "user",
@@ -266,25 +258,15 @@ const UserProfile = asyncHandler(async (req, res) => {
             $addFields: {
                 activeDates: {
                     $map: {
-                        input: "$activeDays",
+                        input: "$activeDates",
                         as: "day",
                         in: "$$day.createdAt"
                     }
                 }
             }
         },
-        {
-            $project: {
-                avatar: 1,
-                fullname: 1,
-                email: 1,
-                height: 1,
-                weight: 1,
-                activeDates: 1
-            }
-        }
     ])
-    if (!userProfile.length) {
+    if (!userProfile || !userProfile.length) {
         throw new ApiError(400, "user not found")
     }
     return res.status(200).json(new ApiResponse(200, userProfile[0], "user profile found successfully"))
