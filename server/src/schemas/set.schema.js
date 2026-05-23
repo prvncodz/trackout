@@ -7,7 +7,7 @@ const CreateSetSchema = z.object({
     reps: z.number().min(1),
     rest: z.string().optional(),
     completed: z.boolean().optional(),
-    isPr: z.boolean().ooptional(),
+    isPr: z.boolean().optional(),
     exerciseId: z.string(),
 })
 

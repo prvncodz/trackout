@@ -34,7 +34,7 @@ const SetSchema = new Schema({
     isPr: {
         type: String,
         default: false,
-    }
+    },
     completed: {
         type: Boolean,
         default: false
