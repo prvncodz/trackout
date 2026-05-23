@@ -31,6 +31,10 @@ const SetSchema = new Schema({
         type: String,
         default: "00:30"
     },
+    isPr: {
+        type: String,
+        default: false,
+    }
     completed: {
         type: Boolean,
         default: false
