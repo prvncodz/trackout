@@ -65,48 +65,57 @@ const DeleteExerciseFromLog = asyncHandler(async (req, res) => {
     if (!exerciseId) {
         throw new ApiError(400, "log id and exercise id is required")
     }
+    const session = await mongoose.startSession();
+    try {
 
-    const exercise = await Exercise.findById(exerciseId).lean()
+        const exercise = await Exercise.findById(exerciseId, null, { session }).lean()
 
-    if (!exercise) {
-        throw new ApiError(500, "failed to delete exercise")
-    }
-
-    if (exercise?.sets?.length > 0) {
-        try {
-            const allsets = exercise?.sets
-            allsets.forEach(async (set) =>
-                await Set.findByIdAndDelete(set).lean()
-            )
-        } catch (err) {
-            throw new ApiError(500, "failed to delete sets")
+        if (!exercise) {
+            throw new ApiError(500, "failed to delete exercise")
         }
-    }
 
-    const UpdatedLog = await Log.findByIdAndUpdate(
-        exercise?.logId,
-        {
-            $pull: {
-                exercises: exerciseId
+        if (exercise?.sets?.length > 0) {
+            try {
+                const allsets = exercise?.sets
+                allsets.forEach(async (set) =>
+                    await Set.findByIdAndDelete(set, { session }).lean()
+                )
+            } catch (err) {
+                throw new ApiError(500, "failed to delete sets")
             }
-        },
-        {
-            returnDocument: "after"
         }
-    ).lean()
 
-    if (!UpdatedLog) {
-        throw new ApiError(500, "failed to delete exercise from log")
+        const UpdatedLog = await Log.findByIdAndUpdate(
+            exercise?.logId,
+            {
+                $pull: {
+                    exercises: exerciseId
+                }
+            },
+            {
+                returnDocument: "after",
+                session: session
+            }
+        ).lean()
+
+        if (!UpdatedLog) {
+            throw new ApiError(500, "failed to delete exercise from log")
+        }
+
+        const deleted = await Exercise.findByIdAndDelete(exerciseId, { session }).lean()
+        if (!deleted) {
+            throw new ApiError(500, "failed to delete exercise")
+        }
+        await session.commitTransaction();
+        return res
+            .status(200)
+            .json(new ApiResponse(200, deleted, "exercise deleted successfully"))
+    } catch (error) {
+        await session.abortTransaction();
+        throw error
+    } finally {
+        await session.endSession();
     }
-
-    const deleted = await Exercise.findByIdAndDelete(exerciseId).lean()
-    if (!deleted) {
-        throw new ApiError(500, "failed to delete exercise")
-    }
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, deleted, "exercise deleted successfully"))
 })
 
 export { AddExerciseToLog, UpdateExercise, DeleteExerciseFromLog }
