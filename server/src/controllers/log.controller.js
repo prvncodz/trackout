@@ -122,7 +122,13 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
             },
             {
                 $addFields: {
-                    noOfSets: { $size: "$exercises.sets" }
+                    noOfSets: {
+                        $map: {
+                            input: "$exercises",
+                            as: "ex",
+                            in: { $size: { $ifNull: ["$$ex.sets", []] } }
+                        }
+                    }
                 }
             },
             {

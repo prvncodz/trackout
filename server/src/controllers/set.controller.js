@@ -4,6 +4,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 import Set from "../models/set.model.js"
 import CreateSetSchema from "../schemas/set.schema.js";
 import Exercise from "../models/exercise.model.js";
+import Activity from "../models/activity.model.js"
 
 const CreateSet = asyncHandler(async (req, res) => {
     const { exerciseId } = req.params
@@ -39,6 +40,7 @@ const CreateSet = asyncHandler(async (req, res) => {
     if (!updatedExercise) {
         throw new ApiError(500, "failed to add set to exercise")
     }
+    session.commitTransaction();
     return res
         .status(201)
         .json(new ApiResponse(201, createdSet, "set created successfully"))
