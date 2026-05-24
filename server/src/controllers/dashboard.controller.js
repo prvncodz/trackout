@@ -5,6 +5,7 @@ import User from "../models/user.model.js"
 
 const DashBoardController = asyncHandler(async (req, res) => {
     const user = req.user
+    const { muscleGroup, range } = req.query
     if (!user) {
         throw new ApiError(400, "user not found")
     }
@@ -118,16 +119,95 @@ const DashBoardController = asyncHandler(async (req, res) => {
                 localField: "_id",
                 foreignField: "owner",
                 pipeline: [
+                    // sort decending(recent first)
                     {
                         $sort: {
                             createdAt: -1
                         }
                     },
+                    // limit by 5 docs
                     {
                         $limit: 5
                     }
                 ],
                 as: "recentWorkouts"
+            }
+        },
+        // get user completedworkouts to calculate chart stats
+        {
+            $lookup: {
+                from: "completedworkouts",
+                localField: "_id",
+                foreignField: "owner",
+                pipeline: [
+                    // populate exercises of completedworkouts
+                    {
+                        $lookup: {
+                            from: "exercises",
+                            let: { userId: "$owner", createdAt: "$createdAt" },
+                            pipeline: [
+                                // get the exercises where user is the owner and musclegroup is chest, back or legs
+                                {
+                                    $match: {
+                                        $expr: {
+                                            $and: [
+                                                { $eq: ["$owner", "$$userId"] },
+                                                { $eq: ["$musclegroup", { $in: ["chest", "back", "legs"] }] },
+                                            ],
+                                        },
+                                    },
+                                },
+                                // populate sets of the exercises found above
+                                {
+                                    $lookup: {
+                                        from: "sets",
+                                        localField: "sets",
+                                        foreignField: "_id",
+                                        as: "sets"
+                                    }
+                                },
+                                // unwind the sets to calculate the estimated 1repmax.
+                                { $unwind: "$sets" },
+                                // for every set found above, calculate 1 rep max.
+                                {
+                                    $addFields: {
+                                        estimated1RepMax: {
+                                            $multiply: [
+                                                "$sets.weight",
+                                                { $add: [1, { $divide: ["$sets.reps", 30] }] },
+                                            ]
+                                        },
+                                    },
+                                },
+                                // after adding the estimated 1 rep max to evey set, we group the exercises by musclegroup and get the max of estimated1RepMax
+                                {
+                                    $group: {
+                                        _id: { date: {$dateTrunc:{date:"$$createdAt",unit:"day"}}, musclegroup: "$musclegroup" },
+                                        best1RepMax: { $max: "$sets.estimated1RepMax" }
+                                    }
+                                },
+                                // now we will get the average of the best1RepMax of every musclegroup
+                                {
+                                    $group: {
+                                        _id: "$_id.date",
+                                        average1RepMax: { $avg: "$best1RepMax" }
+                                    }
+                                },
+                                // now we sort the docs according to date
+                                { $sort: { "$_id": -1 } },
+                                // project only date and estimated1RepMax average for a day
+                                {
+                                    $project: {
+                                        date: 1,
+                                        average1RepMax: 1,
+                                        _id: 0,
+                                    },
+                                },
+                            ],
+                            as: "chartStats"
+                        },
+                    },
+                ],
             }
         },
         // add extra feilds to the docs
@@ -144,9 +224,7 @@ const DashBoardController = asyncHandler(async (req, res) => {
                         in: "$$day.createdAt"
                     }
                 },
-                chartStats: {
-
-                },
+                chartStats: "$chartStats",
                 recentWorkouts: "$recentWorkouts",
             },
         },
