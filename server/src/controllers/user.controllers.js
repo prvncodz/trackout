@@ -1,4 +1,9 @@
 import User from "../models/user.model.js"
+import Set from "../models/set.model.js"
+import Exercise from "../models/exercise.model.js"
+import Log from "../models/log.model.js"
+import CompletedWorkout from "../models/completedWorkouts.model.js"
+import Activity from "../models/activity.model.js"
 import { userSignUpSchema, userSignInSchema } from "../schemas/user.schemas.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
@@ -288,7 +293,7 @@ const DeleteUser = asyncHandler(async (req, res) => {
         Exercise.deleteMany({ owner: user?._id }),
         Log.deleteMany({ owner: user?._id }),
         CompletedWorkout.deleteMany({ owner: user?._id }),
-        ActiveDate.deleteMany({ user: user?._id }),
+        Activity.deleteMany({ user: user?._id }),
     ])
 
     if (
@@ -305,7 +310,11 @@ const DeleteUser = asyncHandler(async (req, res) => {
     if (!userDeleted) {
         throw new ApiError(404, "User not found or already deleted")
     }
-    return res.status(200).json(new ApiResponse(200, userDeleted, "user deleted successfully"))
+    return res
+        .status(200)
+        .json(new ApiResponse(200, userDeleted, "user deleted successfully"))
+        .clearCookie("accessToken")
+        .clearCookie("refreshToken")
 })
 
 export {

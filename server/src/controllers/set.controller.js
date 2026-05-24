@@ -19,7 +19,7 @@ const CreateSet = asyncHandler(async (req, res) => {
         throw new ApiError(400, input.error?.issues?.[0]?.message, input.error?.issues?.[0])
     }
     //create set
-    const createdSet = await Set.create(allItems).lean()
+    const createdSet = await Set.create(allItems)
     if (!createdSet) {
         throw new ApiError(500, "failed to create set")
     }

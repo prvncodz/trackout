@@ -15,7 +15,7 @@ const CreateLog = asyncHandler(async (req, res) => {
     const log = await Log.create({
         logName,
         owner: req.user?._id
-    }).lean()
+    })
 
     if (!log) {
         throw new ApiError(400, "failed to create log")
@@ -102,7 +102,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         muscleGroup: markedLog?.muscleGroup,
         isPr,
         noOfSets: markedLog?.sets?.length
-    }).lean()
+    })
 
     if (!prevWorkout) {
         throw new ApiError(400, "failed to mark log as completed")
@@ -248,7 +248,7 @@ const DuplicateLog = asyncHandler(async (req, res) => {
         throw new ApiError(404, "log not found")
     }
     const { _id, completedAt, createdAt, updatedAt, ...copy } = log
-    const newLog = await Log.create(copy).lean()
+    const newLog = await Log.create(copy)
     if (!newLog) {
         throw new ApiError(400, "failed to create log")
     }

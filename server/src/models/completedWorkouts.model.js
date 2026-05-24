@@ -16,8 +16,11 @@ const CompletedWorkoutsSchema = new Schema({
     },
     muscleGroup: {
         type: String,
-        required: true
     },
+    exercises: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Exercise'
+    }],
     noOfSets: {
         type: Number,
         required: true,

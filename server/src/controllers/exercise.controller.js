@@ -19,7 +19,7 @@ const AddExerciseToLog = asyncHandler(async (req, res) => {
         logId,
         name,
         muscleGroup
-    }).lean()
+    })
 
     if (!exercise) {
         throw new apiError(500, "failed to add exercise to log");
