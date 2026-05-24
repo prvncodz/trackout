@@ -240,51 +240,63 @@ const DeleteLog = asyncHandler(async (req, res) => {
     if (!logId) {
         throw new ApiError(400, "log id is required")
     }
-    const log = await Log.aggregate([
-        {
-            $match: {
-                _id: new mongoose.Types.ObjectId(logId),
-            }
-        },
-        {
-            $lookup: {
-                from: "exercises",
-                localField: "exercises",
-                foreignField: "_id",
-                as: "exercises"
-            }
-        }
-    ])
-    if (!log) {
-        throw new ApiError(400, "log not found")
-    }
-    if (log[0]?.exercises?.sets?.length) {
-        try {
-            const allsets = log[0]?.exercises?.sets
-            allsets.forEach(async (set) =>
-                await Set.findByIdAndDelete(set).lean()
-            )
-        } catch (err) {
-            throw new ApiError(500, "failed to delete sets")
-        }
-    }
-    if (log[0]?.exercises?.length) {
-        try {
-            const allExercises = log[0]?.exercises
-            allExercises.forEach(async (ex) =>
-                await Exercise.findByIdAndDelete(ex?._id).lean()
-            )
-        } catch (err) {
-            throw new ApiError(500, "failed to delete exercises")
-        }
-    }
+    const session = await mongoose.startSession();
+    try {
 
-    const deletedLog = await Log.findByIdAndDelete(logId).lean()
-    if (!deletedLog) {
-        throw new ApiError(500, "failed to delete log")
-    }
+        //get log and populate the exercises
+        const log = await Log.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(logId),
+                }
+            },
+            {
+                $lookup: {
+                    from: "exercises",
+                    localField: "exercises",
+                    foreignField: "_id",
+                    as: "exercises"
+                }
+            }
+        ]).session(session)
 
-    return res.status(200).json(new ApiResponse(200, log[0], "log deleted successfully"))
+        if (!log || !log.length) {
+            throw new ApiError(400, "log not found")
+        }
+        //delete all sets all exercises of user
+        if (log[0]?.exercises?.sets?.length) {
+            try {
+                const allsets = log[0]?.exercises?.sets
+                allsets.forEach(async (set) =>
+                    await Set.findByIdAndDelete(set, { session }).lean()
+                )
+            } catch (err) {
+                throw new ApiError(500, "failed to delete sets")
+            }
+        }
+        if (log[0]?.exercises?.length) {
+            try {
+                const allExercises = log[0]?.exercises
+                allExercises.forEach(async (ex) =>
+                    await Exercise.findByIdAndDelete(ex?._id, { session }).lean()
+                )
+            } catch (err) {
+                throw new ApiError(500, "failed to delete exercises")
+            }
+        }
+        //finally delete log
+        const deletedLog = await Log.findByIdAndDelete(logId, { session }).lean()
+        if (!deletedLog) {
+            throw new ApiError(500, "failed to delete log")
+        }
+        session.commitTransaction();
+        return res.status(200).json(new ApiResponse(200, log[0], "log deleted successfully"))
+    } catch (error) {
+        session.abortTransaction();
+        throw error
+    } finally {
+        session.endSession();
+    }
 })
 
 const DuplicateLog = asyncHandler(async (req, res) => {
