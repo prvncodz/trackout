@@ -5,7 +5,7 @@ const CompletedWorkoutsSchema = new Schema({
     owner: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: [true, "completed workout should have a owner field"]
     },
     name: {
         type: String,

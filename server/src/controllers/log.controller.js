@@ -69,14 +69,14 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
     const completedDate = Date.now()
 
     //if log already marked as completed then throw error
-    const log = await Log.find(
+    const log = await Log.findOne(
         {
             _id: logId,
             completedAt: { $exists: true }
         }).lean()
 
     if (log) {
-        throw new ApiError(400, "log already had marked as completed")
+        throw new ApiError(400, "log already had been marked as completed")
     }
     // else mark log as completed
     const markedLog = await Log.findByIdAndUpdate(
@@ -156,7 +156,7 @@ const GetLogWithId = asyncHandler(async (req, res) => {
         },
     ])
 
-    if (!log) {
+    if (!log || !log.length) {
         throw new ApiError(400, "log not found")
     }
     return res.status(200).json(new ApiResponse(200, log, "log fetched successfully"))
