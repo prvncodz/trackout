@@ -67,62 +67,110 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         throw new ApiError(400, "log id is required");
     }
     const completedDate = Date.now()
-
     //if log already marked as completed then throw error
-    const log = await Log.findOne(
-        {
-            _id: logId,
-            completedAt: { $exists: true }
-        }).lean()
 
-    if (log) {
-        throw new ApiError(400, "log already had been marked as completed")
-    }
-    // else mark log as completed
-    const markedLog = await Log.findByIdAndUpdate(
-        logId,
-        {
-            $set: {
-                completedAt: completedDate
+    const session = await mongoose.startSession();
+    try {
+        await session.startTransaction();
+        //
+        //check if log already marked
+        const log = await Log.findOne(
+            {
+                _id: logId,
+                completedAt: { $exists: true }
+            },
+            null,
+            { session }
+        ).lean()
+
+        if (log) {
+            throw new ApiError(400, "log already had been marked as completed")
+        }
+
+        // else mark log as completed
+        const markedLog = await Log.findByIdAndUpdate(
+            logId,
+            {
+                $set: {
+                    completedAt: completedDate
+                }
+            },
+            {
+                returnDocument: "after",
+                session: session,
             }
-        },
-        {
-            returnDocument: "after"
+        ).lean()
+
+        if (!markedLog) {
+            throw new ApiError(404, "log not found")
         }
-    ).lean()
 
-    if (!markedLog) {
-        throw new ApiError(404, "log not found")
-    }
+        const totalSets = await Log.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(logId)
+                }
+            },
+            {
+                $lookup: {
+                    from: "exercises",
+                    localField: "exercises",
+                    foreignField: "_id",
+                    as: "exercises",
+                }
+            },
+            {
+                $addFields: {
+                    noOfSets: { $size: "$exercises.sets" }
+                }
+            },
+            {
+                $project: {
+                    noOfSets: 1
+                }
+            }
+        ]).session(session)
 
-    // add log to previous workouts of user
-    const prevWorkout = await CompletedWorkout.create({
-        owner: req?.user?._id,
-        name: markedLog?.logName,
-        muscleGroup: markedLog?.muscleGroup,
-        noOfSets: markedLog?.sets?.length,
-        exercises: markedLog?.exercises
-    })
+        // add log to previous workouts of user
+        const prevWorkout = await CompletedWorkout.create(
+            [{
+                owner: req?.user?._id,
+                name: markedLog?.logName,
+                muscleGroup: markedLog?.muscleGroup,
+                noOfSets: totalSets[0]?.noOfSets,
+                exercises: markedLog?.exercises
+            }],
+            { session }
+        )
 
-    if (!prevWorkout) {
-        throw new ApiError(400, "failed to mark log as completed")
-    }
-
-    // add activity
-    const todaysDate = Date.now()
-    const isActiveDay = await Activity.findOne({ createdAt: todaysDate })
-    if (!isActiveDay) {
-        const newActivity = await Activity.create({
-            owner: markedLog?.owner,
-        })
-        if (!newActivity) {
-            throw new ApiError(500, "failed to create activity")
+        if (!prevWorkout) {
+            throw new ApiError(400, "failed add log to the previous workouts of user")
         }
-    }
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, markedLog, "log marked as completed"))
+        // add activity
+        const todaysDate = Date.now()
+        const isActiveDay = await Activity.findOne({ createdAt: todaysDate }, null, { session }).lean()
+        if (!isActiveDay) {
+            const newActivity = await Activity.create([{
+                owner: markedLog?.owner,
+            }],
+                { session }
+            )
+            if (!newActivity) {
+                throw new ApiError(500, "failed to create activity")
+            }
+        }
+        await session.commitTransaction();
+        return res
+            .status(200)
+            .json(new ApiResponse(200, markedLog, "log marked as completed"))
+
+    } catch (error) {
+        await session.abortTransaction();
+        throw error
+    } finally {
+        await session.endSession();
+    }
 })
 
 const GetLogWithId = asyncHandler(async (req, res) => {

@@ -164,7 +164,7 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
         .cookie("refreshToken", refreshToken, RtOptions)
         .json(new ApiResponse(
             200,
-            { loggedUser, refreshToken, accessToken },
+            loggedUser,
             "tokens updated successfully"
         ))
 })
