@@ -28,7 +28,7 @@ const CreateLog = asyncHandler(async (req, res) => {
 
 const GetAllLogs = asyncHandler(async (req, res) => {
 
-    const userId = req.params?.userId || req.user?._id
+    const userId = req.user?._id
     const { page = 1, limit = 10 } = req.query
     const pageNum = Number(page) || 1;
     const limitNum = Number(limit) || 10;
@@ -62,7 +62,7 @@ const GetAllLogs = asyncHandler(async (req, res) => {
 
 const MarkLogCompleted = asyncHandler(async (req, res) => {
     const { logId } = req.params
-    const { isPr } = req.body
+
     if (!logId) {
         throw new ApiError(400, "log id is required");
     }
@@ -100,8 +100,8 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         owner: req?.user?._id,
         name: markedLog?.logName,
         muscleGroup: markedLog?.muscleGroup,
-        isPr,
-        noOfSets: markedLog?.sets?.length
+        noOfSets: markedLog?.sets?.length,
+        exercises: markedLog?.exercises
     })
 
     if (!prevWorkout) {

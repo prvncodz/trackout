@@ -7,7 +7,7 @@ const router = express.Router()
 
 //protected routes
 router.post("/create", auth, CreateLog)
-router.get("/all-logs/:userId", auth, GetAllLogs)
+router.get("/all-logs", auth, GetAllLogs)
 router.patch("/mark-completed/:logId", auth, MarkLogCompleted)
 router.get("/:logId", auth, GetLogWithId)
 router.patch("/update-log/:logId", UpdateLog)
