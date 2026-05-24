@@ -10,7 +10,7 @@ import ApiResponse from "../utils/ApiResponse.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import { DeleteFromCloud, UploadToCloud } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken"
-
+import mongoose from "mongoose"
 
 const generateAccessAndRefreshTokens = asyncHandler(async (userId) => {
     try {
@@ -98,12 +98,12 @@ const SignInUser = asyncHandler(async (req, res) => {
     }
     const AtOptions = {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 1000, //cookie's max age is 1 hour
     };
     const RtOptions = {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 3 * 24 * 60 * 60 * 1000, //cookie's max age is 3 days
     };
     return res
@@ -150,12 +150,12 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
     }
     const AtOptions = {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 1000, //cookie's max age is 1 hour
     };
     const RtOptions = {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 3 * 24 * 60 * 60 * 1000, //cookie's max age is 3 days
     };
     return res
@@ -282,39 +282,50 @@ const DeleteUser = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(400, "user is undefined")
     }
-    const [
-        allSetsDeleted,
-        allExercisesDeleted,
-        allLogsDeleted,
-        allWorkoutsDeleted,
-        allActiveDatesDeleted,
-    ] = await Promise.all([
-        Set.deleteMany({ owner: user?._id }),
-        Exercise.deleteMany({ owner: user?._id }),
-        Log.deleteMany({ owner: user?._id }),
-        CompletedWorkout.deleteMany({ owner: user?._id }),
-        Activity.deleteMany({ user: user?._id }),
-    ])
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+        const [
+            allSetsDeleted,
+            allExercisesDeleted,
+            allLogsDeleted,
+            allWorkoutsDeleted,
+            allActiveDatesDeleted,
+        ] = await Promise.all([
+            Set.deleteMany({ owner: user?._id }, { session }),
+            Exercise.deleteMany({ owner: user?._id }, { session }),
+            Log.deleteMany({ owner: user?._id }, { session }),
+            CompletedWorkout.deleteMany({ owner: user?._id }, { session }),
+            Activity.deleteMany({ user: user?._id }, { session }),
+        ])
 
-    if (
-        !allSetsDeleted.acknowledged ||
-        !allExercisesDeleted.acknowledged ||
-        !allLogsDeleted.acknowledged ||
-        !allWorkoutsDeleted.acknowledged ||
-        !allActiveDatesDeleted.acknowledged
-    ) {
-        throw new ApiError(500, "Error while deleting user data")
-    }
+        if (
+            !allSetsDeleted.acknowledged ||
+            !allExercisesDeleted.acknowledged ||
+            !allLogsDeleted.acknowledged ||
+            !allWorkoutsDeleted.acknowledged ||
+            !allActiveDatesDeleted.acknowledged
+        ) {
+            throw new ApiError(500, "Error while deleting user data")
+        }
 
-    const userDeleted = await User.findByIdAndDelete(user?._id)
-    if (!userDeleted) {
-        throw new ApiError(404, "User not found or already deleted")
+        const userDeleted = await User.findByIdAndDelete(user?._id)
+        if (!userDeleted) {
+            throw new ApiError(404, "User not found or already deleted")
+        }
+        session.commitTransaction();
+        return res
+            .status(200)
+            .json(new ApiResponse(200, userDeleted, "user deleted successfully"))
+            .clearCookie("accessToken")
+            .clearCookie("refreshToken")
+
+    } catch (error) {
+        await session.abortTransaction();
+        throw error
+    } finally {
+        await session.endSession();
     }
-    return res
-        .status(200)
-        .json(new ApiResponse(200, userDeleted, "user deleted successfully"))
-        .clearCookie("accessToken")
-        .clearCookie("refreshToken")
 })
 
 export {

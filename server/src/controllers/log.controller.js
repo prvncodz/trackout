@@ -5,6 +5,7 @@ import Log from "../models/log.model.js";
 import CompletedWorkout from "../models/completedWorkouts.model.js";
 import Set from "../models/set.model.js";
 import Exercise from "../models/exercise.model.js";
+import Activity from "../models/activity.model.js";
 import mongoose from "mongoose";
 
 const CreateLog = asyncHandler(async (req, res) => {
