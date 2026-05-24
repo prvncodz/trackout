@@ -7,13 +7,16 @@ import Exercise from "../models/exercise.model.js";
 
 const CreateSet = asyncHandler(async (req, res) => {
     const { exerciseId } = req.params
+    const user = req.user
     const { setNo, weight, reps, rest } = req.body
     if (!exerciseId) {
         throw new ApiError(400, "exercise id is required")
     }
 
-    let allItems = { exerciseId, setNo, weight, reps }
+    let allItems = { exerciseId, setNo, weight, reps, owner: user?._id }
     if (rest) allItems.rest = rest
+
+    //validate
     const input = CreateSetSchema.safeParse(allItems)
     if (!input.success) {
         throw new ApiError(400, input.error?.issues?.[0]?.message, input.error?.issues?.[0])
@@ -102,7 +105,7 @@ const UpdateSet = asyncHandler(async (req, res) => {
 
 const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
     const { setId } = req.params
-    const {isPr} = req.body
+    const { isPr } = req.body
     if (!setId) {
         throw new ApiError(400, "set id is required")
     }
@@ -111,7 +114,7 @@ const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
         throw new ApiError(500, "set not found")
     }
     set.completed = !set.completed
-    if(isPr) set.isPr = !set.isPr
+    if (isPr) set.isPr = !set.isPr
     await set.save()
     if (set.completed) {
         const todaysDate = Date.now()
