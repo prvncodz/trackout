@@ -253,9 +253,9 @@ const UserProfile = asyncHandler(async (req, res) => {
         },
         {
             $lookup: {
-                from: "activedates",
+                from: "activities",
                 localField: "_id",
-                foreignField: "user",
+                foreignField: "owner",
                 as: "activeDates"
             }
         },
@@ -265,11 +265,23 @@ const UserProfile = asyncHandler(async (req, res) => {
                     $map: {
                         input: "$activeDates",
                         as: "day",
-                        in: "$$day.createdAt"
+                        in: {
+                            $dateToString: { format: "%Y-%m-%d", date: "$$day.createdAt" },
+                        }
                     }
                 }
-            }
+            },
         },
+        {
+            $project: {
+                fullName: 1,
+                email: 1,
+                height: 1,
+                weight: 1,
+                avatar: 1,
+                activeDates: 1
+            }
+        }
     ])
     if (!userProfile || !userProfile.length) {
         throw new ApiError(400, "user not found")

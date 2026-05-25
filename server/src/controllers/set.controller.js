@@ -40,7 +40,6 @@ const CreateSet = asyncHandler(async (req, res) => {
     if (!updatedExercise) {
         throw new ApiError(500, "failed to add set to exercise")
     }
-    session.commitTransaction();
     return res
         .status(201)
         .json(new ApiResponse(201, createdSet, "set created successfully"))
@@ -96,7 +95,7 @@ const UpdateSet = asyncHandler(async (req, res) => {
         throw new ApiError(400, "no fields to update")
     }
 
-    const updatedSet = await Set.findByIdAndUpdate(setId, { $set: fieldsToUpdate }, { returnDocument: "after", runValidators: true }).lean()
+    const updatedSet = await Set.findByIdAndUpdate(setId, { $set: fieldsToUpdate }, { returnDocument: "after" }).lean()
     if (!updatedSet) {
         throw new ApiError(500, "failed to update set")
     }

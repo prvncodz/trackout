@@ -17,7 +17,7 @@ router.put("/update-user-avatar",
     upload.single("avatar"),
     UpdateUserAvatar);
 router.patch("/update-user-info", auth, UpdateAccountInfo);
-router.get("/get-user-profile", auth, UserProfile);
+router.get("/profile", auth, UserProfile);
 router.delete("/delete-user", auth, DeleteUser);
 
 export default router;

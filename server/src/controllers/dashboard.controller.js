@@ -5,7 +5,6 @@ import User from "../models/user.model.js"
 
 const DashBoardController = asyncHandler(async (req, res) => {
     const user = req.user
-    const { muscleGroup, range } = req.query
     if (!user) {
         throw new ApiError(400, "user not found")
     }
@@ -31,14 +30,15 @@ const DashBoardController = asyncHandler(async (req, res) => {
                 from: "activities",
                 localField: "_id",
                 foreignField: "owner",
+                pipeline: [
+                    {
+                        // sort the active days feilds
+                        $sort: {
+                            createdAt: -1
+                        }
+                    }
+                ],
                 as: "activeDays",
-            },
-        },
-        // sort the active days feilds
-        {
-            $sortArray: {
-                input: "$activeDays",
-                sortBy: { createdAt: -1 },
             },
         },
         // calculate user's workout consistency
@@ -182,7 +182,7 @@ const DashBoardController = asyncHandler(async (req, res) => {
                                 // after adding the estimated 1 rep max to evey set, we group the exercises by musclegroup and get the max of estimated1RepMax
                                 {
                                     $group: {
-                                        _id: { date: {$dateTrunc:{date:"$$createdAt",unit:"day"}}, musclegroup: "$musclegroup" },
+                                        _id: { date: { $dateTrunc: { date: "$$createdAt", unit: "day" } }, musclegroup: "$musclegroup" },
                                         best1RepMax: { $max: "$sets.estimated1RepMax" }
                                     }
                                 },
