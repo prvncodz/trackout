@@ -109,8 +109,8 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         const totalSets = await Log.aggregate([
             {
                 $match: {
-                    _id: new mongoose.Types.ObjectId(logId)
-                }
+                    _id: new mongoose.Types.ObjectId(logId),
+                },
             },
             {
                 $lookup: {
@@ -118,25 +118,29 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
                     localField: "exercises",
                     foreignField: "_id",
                     as: "exercises",
-                }
+                },
             },
             {
                 $addFields: {
                     noOfSets: {
-                        $map: {
-                            input: "$exercises",
-                            as: "ex",
-                            in: { $size: { $ifNull: ["$$ex.sets", []] } }
-                        }
-                    }
-                }
+                        $sum: {
+                            $map: {
+                                input: "$exercises",
+                                as: "ex",
+                                in: { $size: { $ifNull: ["$$ex.sets", []] } }
+                            },
+                        },
+                    },
+                },
             },
             {
                 $project: {
                     noOfSets: 1
-                }
-            }
+                },
+            },
         ]).session(session)
+
+        console.log(totalSets)
 
         // add log to previous workouts of user
         const prevWorkout = await CompletedWorkout.create(
@@ -144,7 +148,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
                 owner: req?.user?._id,
                 name: markedLog?.logName,
                 muscleGroup: markedLog?.muscleGroup,
-                noOfSets: totalSets[0]?.noOfSets,
+                noOfSets: totalSets?.[0]?.noOfSets,
                 exercises: markedLog?.exercises
             }],
             { session }
@@ -155,8 +159,12 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         }
 
         // add activity
-        const todaysDate = Date.now()
-        const isActiveDay = await Activity.findOne({ createdAt: todaysDate }, null, { session }).lean()
+        const start = new Date().setUTCHours(0, 0, 0, 0)
+        const end = new Date().setUTCHours(23, 59, 59, 999)
+
+        // if we have don't an activity in the same day create a new one
+        const isActiveDay = await Activity.findOne({ createdAt: { $gte: start, $lte: end } })
+
         if (!isActiveDay) {
             const newActivity = await Activity.create([{
                 owner: markedLog?.owner,

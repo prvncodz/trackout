@@ -118,8 +118,11 @@ const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
     if (isPr) set.isPr = !set.isPr
     await set.save()
     if (set.completed) {
-        const todaysDate = Date.now()
-        const isActiveDay = await Activity.findOne({ createdAt: todaysDate })
+        const start = new Date().setUTCHours(0, 0, 0, 0)
+        const end = new Date().setUTCHours(23, 59, 59, 999)
+
+        // if we have don't an activity in the same day create a new one
+        const isActiveDay = await Activity.findOne({ createdAt: { $gte: start, $lte: end } })
         if (!isActiveDay) {
             const newActivity = await Activity.create({
                 owner: set?.owner,
