@@ -41,61 +41,6 @@ const DashBoardController = asyncHandler(async (req, res) => {
                 as: "activeDays",
             },
         },
-        // calculate user's workout consistency
-        {
-            $reduce: {
-                input: "$activeDays",
-                initialValue: { streak: 0, started: false, broken: false, prevDate: null },
-                in: {
-                    // in activedates if the streak gets broken return the streak
-                    $cond: {
-                        if: "$$value.broken",
-                        then: "$$value",
-                        else: {
-                            //in activedates check if it starts with either today or yesterday. return streak 0 and broken true flag if not. if it starts with today or yesterday we increase the streak and start iterating further 
-                            $cond: {
-                                if: "$$value.started",
-                                then: {
-                                    $cond: {
-                                        if: {// previous day -1 = current day then increase the streak else we found a gap so return the streak
-                                            $eq: [
-                                                { $dateTrunc: { date: { $dateSubtract: { startDate: "$$value.prevDate", unit: "day", amount: 1 } }, unit: "day" } },
-                                                { $dateTrunc: { date: "$$this", unit: "day" } },
-                                            ]
-                                        },
-                                        then: { streak: { $add: ["$$value.streak", 1] }, started: true, broken: false, prevDate: "$$this" },
-                                        else: { streak: "$$value.streak", started: false, broken: true, prevDate: null },
-                                    },
-                                },
-                                else: {
-                                    $cond: {
-                                        if: {
-                                            $or: [
-                                                {//today
-                                                    $eq: [
-                                                        { $dateTrunc: { date: "$$this", unit: "day" } },
-                                                        { $dateTrunc: { date: "$$NOW", unit: "day" } },
-                                                    ]
-                                                },
-                                                {//yesterday
-                                                    $eq: [
-                                                        { $dateTrunc: { date: "$$this", unit: "day" } },
-                                                        { $dateTrunc: { date: { $dateSubtract: { startDate: "$$NOW", unit: "day", amount: 1 } }, unit: "day" } },
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        then: { streak: 1, started: true, broken: false, prevDate: "$$this" },
-                                        else: { streak: 0, started: false, broken: true, prevDate: null },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-                as: "streakCalc",
-            },
-        },
         {
             //all user's sets with ispr true 
             $lookup: {
@@ -133,26 +78,27 @@ const DashBoardController = asyncHandler(async (req, res) => {
                 as: "recentWorkouts"
             }
         },
-        // get user completedworkouts to calculate chart stats
+        // calculate chart stats
         {
             $lookup: {
                 from: "completedworkouts",
                 localField: "_id",
                 foreignField: "owner",
+                // perform calculations in sub-pipelines
                 pipeline: [
                     // populate exercises of completedworkouts
                     {
                         $lookup: {
                             from: "exercises",
-                            let: { userId: "$owner", createdAt: "$createdAt" },
+                            let: { userId: "$owner", createdAt: "$createdAt", exerciseIds: "$exercises" },
                             pipeline: [
                                 // get the exercises where user is the owner and musclegroup is chest, back or legs
                                 {
                                     $match: {
                                         $expr: {
                                             $and: [
-                                                { $eq: ["$owner", "$$userId"] },
-                                                { $eq: ["$musclegroup", { $in: ["chest", "back", "legs"] }] },
+                                                { $in: ["$_id", "$$exerciseIds"] },
+                                                { $in: ["$muscleGroup", ["chest", "back", "legs"]] },
                                             ],
                                         },
                                     },
@@ -179,22 +125,30 @@ const DashBoardController = asyncHandler(async (req, res) => {
                                         },
                                     },
                                 },
-                                // after adding the estimated 1 rep max to evey set, we group the exercises by musclegroup and get the max of estimated1RepMax
+                                // after adding the estimated 1 rep max to evey set, we group the exercises by musclegroup and get the max of estimated1RepMax of all the sets
                                 {
                                     $group: {
-                                        _id: { date: { $dateTrunc: { date: "$$createdAt", unit: "day" } }, musclegroup: "$musclegroup" },
-                                        best1RepMax: { $max: "$sets.estimated1RepMax" }
+                                        _id: {
+                                            muscleGroup: "$muscleGroup"
+                                        },
+                                        best1RepMax: {
+                                            $max: "$estimated1RepMax"
+                                        },
+                                        date: { $max: "$$createdAt" }
                                     }
                                 },
                                 // now we will get the average of the best1RepMax of every musclegroup
                                 {
                                     $group: {
-                                        _id: "$_id.date",
-                                        average1RepMax: { $avg: "$best1RepMax" }
+                                        _id: "$date",
+                                        average1RepMax: {
+                                            $avg: "$best1RepMax"
+                                        },
+                                        date: { $max: "$date" }
                                     }
                                 },
                                 // now we sort the docs according to date
-                                { $sort: { "$_id": -1 } },
+                                { $sort: { "_id": -1 } },
                                 // project only date and estimated1RepMax average for a day
                                 {
                                     $project: {
@@ -204,10 +158,26 @@ const DashBoardController = asyncHandler(async (req, res) => {
                                     },
                                 },
                             ],
-                            as: "chartStats"
+                            as: "Stats"
                         },
                     },
+                    // get the object out of the array
+                    { $unwind: "$Stats" },
+
+                    {
+                        $addFields: {
+                            chartStats: "$Stats",
+                        }
+                    },
+
+                    {
+                        $project: {
+                            chartStats: 1,
+                            _id: 0
+                        }
+                    }
                 ],
+                as: "userCompletedWorkouts"
             }
         },
         // add extra feilds to the docs
@@ -215,22 +185,86 @@ const DashBoardController = asyncHandler(async (req, res) => {
             $addFields: {
                 totalWorkouts: { $size: "$completedWorkouts" },
                 totalActiveDays: { $size: "$activeDays" },
-                consistencyStreak: "$streakCalc.streak",
-                totalPrs: { $size: "allPrs" },
+                consistencyStreak: {
+                    $let: {
+                        vars: {
+                            //store result object in varaible
+                            result: {
+                                // calculate user's workout consistency
+                                $reduce: {
+                                    input: "$activeDays",
+                                    initialValue: { streak: 0, started: false, broken: false, prevDate: null },
+                                    in: {
+                                        // in activedates if the streak gets broken return the streak
+                                        $cond: {
+                                            if: "$$value.broken",
+                                            then: "$$value",
+                                            else: {
+                                                //in activedates check if it starts with either today or yesterday. return streak 0 and broken true flag if not. if it starts with today or yesterday we increase the streak and start iterating further 
+                                                $cond: {
+                                                    if: "$$value.started",
+                                                    then: {
+                                                        $cond: {
+                                                            if: {// previous day -1 = current day then increase the streak else we found a gap so return the streak
+                                                                $eq: [
+                                                                    { $dateTrunc: { date: { $dateSubtract: { startDate: "$$value.prevDate", unit: "day", amount: 1 } }, unit: "day" } },
+                                                                    { $dateTrunc: { date: "$$this.createdAt", unit: "day" } },
+                                                                ]
+                                                            },
+                                                            then: { streak: { $add: ["$$value.streak", 1] }, started: true, broken: false, prevDate: "$$this.createdAt" },
+                                                            else: { streak: "$$value.streak", started: false, broken: true, prevDate: null },
+                                                        },
+                                                    },
+                                                    else: {
+                                                        $cond: {
+                                                            if: {
+                                                                $or: [
+                                                                    {//today
+                                                                        $eq: [
+                                                                            { $dateTrunc: { date: "$$this.createdAt", unit: "day" } },
+                                                                            { $dateTrunc: { date: "$$NOW", unit: "day" } },
+                                                                        ]
+                                                                    },
+                                                                    {//yesterday
+                                                                        $eq: [
+                                                                            { $dateTrunc: { date: "$$this.createdAt", unit: "day" } },
+                                                                            { $dateTrunc: { date: { $dateSubtract: { startDate: "$$NOW", unit: "day", amount: 1 } }, unit: "day" } },
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            then: { streak: 1, started: true, broken: false, prevDate: "$$this.createdAt" },
+                                                            else: { streak: 0, started: false, broken: true, prevDate: null },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        in: "$$result.streak"
+                    },
+                },
+                totalPrs: { $size: "$allPrs" },
                 activeDates: {
                     $map: {
                         input: "$activeDays",
                         as: "day",
-                        in: "$$day.createdAt"
-                    }
+                        in: {
+                            $dateToString: { format: "%Y-%m-%d", date: "$$day.createdAt" },
+                        }
+                    },
                 },
-                chartStats: "$chartStats",
+                chartStats: "$userCompletedWorkouts.chartStats",
                 recentWorkouts: "$recentWorkouts",
             },
         },
         // project the wanted dashboard stats of user
         {
             $project: {
+                _id: 0,
                 totalWorkouts: 1,
                 totalActiveDays: 1,
                 consistencyStreak: 1,
