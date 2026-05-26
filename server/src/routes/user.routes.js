@@ -12,11 +12,11 @@ router.get("/refresh-tokens", UpdateAccessAndRefreshTokens)
 //secured routes
 router.get("/current-user", auth, CurrentUser);
 router.post("/logout", auth, LogOutUser);
-router.put("/update-user-avatar",
+router.put("/update-avatar",
     auth,
     upload.single("avatar"),
     UpdateUserAvatar);
-router.patch("/update-user-info", auth, UpdateAccountInfo);
+router.patch("/update-info", auth, UpdateAccountInfo);
 router.get("/profile", auth, UserProfile);
 router.delete("/delete-user", auth, DeleteUser);
 
