@@ -41,7 +41,7 @@ const HeroSection = () => {
             </div>
             <div className="mt-10 flex items-center justify-center gap-5 px-2 md:px-0">
                 <Button
-                    onClick={() => navigate("/signin")}
+                    onClick={() => navigate("/signup")}
                     className="text-sm md:text-base"
                 >
                     Get started for free
@@ -275,7 +275,7 @@ const LandingPage = () => {
                         Log in{" "}
                     </button>
                     <Button
-                        onClick={() => navigate("/signin")}
+                        onClick={() => navigate("/signup")}
                         className="hidden md:block"
                     >
                         Get started

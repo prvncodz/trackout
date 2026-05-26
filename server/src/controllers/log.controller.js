@@ -140,7 +140,6 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
             },
         ]).session(session)
 
-        console.log(totalSets)
 
         // add log to previous workouts of user
         const prevWorkout = await CompletedWorkout.create(

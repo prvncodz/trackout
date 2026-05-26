@@ -132,7 +132,6 @@ const chartConfig = {
         color: "var(--chart-2)",
     },
 }
-
 export default function ChartAreaInteractive({ className }) {
     const [timeRange, setTimeRange] = React.useState("90d")
 

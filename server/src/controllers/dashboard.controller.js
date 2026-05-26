@@ -233,6 +233,7 @@ const DashBoardController = asyncHandler(async (req, res) => {
                                                                     }
                                                                 ]
                                                             },
+                                                            // if today or yesterday then we continue counting streak or quit
                                                             then: { streak: 1, started: true, broken: false, prevDate: "$$this.createdAt" },
                                                             else: { streak: 0, started: false, broken: true, prevDate: null },
                                                         },
