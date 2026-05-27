@@ -1,6 +1,6 @@
 import { motion } from "motion/react"
 import { useState } from "react";
-import axios from "../utils/axios.js";
+import axios from "../lib/axios.js";
 import Button from "../components/ui/Button.jsx";
 import { ToastContainer, useToast } from "../components/ui/Toast.jsx";
 import InputField from "../components/ui/Inputfield.jsx";
@@ -8,12 +8,15 @@ import gymImage from "../assets/gym-hero.jpg";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "../stores/user.store.js";
+import { userSignInSchema } from "../../../server/src/schemas/user.schemas.js";
 
 const SignInPage = () => {
     const [form, setForm] = useState({ email: "", password: "" });
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const { toasts, addToast, removeToast } = useToast();
+    const setUser = useAuth((state) => state.setUser);
+    const navigate = useNavigate()
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,22 +30,27 @@ const SignInPage = () => {
     const handleSubmit = async (e) => {
         e?.preventDefault?.();
 
-        if (Object.keys(errors).length > 0) {
-            setFieldErrors(errors);
-            return;
-        }
 
         setLoading(true);
 
         try {
-            await axios.post(`/api/auth/signin`, {
+            //validate
+            userSignInSchema.parseAsync(form);
+
+            const res = await axios.post(`/user/signin`, {
                 email: form.email,
                 password: form.password,
             });
 
-            addToast("Signed in successfully! Welcome back.", "success");
-            setForm({ email: "", password: "" });
-            setFieldErrors({});
+            if (res.status === 200) {
+                setUser(res.data?.data)
+                addToast("Signed in successfully! Welcome back.", "success");
+                setForm({ email: "", password: "" });
+                setFieldErrors({});
+                setTimeout(() => {
+                    navigate("/")
+                }, 500)
+            }
         } catch (err) {
             const message =
                 err?.response?.data?.message ||

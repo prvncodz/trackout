@@ -1,22 +1,22 @@
 import { motion } from "motion/react"
 import { useState } from "react";
-import axios from "../utils/axios.js";
+import axios from "../lib/axios.js";
 import { ToastContainer, useToast } from "../components/ui/Toast.jsx";
 import InputField from "../components/ui/Inputfield.jsx";
 import gymImage from "../assets/gym-hero.jpg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useNavigation } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Button from "@/components/ui/Button.jsx";
+import { userSignUpSchema } from "../../../server/src/schemas/user.schemas.js"
 
-const SignInPage = () => {
-    const [form, setForm] = useState({ email: "", password: "" });
+const SignUpPage = () => {
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const { toasts, addToast, removeToast } = useToast();
-
+    const [form, setForm] = useState({ fullname: "", email: "", password: "", height: "", weight: "" })
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
-        return
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
         // Clear field error on change
@@ -27,28 +27,33 @@ const SignInPage = () => {
 
     const handleSubmit = async (e) => {
         e?.preventDefault?.();
-        return
-
-        if (Object.keys(errors).length > 0) {
-            setFieldErrors(errors);
-            return;
-        }
 
         setLoading(true);
 
         try {
-            await axios.post(`/api/auth/signin`, {
+            //validate before api
+            userSignUpSchema.parseAsync(form);
+            const res = await axios.post(`/user/signup`, {
+                fullname: form.fullname,
                 email: form.email,
                 password: form.password,
+                height: parseInt(form.height),
+                weight: parseInt(form.weight)
             });
-
-            addToast("Signed in successfully! Welcome back.", "success");
-            setForm({ email: "", password: "" });
-            setFieldErrors({});
+            if (res.status === 201) {
+                addToast("Signed up successfully!", "success");
+                setForm({ fullname: "", email: "", password: "", height: "", weight: "" });
+                setFieldErrors({});
+                setTimeout(() => {
+                    navigate("/")
+                }, 500)
+            }
         } catch (err) {
+            console.log(err.message)
             const message =
                 err?.response?.data?.message ||
                 err?.response?.data?.error ||
+                err?.message ||
                 "Something went wrong. Please try again.";
             addToast(message, "error");
         } finally {
@@ -58,7 +63,7 @@ const SignInPage = () => {
 
     return (
         <>
-            <div className="hidden h-screen min-h-[520px] w-full overflow-hidden rounded-2xl bg-white shadow-sm md:flex">
+            <div className="hidden h-dvh min-h-[520px] w-full overflow-hidden rounded-2xl bg-white shadow-sm md:flex">
                 <div className="flex w-full flex-1 flex-col items-start justify-center px-12 py-14">
                     <FormContent
                         form={form}
@@ -148,21 +153,21 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                     <InputField
                         id="height"
                         name="height"
-                        type="text"
+                        type="number"
                         placeholder="Height (cm)"
-                        value={form.email}
+                        value={form.height}
                         onChange={onChange}
-                        error={fieldErrors.email}
+                        error={fieldErrors.height}
                         disabled={loading}
                     />
                     <InputField
-                        id="email"
-                        name="email"
-                        type="email"
+                        id="weight"
+                        name="weight"
+                        type="number"
                         placeholder="Weight (kg)"
-                        value={form.email}
+                        value={form.weight}
                         onChange={onChange}
-                        error={fieldErrors.email}
+                        error={fieldErrors.weight}
                         disabled={loading}
                     />
                 </div>
@@ -176,7 +181,7 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                 {loading ? (
                     <span className="flex items-center justify-center gap-2">
                         <Spinner />
-                        Signing in...
+                        Signing up...
                     </span>
                 ) : (
                     "Create Account"
@@ -243,4 +248,4 @@ const Backbtn = () => {
     );
 };
 
-export default SignInPage;
+export default SignUpPage;

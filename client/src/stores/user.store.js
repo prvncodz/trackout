@@ -5,10 +5,8 @@ const useAuth = create((set) => ({
     user: {},
     errors: null,
     isLoading: false,
-    userId: null,
     setIsUserLogged: (bool) => set({ isUserLogged: bool }),
     setUser: (user) => set({ user: user }),
-    setUserId: (id) => set({ userId: id }),
 }));
 
 export { useAuth };

@@ -8,13 +8,29 @@ import SigninPage from "./pages/SigninPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import { useAuth } from "./stores/user.store.js";
 import { useEffect } from "react";
+import userService from "./services/user.service.js"
 
 function App() {
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged);
+    const setUser = useAuth((state) => state.setUser)
     const isUserLogged = useAuth((state) => state.isUserLogged);
-    useEffect(() => {
-    }, [setIsUserLogged]);
 
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const res = await userService.getUser();
+                if (res.status === 200) {
+                    setUser(res?.data?.data)
+                    setIsUserLogged(true)
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        fetchUser()
+    }, []);
+
+    useEffect(() => { }, [isUserLogged])
     return (
         <BrowserRouter>
             <Routes>
