@@ -250,8 +250,8 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
     const [exercise, setExercise] = useState(Curexercise)
     const [isCreating, setIsCreating] = useState(false)
     const [toBeUpdatedSets, setToBeUpdatedSets] = useState([])
+    const { addToast, toasts, removeToast } = useToast();
 
-    const { addToast } = useToast();
     async function toggleDone(id) {
         setExercise((prev) => ({
             ...prev,
@@ -276,15 +276,25 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
         }));
         const listed = toBeUpdatedSets.some(obj => obj._id === id)
         if (!listed) {
-            setToBeUpdatedSets(prev => [...prev, set])
+            setToBeUpdatedSets(prev => [...prev, { ...set, [field]: value }])
+        } else {
+            setToBeUpdatedSets(prev => prev.map(obj => obj._id === id ? { ...set, [field]: value } : obj))
         }
     };
 
     async function handleUpdateSet() {
         try {
             toBeUpdatedSets.map(async (set) => {
-                await axios.patch(`/set/update-set/${set?._id}`, set)
+                await axios.patch(`/set/update-set/${set?._id}`, {
+                    reps: set?.reps,
+                    weight: set?.weight,
+                    rest: set?.rest,
+                })
             })
+            setToBeUpdatedSets([])
+            setEditMode(false)
+            setIsOpen(false)
+            addToast("Set updated successfully", "success")
         } catch (err) {
             const message = err.response?.data.message || err.message
             addToast(message, "error")
@@ -541,9 +551,9 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
                         {editMode ? (
                             <input
                                 type="number"
-                                value={set?.weight}
+                                value={set.weight}
                                 onChange={(e) =>
-                                    updateSet(set, set.id, "kg", Number(e.target.value))
+                                    updateSet(set, set._id, "weight", Number(e.target.value))
                                 }
                                 className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
                             />
@@ -587,6 +597,8 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
 
 const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
     const [log, setLog] = useState(null);
+    const { toasts, removeToast } = useToast();
+
     useEffect(() => {
         async function getLogById() {
             try {
@@ -654,6 +666,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
                 </div>
 
             </BottomSheet>
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
         </div>
     );
 };
