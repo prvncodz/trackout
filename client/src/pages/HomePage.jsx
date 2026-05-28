@@ -18,6 +18,7 @@ import {
     IconCopy,
     IconDots,
     IconDotsVertical,
+    IconLogs,
     IconNotebook,
     IconNotes,
     IconPencil,
@@ -25,12 +26,11 @@ import {
     IconPlaylistAdd,
     IconPlus,
     IconTrash,
-    IconTrophy,
 } from "@tabler/icons-react";
 import SideBarLayout from "../components/layout/SideBar.jsx";
 import MyButton from "../components/ui/Button.jsx";
 import { Button } from "../components/ui/button.jsx";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import BottomSheet from "@/components/ui/BottomSheet.jsx";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
@@ -182,7 +182,7 @@ const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
         <div
             className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`}
         >
-            <IconNotebook
+            <IconLogs
                 className="text-neutral-500"
                 onClick={() =>
                     setActiveLog((p) =>
