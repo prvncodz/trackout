@@ -661,7 +661,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
             }
         }
         getLogById()
-    }, [])
+    }, [log])
 
     async function handleCreateExercise(e) {
         e.preventDefault();
@@ -679,17 +679,18 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
         }
     }
 
-    // async function handleSaveLog(content) {
-    //     try {
-    //         console.log("content", content);
-    //         const res = await axios.post(`/log/update/${log._id}`, { content });
-    //         if (res.status === 200) {
-    //             console.log("toast gets popped up");
-    //         }
-    //     } catch (err) {
-    //         console.log("error")
-    //     }
-    // }
+    async function handleMarkLogCompleted() {
+        try {
+            const res = await axios.patch(`/log/mark-completed/${log._id}`);
+            setLog(prev => ({ ...prev, completedAt: res.data?.data?.completedAt }))
+        } catch (err) {
+            const message =
+                err?.response?.data?.message ||
+                err?.message
+
+        }
+    }
+
     //
     // const handleUpdate = useCallback(debounce((newContent) => handleSaveLog(newContent), 3000), [log?.id]);
     //
@@ -753,7 +754,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
                                 </Dialog>
                             }
                             {log?.exercises?.length > 0 &&
-                                <Button variant="outline" disabled={log?.completedAt}><IconCircleDashedCheck size={18} /> {log?.completedAt ? "Completed" : "Mark as Completed"}</Button>
+                                <Button variant="outline" disabled={log?.completedAt} onClick={handleMarkLogCompleted}><IconCircleDashedCheck size={18} /> {log?.completedAt ? "Completed" : "Mark as Completed"}</Button>
                             }
                         </div>
                     </div>
