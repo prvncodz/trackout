@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import {
     IconCheck,
+    IconCircleDashedCheck,
     IconCircleDashedPlus,
     IconClipboardText,
     IconCopy,
@@ -164,19 +165,19 @@ const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
 
 
 const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
-    const [open, setOpen] = useState(false)
     const { addToast, toasts, removeToast } = useToast()
-
+    const [isCreating, setIsCreating] = useState(false)
     useEffect(() => { }, [logs])
 
     async function handleCreateLog(e) {
         e.preventDefault();
         const name = e.target.name.value
         try {
-            const res = await logService.create({ logName: name })
+            const res = await axios.post(`/log/create`, { logName: name })
             if (res.status === 201) {
                 addToast("Log created successfully", "success")
                 setAllLogs(prev => [...prev, res.data?.data])
+                setIsCreating(false)
             }
         } catch (err) {
             const message =
@@ -187,9 +188,9 @@ const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
     }
     return (
         <div className="border-line-color relative flex h-screen w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180">
-            <Dialog open={open} onOpenChange={setOpen}>
+            <Dialog open={isCreating} onOpenChange={setIsCreating}>
                 <DialogTrigger asChild>
-                    <MyButton className="hidden lg:flex" onClick={() => setOpen(true)}>
+                    <MyButton className="hidden lg:flex">
                         Create
                         <span>
                             <IconPencilPlus size={18} className="ml-2" />
@@ -245,7 +246,7 @@ function debounce(fn, delay) {
     };
 }
 
-const ExerciseCard = ({ Curexercise, logId, setExercises, className = "" }) => {
+const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", completed }) => {
     const [editMode, setEditMode] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [exercise, setExercise] = useState(Curexercise)
@@ -416,12 +417,14 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "" }) => {
                     }
                     {/* Menu */}
                     <div className="dropdown dropdown-end relative ">
-                        <button
-                            className="cursor-pointer rounded-xl p-2 transition bg-gray-50 size-10 flex justify-center items-center relative"
-                            onClick={() => setIsOpen(!isOpen)}
-                        >
-                            <IconDots size={20} />
-                        </button>
+                        {!completed &&
+                            <button
+                                className="cursor-pointer rounded-xl p-2 transition bg-gray-50 size-10 flex justify-center items-center relative"
+                                onClick={() => setIsOpen(!isOpen)}
+                            >
+                                <IconDots size={20} />
+                            </button>
+                        }
                         {isOpen &&
                             <motion.div
 
@@ -702,47 +705,55 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
                         {
                             exercises?.length > 0 &&
                             exercises?.map((exercise) => (
-                                <ExerciseCard Curexercise={exercise} logId={log?._id} setExercises={setExercises} key={exercise._id} />
+                                <ExerciseCard
+                                    Curexercise={exercise}
+                                    logId={log?._id}
+                                    setExercises={setExercises}
+                                    key={exercise._id}
+                                    completed={log?.completedAt}
+                                />
                             ))
                         }
                         <div className="flex gap-3">
 
-                            <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
-                                <DialogTrigger asChild>
+                            {!log?.completedAt &&
+                                <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
+                                    <DialogTrigger asChild>
 
-                                    <Button variant="outline"><IconCircleDashedPlus size={18} /> Add Exercise</Button>
+                                        <Button variant="outline"><IconCircleDashedPlus size={18} /> Add Exercise</Button>
 
-                                </DialogTrigger>
-                                <DialogContent className="sm:max-w-sm">
-                                    <DialogHeader>
-                                        <DialogTitle>Add Exercise</DialogTitle>
-                                        <DialogDescription>
-                                            Add a new Exercise to log. Click save when you&apos;re
-                                            done.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <form onSubmit={handleCreateExercise}>
-                                        <FieldGroup>
-                                            <Field>
-                                                <Label htmlFor="name">Name</Label>
-                                                <Input id="name" name="name" defaultValue="" />
-                                            </Field>
-                                            <Field>
-                                                <Label htmlFor="muscleGroup">MuscleGroup</Label>
-                                                <Input id="muscleGroup" name="muscleGroup" defaultValue="" />
-                                            </Field>
-                                        </FieldGroup>
-                                        <DialogFooter className="mt-7">
-                                            <DialogClose asChild>
-                                                <Button variant="outline">Cancel</Button>
-                                            </DialogClose>
-                                            <Button type="submit">Save Changes</Button>
-                                        </DialogFooter>
-                                    </form>
-                                </DialogContent>
-                            </Dialog>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-sm">
+                                        <DialogHeader>
+                                            <DialogTitle>Add Exercise</DialogTitle>
+                                            <DialogDescription>
+                                                Add a new Exercise to log. Click save when you&apos;re
+                                                done.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <form onSubmit={handleCreateExercise}>
+                                            <FieldGroup>
+                                                <Field>
+                                                    <Label htmlFor="name">Name</Label>
+                                                    <Input id="name" name="name" defaultValue="" />
+                                                </Field>
+                                                <Field>
+                                                    <Label htmlFor="muscleGroup">MuscleGroup</Label>
+                                                    <Input id="muscleGroup" name="muscleGroup" defaultValue="" />
+                                                </Field>
+                                            </FieldGroup>
+                                            <DialogFooter className="mt-7">
+                                                <DialogClose asChild>
+                                                    <Button variant="outline">Cancel</Button>
+                                                </DialogClose>
+                                                <Button type="submit">Save Changes</Button>
+                                            </DialogFooter>
+                                        </form>
+                                    </DialogContent>
+                                </Dialog>
+                            }
                             {log?.exercises?.length > 0 &&
-                                <Button variant="outline"><IconCircleDashedPlus size={18} /> Mark as Completed</Button>
+                                <Button variant="outline" disabled={log?.completedAt}><IconCircleDashedCheck size={18} /> {log?.completedAt ? "Completed" : "Mark as Completed"}</Button>
                             }
                         </div>
                     </div>
@@ -761,9 +772,58 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
                         {
                             exercises?.length > 0 &&
                             exercises?.map((exercise) => (
-                                <ExerciseCard Curexercise={exercise} logId={log?._id} setExercises={setExercises} key={exercise._id} />
+                                <ExerciseCard
+                                    Curexercise={exercise}
+                                    logId={log?._id}
+                                    setExercises={setExercises}
+                                    key={exercise._id}
+                                    completed={log?.completedAt}
+                                />
                             ))
                         }
+
+                        <div className="flex gap-3">
+
+                            {!log?.completedAt &&
+                                <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
+                                    <DialogTrigger asChild>
+
+                                        <Button variant="outline"><IconCircleDashedPlus size={18} /> Add Exercise</Button>
+
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-sm">
+                                        <DialogHeader>
+                                            <DialogTitle>Add Exercise</DialogTitle>
+                                            <DialogDescription>
+                                                Add a new Exercise to log. Click save when you&apos;re
+                                                done.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <form onSubmit={handleCreateExercise}>
+                                            <FieldGroup>
+                                                <Field>
+                                                    <Label htmlFor="name">Name</Label>
+                                                    <Input id="name" name="name" defaultValue="" />
+                                                </Field>
+                                                <Field>
+                                                    <Label htmlFor="muscleGroup">MuscleGroup</Label>
+                                                    <Input id="muscleGroup" name="muscleGroup" defaultValue="" />
+                                                </Field>
+                                            </FieldGroup>
+                                            <DialogFooter className="mt-7">
+                                                <DialogClose asChild>
+                                                    <Button variant="outline">Cancel</Button>
+                                                </DialogClose>
+                                                <Button type="submit">Save Changes</Button>
+                                            </DialogFooter>
+                                        </form>
+                                    </DialogContent>
+                                </Dialog>
+                            }
+                            {log?.exercises?.length > 0 &&
+                                <Button variant="outline" disabled={log?.completedAt}><IconCircleDashedCheck size={18} /> {log?.completedAt ? "Completed" : "Mark as Completed"}</Button>
+                            }
+                        </div>
                     </div>
 
                 </div>
