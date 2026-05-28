@@ -51,7 +51,9 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
     async function HandleDeleteLog() {
         try {
             await axios.delete(`/log/delete/${log._id}`)
-            setAllLogs(prev => prev.filter((log) => log._id !== log._id))
+            setAllLogs(prev => prev.filter((l) => l._id !== log._id))
+            setShowDeleteAlert(false)
+            setIsOpen(false)
         } catch (err) {
             const message =
                 err?.response?.data?.message ||
@@ -137,9 +139,9 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
             </button>
 
 
-            <AlertDialog>
+            <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
                 <AlertDialogTrigger asChild>
-                    <button className="flex items-center gap-2 rounded-xl px-3 py-2 w-full text-sm text-red-500 hover:bg-red-50">
+                    <button className="flex items-center gap-2 rounded-xl px-3 py-2 w-full text-sm text-red-500 hover:bg-red-50" onClick={() => setShowDeleteAlert(true)}>
                         <IconTrash size={18} />
                         Delete log
                     </button>
@@ -154,9 +156,9 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
                             This will permanently delete this workout log.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <AlertDialogFooter>
+                    <AlertDialogFooter >
                         <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                        <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+                        <AlertDialogAction variant="destructive" onClick={HandleDeleteLog}>Delete</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
