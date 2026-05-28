@@ -41,7 +41,7 @@ const UserInfo = ({ avatarUrl, fullName }) => {
             console.log(err)
         }
     }
-    return <div className="border-t border-gray-100 px-3 py-4" >
+    return <div className="border-t border-gray-100 px-3 py-4 flex justify-between items-center" >
         <div className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50">
             {avatarUrl ? (
                 <img

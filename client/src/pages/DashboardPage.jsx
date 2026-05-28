@@ -18,7 +18,6 @@ const Greetings = () => {
 }
 const Cards = () => {
     const userStats = useStats((state) => state.stats);
-    console.log("userStats", userStats)
     const stats = [
         { label: "Active Days", value: userStats?.totalActiveDays ?? "—", icon: Activity, trending: false, trendingValue: 12 },
         { label: "Current Streak", value: userStats?.consistencyStreak ?? "—", icon: IconFlameFilled, trending: true, trendingValue: 14 },
