@@ -340,6 +340,20 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
 
     }
 
+    async function handleDeleteSet(id) {
+        try {
+            await axios.delete(`/set/delete/${id}/${Curexercise?._id}`)
+            setExercise((prev) => ({
+                ...prev,
+                sets: prev.sets.filter((set) => set._id !== id),
+            }));
+            addToast("Set deleted successfully", "success")
+        } catch (err) {
+            const message = err.response?.data.message || err.message
+            addToast(message, "error")
+        }
+    }
+
     return (
         <div className={`w-full max-w-3xl  bg-neutral-50 p-5  ${className}`}>
             {/* Header */}
@@ -520,13 +534,6 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
                 </div>
             </div>
 
-            {/* PB */}
-            {/* <div className="mt-5 flex items-center gap-2 text-sm text-neutral-700"> */}
-            {/*     <IconNotes size={18} className="text-neutral-500" /> */}
-            {/*     <span> */}
-            {/*         {exercise.pb} is your PB */}
-            {/*     </span> */}
-            {/* </div> */}
 
             {/* Table */}
             <div className="mt-6 overflow-hidden rounded-2xl border border-neutral-100">
@@ -536,9 +543,11 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
                     <span>Reps</span>
                     <span>Kg</span>
                     <span>Rest</span>
-                    <span className="flex justify-center">
-                        <IconCheck size={18} />
-                    </span>
+                    {!editMode &&
+                        <span className="flex justify-center">
+                            <IconCheck size={18} />
+                        </span>
+                    }
                 </div>
 
                 {/* Rows */}
@@ -592,18 +601,23 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
                             <span>{set.rest}</span>
                         )}
 
-                        {/* Done */}
-                        <div className="flex justify-center">
-                            <button
-                                onClick={() => toggleDone(set._id)}
-                                className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.completed
-                                    ? "border-black bg-black text-white"
-                                    : "border-neutral-300"
-                                    }`}
-                            >
-                                {set.completed && <IconCheck size={14} />}
-                            </button>
-                        </div>
+                        {editMode ?
+                            <div onClick={() => handleDeleteSet(set._id)}>
+                                <IconTrash size={18} className="flex items-center gap-2 text-sm text-red-500 hover:bg-red-50" />
+                            </div>
+                            :
+                            <div className="flex justify-center">
+                                <button
+                                    onClick={() => toggleDone(set._id)}
+                                    className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.completed
+                                        ? "border-black bg-black text-white"
+                                        : "border-neutral-300"
+                                        }`}
+                                >
+                                    {set.completed && <IconCheck size={14} />}
+                                </button>
+                            </div>
+                        }
                     </div>
                 ))}
             </div>
