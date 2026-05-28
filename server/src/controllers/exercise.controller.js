@@ -68,7 +68,7 @@ const DeleteExerciseFromLog = asyncHandler(async (req, res) => {
     }
     const session = await mongoose.startSession();
     try {
-
+        session.startTransaction();
         const exercise = await Exercise.findById(exerciseId, null, { session }).lean()
 
         if (!exercise) {

@@ -328,7 +328,7 @@ const DeleteUser = asyncHandler(async (req, res) => {
         if (!userDeleted) {
             throw new ApiError(404, "User not found or already deleted")
         }
-        session.commitTransaction();
+        await session.commitTransaction();
         return res
             .status(200)
             .json(new ApiResponse(200, userDeleted, "user deleted successfully"))

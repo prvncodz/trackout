@@ -45,9 +45,19 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
     const [editing, setEditing] = useState(false)
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
-    function handleDuplicateLog() {
-        setAllLogs(prev => [...prev, log]);
+    async function handleDuplicateLog() {
+        try {
+            const res = await axios.post(`/log/duplicate/${log._id}`)
+            setAllLogs(prev => [...prev, res?.data?.data])
+            setIsOpen(false)
+        } catch (err) {
+            const message =
+                err?.response?.data?.message ||
+                err?.message
+            // addToast(message, "error")
+        }
     }
+
     async function HandleDeleteLog() {
         try {
             await axios.delete(`/log/delete/${log._id}`)
@@ -697,7 +707,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
             }
         }
         getLogById()
-    }, [log])
+    }, [isActive])
 
     async function handleCreateExercise(e) {
         e.preventDefault();

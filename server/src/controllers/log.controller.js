@@ -72,7 +72,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
 
     const session = await mongoose.startSession();
     try {
-        await session.startTransaction();
+        session.startTransaction();
         //
         //check if log already marked
         const log = await Log.findOne(
@@ -255,7 +255,7 @@ const DeleteLog = asyncHandler(async (req, res) => {
     }
     const session = await mongoose.startSession();
     try {
-
+        session.startTransaction();
         //get log and populate the exercises
         const log = await Log.aggregate([
             {
@@ -302,13 +302,13 @@ const DeleteLog = asyncHandler(async (req, res) => {
         if (!deletedLog) {
             throw new ApiError(500, "failed to delete log")
         }
-        session.commitTransaction();
+        await session.commitTransaction();
         return res.status(200).json(new ApiResponse(200, log[0], "log deleted successfully"))
     } catch (error) {
-        session.abortTransaction();
+        await session.abortTransaction();
         throw error
     } finally {
-        session.endSession();
+        await session.endSession();
     }
 })
 
@@ -317,18 +317,107 @@ const DuplicateLog = asyncHandler(async (req, res) => {
     if (!logId) {
         throw new ApiError(400, "log id is required")
     }
-    const log = await Log.findById(logId).lean()
-    if (!log) {
-        throw new ApiError(404, "log not found")
+    const session = await mongoose.startSession();
+    let newLog;
+    try {
+        session.startTransaction();
+        const log = await Log.findById(logId, null, { session }).lean()
+        if (!log) {
+            throw new ApiError(404, "log not found")
+        }
+        const { _id, __v, completedAt, createdAt, updatedAt, exercises, ...copy } = log
+        newLog = await Log.create([copy], { session })
+        if (!newLog[0]) {
+            throw new ApiError(500, "failed to create log")
+        }
+        await Promise.all(exercises.map(async (e) => {
+
+            const exercise = await Exercise.findById(e._id, null, { session }).lean()
+            const { _id, __v, createdAt, updatedAt, sets, ...exerciseCopy } = exercise
+
+            exerciseCopy.logId = newLog[0]?._id
+
+            const newExercise = await Exercise.create([exerciseCopy], { session })
+            if (!newExercise[0]) {
+                throw new ApiError(500, "failed to create exercise copies")
+            }
+            //
+            //add exercise to log
+            const updatedLog = await Log.findByIdAndUpdate(
+                newLog[0]?._id,
+                { $push: { exercises: newExercise[0]?._id } },
+                { returnDocument: "after", runValidators: true, session }
+            ).lean()
+            if (!updatedLog) {
+                throw new ApiError(500, "failed to add exercise to log")
+            }
+
+            await Promise.all(sets.map(async (s) => {
+                const set = await Set.findById(s._id, null, session).lean()
+                const { _id, __v, createdAt, updatedAt, completed, ...setCopy } = set
+                setCopy.exerciseId = newExercise[0]?._id
+                setCopy.completed = false
+                setCopy.isPr = false
+                const newSet = await Set.create([setCopy], { session })
+                if (!newSet[0]) {
+                    throw new ApiError(500, "failed to create sets copies")
+                }
+                //add set to the exercise
+                const updatedExercise = await Exercise.findByIdAndUpdate(
+                    newExercise[0]?._id,
+                    {
+                        $push: {
+                            sets: newSet[0]?._id
+                        }
+                    },
+                    { returnDocument: "after", runValidators: true, session }
+                ).lean()
+                if (!updatedExercise) {
+                    throw new ApiError(500, "failed to add set to exercise")
+                }
+
+            }))
+        }))
+
+        const dupelog = await Log.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(newLog[0]?._id)
+                }
+            },
+            {
+                $lookup: {
+                    from: "exercises",
+                    localField: "exercises",
+                    foreignField: "_id",
+                    as: "exercises",
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "sets",
+                                localField: "sets",
+                                foreignField: "_id",
+                                as: "sets"
+                            }
+                        }
+                    ]
+                }
+            },
+        ]).session(session)
+
+        if (!dupelog || !dupelog.length) {
+            throw new ApiError(400, "log not found")
+        }
+        await session.commitTransaction();
+        return res
+            .status(201)
+            .json(new ApiResponse(201, dupelog[0], "duplicate log created successfully"))
+    } catch (error) {
+        await session.abortTransaction();
+        throw error
+    } finally {
+        await session.endSession();
     }
-    const { _id, completedAt, createdAt, updatedAt, ...copy } = log
-    const newLog = await Log.create(copy)
-    if (!newLog) {
-        throw new ApiError(400, "failed to create log")
-    }
-    return res
-        .status(201)
-        .json(new ApiResponse(201, newLog, "duplicate log created successfully"))
 })
 
 

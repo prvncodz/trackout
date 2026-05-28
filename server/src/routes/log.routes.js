@@ -10,8 +10,8 @@ router.post("/create", auth, CreateLog)
 router.get("/all-logs", auth, GetAllLogs)
 router.patch("/mark-completed/:logId", auth, MarkLogCompleted)
 router.get("/:logId", auth, GetLogWithId)
-router.patch("/update-log/:logId", UpdateLog)
-router.delete("/delete-log/:logId", auth, DeleteLog)
-router.post("/duplicate-log/:logId", auth, DuplicateLog)
+router.patch("/update/:logId", UpdateLog)
+router.delete("/delete/:logId", auth, DeleteLog)
+router.post("/duplicate/:logId", auth, DuplicateLog)
 
 export default router
