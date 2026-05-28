@@ -41,9 +41,41 @@ import { ToastContainer, useToast } from "../components/ui/Toast.jsx";
 import axios from "../lib/axios.js";
 import CreateSetSchema from "../../../server/src/schemas/set.schema.js";
 
-const Popup = ({ log, setAllLogs }) => {
+const Popup = ({ log, setIsOpen, setAllLogs }) => {
+    const [editing, setEditing] = useState(false)
+    const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+
     function handleDuplicateLog() {
         setAllLogs(prev => [...prev, log]);
+    }
+    async function HandleDeleteLog() {
+        try {
+            await axios.delete(`/log/delete/${log._id}`)
+            setAllLogs(prev => prev.filter((log) => log._id !== log._id))
+        } catch (err) {
+            const message =
+                err?.response?.data?.message ||
+                err?.message
+            // addToast(message, "error")
+        }
+    }
+    async function handleEditLog(e) {
+        e.preventDefault();
+        const name = e.target.name.value
+        try {
+            const res = await axios.patch(`/log/update/${log._id}`, { logName: name })
+            if (res.status === 200) {
+                setAllLogs(prev => prev.map(obj => obj._id === log._id ? { ...obj, logName: name } : obj))
+                setEditing(false)
+                setIsOpen(false)
+            }
+        } catch (err) {
+            const message =
+                err?.response?.data?.message ||
+                err?.message
+            // addToast(message, "error")
+
+        }
     }
     return (
         <motion.ul
@@ -61,13 +93,14 @@ const Popup = ({ log, setAllLogs }) => {
             }}
         >
 
-            <Dialog>
+            <Dialog open={editing} onOpenChange={setEditing}>
                 <DialogTrigger asChild>
                     <button
                         className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 w-full"
+                        onClick={() => setEditing(true)}
                     >
                         <IconPencil size={18} />
-                        Edit Log
+                        Edit log
                     </button>
 
                 </DialogTrigger>
@@ -79,14 +112,14 @@ const Popup = ({ log, setAllLogs }) => {
                             done.
                         </DialogDescription>
                     </DialogHeader>
-                    <form>
+                    <form onSubmit={handleEditLog}>
                         <FieldGroup>
                             <Field>
-                                <Label htmlFor="name-1">Name</Label>
-                                <Input id="name-1" name="name" defaultValue={log?.name} />
+                                <Label htmlFor="name">Name</Label>
+                                <Input id="name" name="name" defaultValue={log?.logName} />
                             </Field>
                         </FieldGroup>
-                        <DialogFooter>
+                        <DialogFooter className="mt-7">
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
@@ -100,7 +133,7 @@ const Popup = ({ log, setAllLogs }) => {
                 onClick={handleDuplicateLog}
             >
                 <IconCopy size={18} />
-                Duplicate Log
+                Duplicate log
             </button>
 
 
@@ -108,7 +141,7 @@ const Popup = ({ log, setAllLogs }) => {
                 <AlertDialogTrigger asChild>
                     <button className="flex items-center gap-2 rounded-xl px-3 py-2 w-full text-sm text-red-500 hover:bg-red-50">
                         <IconTrash size={18} />
-                        Delete Log
+                        Delete log
                     </button>
                 </AlertDialogTrigger>
                 <AlertDialogContent size="sm">
@@ -157,7 +190,7 @@ const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
             </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
-                {isOpen && <Popup log={log} setAllLogs={setAllLogs} />}
+                {isOpen && <Popup log={log} setIsOpen={setIsOpen} setAllLogs={setAllLogs} />}
             </div>
         </div>
     );
@@ -167,6 +200,7 @@ const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
 const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
     const { addToast, toasts, removeToast } = useToast()
     const [isCreating, setIsCreating] = useState(false)
+
     useEffect(() => { }, [logs])
 
     async function handleCreateLog(e) {
