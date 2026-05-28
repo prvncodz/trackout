@@ -173,6 +173,8 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
 
 const UpdateUserAvatar = asyncHandler(async (req, res) => {
     const filePath = req.file?.path
+    console.log("filePath", filePath)
+    console.log("req.file", req.file)
     if (!filePath) {
         throw new ApiError(400, "file doesn't exists")
     }
@@ -225,6 +227,10 @@ const UpdateAccountInfo = asyncHandler(async (req, res) => {
         UpdatedFields.weight = weight;
     }
 
+    if (!UpdatedFields || Object.keys(UpdatedFields).length === 0 || UpdatedFields.length === 0) {
+        throw new ApiError(400, "nothing to update");
+    }
+
     const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
@@ -241,7 +247,7 @@ const UpdateAccountInfo = asyncHandler(async (req, res) => {
 });
 
 
-const UserProfile = asyncHandler(async (req, res) => {
+const UserActiveDates = asyncHandler(async (req, res) => {
     const user = req.user;
     if (!user) {
         throw new ApiError(400, "user is undefined")
@@ -275,11 +281,7 @@ const UserProfile = asyncHandler(async (req, res) => {
         },
         {
             $project: {
-                fullName: 1,
-                email: 1,
-                height: 1,
-                weight: 1,
-                avatar: 1,
+                _id: 0,
                 activeDates: 1
             }
         }
@@ -287,7 +289,7 @@ const UserProfile = asyncHandler(async (req, res) => {
     if (!userProfile || !userProfile.length) {
         throw new ApiError(400, "user not found")
     }
-    return res.status(200).json(new ApiResponse(200, userProfile[0], "user profile found successfully"))
+    return res.status(200).json(new ApiResponse(200, userProfile[0], "fetched user activity successfully"))
 })
 
 const DeleteUser = asyncHandler(async (req, res) => {
@@ -349,6 +351,6 @@ export {
     UpdateAccessAndRefreshTokens,
     UpdateUserAvatar,
     UpdateAccountInfo,
-    UserProfile,
+    UserActiveDates,
     DeleteUser
 }

@@ -3,6 +3,7 @@ import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import Log from "../models/log.model.js";
+import Set from "../models/set.model.js";
 import mongoose from "mongoose";
 
 const AddExerciseToLog = asyncHandler(async (req, res) => {

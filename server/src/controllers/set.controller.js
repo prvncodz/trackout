@@ -14,14 +14,17 @@ const CreateSet = asyncHandler(async (req, res) => {
         throw new ApiError(400, "exercise id is required")
     }
 
-    let allItems = { exerciseId, setNo, weight, reps, owner: user?._id }
+    let allItems = { setNo, weight, reps, owner: user?._id }
     if (rest) allItems.rest = rest
 
     //validate
     const input = CreateSetSchema.safeParse(allItems)
+
     if (!input.success) {
-        throw new ApiError(400, input.error?.issues?.[0]?.message, input.error?.issues?.[0])
+        throw new ApiError(400, input.error?.issues?.[0]?.message)
     }
+    allItems.exerciseId = exerciseId
+
     //create set
     const createdSet = await Set.create(allItems)
     if (!createdSet) {

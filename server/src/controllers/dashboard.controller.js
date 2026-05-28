@@ -73,8 +73,93 @@ const DashBoardController = asyncHandler(async (req, res) => {
                     // limit by 5 docs
                     {
                         $limit: 5
-                    }
-                ],
+                    },
+                    {
+                        $addFields: {
+                            timeAgo: {
+                                $let: {
+                                    vars: {
+                                        dif: {
+                                            $dateDiff: {
+                                                startDate: "$createdAt",
+                                                endDate: "$$NOW",
+                                                unit: "millisecond"
+                                            }
+                                        }
+                                    },
+                                    in: {
+                                        $let: {
+                                            vars: {
+                                                seconds: { $floor: { $divide: ["$$dif", 1000] } },
+                                                minutes: { $floor: { $divide: ["$$dif", 60000] } },
+                                                hours: { $floor: { $divide: ["$$dif", 3600000] } },
+                                                days: { $floor: { $divide: ["$$dif", 86400000] } },
+                                                months: { $floor: { $divide: [{ $floor: { $divide: ["$$dif", 86400000] } }, 30] } },
+                                                years: { $floor: { $divide: [{ $floor: { $divide: ["$$dif", 86400000] } }, 365] } }
+                                            },
+                                            in: {
+                                                $switch: {
+                                                    branches: [
+                                                        {
+                                                            case: { $gt: ["$$years", 0] },
+                                                            then: {
+                                                                $concat: [
+                                                                    { $toString: "$$years" },
+                                                                    { $cond: [{ $gt: ["$$years", 1] }, " years", " year"] }
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            case: { $gt: ["$$months", 0] },
+                                                            then: {
+                                                                $concat: [
+                                                                    { $toString: "$$months" },
+                                                                    { $cond: [{ $gt: ["$$months", 1] }, " months", " month"] }
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            case: { $gt: ["$$days", 0] },
+                                                            then: {
+                                                                $concat: [
+                                                                    { $toString: "$$days" },
+                                                                    { $cond: [{ $gt: ["$$days", 1] }, " days", " day"] }
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            case: { $gt: ["$$hours", 0] },
+                                                            then: {
+                                                                $concat: [
+                                                                    { $toString: "$$hours" },
+                                                                    { $cond: [{ $gt: ["$$hours", 1] }, " hours", " hour"] }
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            case: { $gt: ["$$minutes", 0] },
+                                                            then: {
+                                                                $concat: [
+                                                                    { $toString: "$$minutes" },
+                                                                    { $cond: [{ $gt: ["$$minutes", 1] }, " minutes", " minute"] }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ],
+                                                    default: {
+                                                        $concat: [
+                                                            { $toString: "$$seconds" },
+                                                            { $cond: [{ $gt: ["$$seconds", 1] }, " seconds", " second"] }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }],
                 as: "recentWorkouts"
             }
         },
@@ -249,15 +334,6 @@ const DashBoardController = asyncHandler(async (req, res) => {
                     },
                 },
                 totalPrs: { $size: "$allPrs" },
-                activeDates: {
-                    $map: {
-                        input: "$activeDays",
-                        as: "day",
-                        in: {
-                            $dateToString: { format: "%Y-%m-%d", date: "$$day.createdAt" },
-                        }
-                    },
-                },
                 chartStats: "$userCompletedWorkouts.chartStats",
                 recentWorkouts: "$recentWorkouts",
             },
@@ -270,17 +346,16 @@ const DashBoardController = asyncHandler(async (req, res) => {
                 totalActiveDays: 1,
                 consistencyStreak: 1,
                 totalPrs: 1,
-                activeDates: 1,
                 chartStats: 1,
                 recentWorkouts: 1,
             },
         },
     ])
 
-    if (!DashboardStats) {
+    if (!DashboardStats || !DashboardStats.length) {
         throw new ApiError(500, "dashboard stats not found")
     }
-    return res.status(200).json(new ApiResponse(200, DashboardStats, "dashboard stats fetched successfully"))
+    return res.status(200).json(new ApiResponse(200, DashboardStats[0], "dashboard stats fetched successfully"))
 })
 
 export { DashBoardController }

@@ -5,8 +5,8 @@ import auth from "../middlewares/auth.middleware.js"
 const router = express.Router()
 
 router.post("/create/:exerciseId",auth, CreateSet)
-router.delete("/delete-set/:setId/:exerciseId",auth, DeleteSet)
-router.patch("/update-set/:setId",auth, UpdateSet)
+router.delete("/delete/:setId/:exerciseId",auth, DeleteSet)
+router.patch("/update/:setId",auth, UpdateSet)
 router.patch("/toggle-set-completed/:setId",auth, ToggleSetAsCompleted)
 
 export default router

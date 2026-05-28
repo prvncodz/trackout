@@ -3,7 +3,6 @@ import express from "express"
 import cors from "cors"
 
 const app = express();
-console.log(process.env.CORS_ORIGIN);
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
     optionsSuccessStatus: 200,// some legacy browsers (IE11, various SmartTVs) choke on 204

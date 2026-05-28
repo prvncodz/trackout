@@ -221,7 +221,7 @@ const GetLogWithId = asyncHandler(async (req, res) => {
     if (!log || !log.length) {
         throw new ApiError(400, "log not found")
     }
-    return res.status(200).json(new ApiResponse(200, log, "log fetched successfully"))
+    return res.status(200).json(new ApiResponse(200, log[0], "log fetched successfully"))
 })
 
 const UpdateLog = asyncHandler(async (req, res) => {
