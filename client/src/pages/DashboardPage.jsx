@@ -3,7 +3,7 @@ import SideBarLayout from "../components/layout/SideBar";
 import { useAuth } from "@/stores/user.store";
 import ChartAreaInteractive from "@/components/dashboard/DashBoardChart.jsx";
 import { Activity, Dumbbell, TrendingDown, TrendingUp } from "lucide-react";
-import { IconCampfireFilled, IconChartLine, IconClipboardData, IconFlameFilled } from "@tabler/icons-react";
+import { IconCampfireFilled, IconChartLine, IconCircleDotted, IconClipboardData, IconFlameFilled } from "@tabler/icons-react";
 import { useStats } from "../stores/user.store.js";
 
 const Greetings = () => {
@@ -85,7 +85,7 @@ const PreviousWorkout = () => {
                             <div
                                 className={`size-8.5 rounded-lg flex items-center justify-center flex-shrink-0 text-[15px] bg-gray-100`}
                             >
-                                <Dumbbell className="h-4 w-4" />
+                                <IconCircleDotted className="h-4 w-4" />
                             </div>
 
                             {/* Info */}
