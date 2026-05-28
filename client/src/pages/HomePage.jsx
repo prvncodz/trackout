@@ -178,37 +178,59 @@ const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
 
 
 const AllLogs = ({ ActiveLog, setActiveLog }) => {
-    const [AllLogs, setAllLogs] = useState(allLogs);
+    const [AllLogs, setAllLogs] = useState([]);
+    const [open, setOpen] = useState(false)
+    const { addToast } = useToast()
+
     useEffect(() => {
-        async function createDefaultLogs() {
+        async function fetchLogs() {
             try {
-
+                const res = await logService.getAll()
+                if (res.status === 200) {
+                    setAllLogs(res.data?.data)
+                }
             } catch (err) {
-
+                const message =
+                    err?.response?.data?.message ||
+                    err?.response?.data?.error ||
+                    err?.message
+                addToast(message, "error")
             }
         }
+        fetchLogs()
     }, [])
-    async function handleCreateLog() {
+
+    async function handleCreateLog(e) {
+        e.preventDefault();
+        const name = e.target.name.value
         try {
-
+            const res = await logService.create({ logName: name })
+            if (res.status === 201) {
+                addToast("Log created successfully", "success")
+                setAllLogs(prev => [...prev, res.data?.data])
+            }
         } catch (err) {
-
+            const message =
+                err?.response?.data?.message ||
+                err?.response?.data?.error ||
+                err?.message
+            addToast(message, "error")
         }
     }
     return (
         <div className="border-line-color relative flex h-screen w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180">
-            <Dialog>
-                <form>
-                    <DialogTrigger asChild>
-                        <MyButton className="hidden lg:flex">
-                            Create
-                            <span>
-                                <IconPencilPlus size={18} className="ml-2" />
-                            </span>
-                        </MyButton>
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                    <MyButton className="hidden lg:flex" onClick={() => setOpen(true)}>
+                        Create
+                        <span>
+                            <IconPencilPlus size={18} className="ml-2" />
+                        </span>
+                    </MyButton>
 
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-sm">
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-sm">
+                    <form onSubmit={handleCreateLog}>
                         <DialogHeader>
                             <DialogTitle>Create Log</DialogTitle>
                             <DialogDescription>
@@ -226,10 +248,10 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit" onSubmit={handleCreateLog}>Confirm</Button>
+                            <Button type="submit" >Confirm</Button>
                         </DialogFooter>
-                    </DialogContent>
-                </form>
+                    </form>
+                </DialogContent>
             </Dialog>
             <div className="flex h-auto w-full flex-col items-center justify-center gap-2 lg:mt-15">
                 {AllLogs.map((log) => (
@@ -242,7 +264,7 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
                     />
                 ))}
             </div>
-        </div>
+        </div >
     );
 };
 

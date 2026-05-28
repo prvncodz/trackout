@@ -30,14 +30,13 @@ const SignInPage = () => {
     const handleSubmit = async (e) => {
         e?.preventDefault?.();
 
-
         setLoading(true);
 
         try {
             //validate
             userSignInSchema.parseAsync(form);
 
-            const res = await axios.post(`/user/signin`, {
+            const res = await axios.post("/user/signin", {
                 email: form.email,
                 password: form.password,
             });

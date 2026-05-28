@@ -16,8 +16,6 @@ import { useAppStore } from "../../stores/app.store.js";
 import Logo from "../ui/Logo";
 import {
     IconBrandTabler,
-    IconChartLine,
-    IconHome2,
     IconPencilPlus,
     IconUser,
 } from "@tabler/icons-react";
@@ -27,12 +25,23 @@ import MyButton from "../ui/Button.jsx";
 import { Button } from "../ui/button.jsx";
 import HamburgerButton from "../ui/HamburgerButton.jsx";
 import { motion } from "motion/react"
-import { Dumbbell, House, LogOut } from "lucide-react";
+import { Dumbbell, LogOutIcon } from "lucide-react";
+import { useToast } from "../ui/Toast.jsx";
 
 // UserInfo component  — receives avatarUrl + fullName from parent
 
-const UserInfo = ({ avatarUrl, fullName }) => (
-    <div className="border-t border-gray-100 px-3 py-4">
+const UserInfo = ({ avatarUrl, fullName }) => {
+    const { addToast } = useToast();
+    async function handleLogout() {
+        try {
+            await axios.post("/user/logout")
+        } catch (err) {
+            const message = err.response?.data.message || err.response?.data.error || err.message || "Something went wrong. Please try again."
+            addToast(message, "error");
+            console.log(err)
+        }
+    }
+    return <div className="border-t border-gray-100 px-3 py-4" >
         <div className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50">
             {avatarUrl ? (
                 <img
@@ -49,13 +58,15 @@ const UserInfo = ({ avatarUrl, fullName }) => (
                 whileHover={{
                     x: 5
                 }}
-
             >
                 {fullName ?? "Username"}
             </motion.span>
         </div>
-    </div>
-);
+        <div onClick={handleLogout}>
+            <LogOutIcon />
+        </div>
+    </div >
+};
 
 const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
     const navigate = useNavigate();
@@ -188,11 +199,11 @@ const SideBarLayout = ({ children }) => {
             className="flex h-screen w-full overflow-hidden flex-col bg-neutral-50 lg:flex-row"
             exit={{
                 opacity: 0,
-                duration:0.3
+                duration: 0.3
             }}
         >
             <Sidebar
-                avatarUrl={user?.avatar}
+                avatarUrl={user?.avatar?.url}
                 fullName={user?.fullname}
                 className={"hidden lg:flex"}
             />

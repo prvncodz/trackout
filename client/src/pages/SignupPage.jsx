@@ -33,7 +33,7 @@ const SignUpPage = () => {
         try {
             //validate before api
             userSignUpSchema.parseAsync(form);
-            const res = await axios.post(`/user/signup`, {
+            const res = await axios.post("/user/signup", {
                 fullname: form.fullname,
                 email: form.email,
                 password: form.password,

@@ -7,30 +7,44 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import SigninPage from "./pages/SigninPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import { useAuth } from "./stores/user.store.js";
-import { useEffect } from "react";
-import userService from "./services/user.service.js"
+import { useEffect, useState } from "react";
+import axios from "./lib/axios.js";
 
 function App() {
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged);
     const setUser = useAuth((state) => state.setUser)
     const isUserLogged = useAuth((state) => state.isUserLogged);
+    const [isTokenReceived, setIsTokenReceived] = useState(false);
 
     useEffect(() => {
-        async function fetchUser() {
+        async function loginUser() {
             try {
-                const res = await userService.getUser();
-                if (res.status === 200) {
-                    setUser(res?.data?.data)
-                    setIsUserLogged(true)
+                const response = await axios.get("/user/current-user");
+                if (response.status === 200) {
+                    setUser(response?.data?.data);
+                    setIsUserLogged(true);
                 }
-            } catch (err) {
-                console.error(err)
+            } catch (error) {
+                setUser({});
+                setIsUserLogged(false);
+                try {
+                    if (error.status === 500) {
+                        const res = await axios.get("/user/refresh-tokens");
+                        if (res.status == 200) {
+                            setIsTokenReceived(true);
+                        }
+                    }
+                } catch (error) {
+                    console.log(error?.response?.data?.message || error?.message);
+                }
             }
         }
-        fetchUser()
-    }, []);
+        loginUser();
+    }, [isTokenReceived]);
 
-    useEffect(() => { }, [isUserLogged])
+    useEffect(() => {
+    }, [isUserLogged])
+
     return (
         <BrowserRouter>
             <Routes>
