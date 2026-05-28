@@ -13,6 +13,7 @@ import {
 import {
     IconCheck,
     IconCircleDashedPlus,
+    IconClipboardText,
     IconCopy,
     IconDots,
     IconDotsVertical,
@@ -250,6 +251,7 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
     const [exercise, setExercise] = useState(Curexercise)
     const [isCreating, setIsCreating] = useState(false)
     const [toBeUpdatedSets, setToBeUpdatedSets] = useState([])
+    const [isExerciseUpdated, setIsExerciseUpdated] = useState(false)
     const { addToast, toasts, removeToast } = useToast();
 
     async function toggleDone(id) {
@@ -282,19 +284,26 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
         }
     };
 
-    async function handleUpdateSet() {
+    async function handleUpdateExercise() {
         try {
-            toBeUpdatedSets.map(async (set) => {
-                await axios.patch(`/set/update-set/${set?._id}`, {
+            toBeUpdatedSets?.map(async (set) => {
+                await axios.patch(`/set/update/${set?._id}`, {
                     reps: set?.reps,
                     weight: set?.weight,
                     rest: set?.rest,
                 })
             })
+            if (isExerciseUpdated) {
+                await axios.patch(`/exercise/update/${Curexercise?._id}`, {
+                    note: exercise?.note,
+                    name: exercise?.name
+                })
+            }
+            setIsExerciseUpdated(false)
             setToBeUpdatedSets([])
             setEditMode(false)
             setIsOpen(false)
-            addToast("Set updated successfully", "success")
+            addToast("exercise updated successfully", "success")
         } catch (err) {
             const message = err.response?.data.message || err.message
             addToast(message, "error")
@@ -339,8 +348,10 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
                     {editMode ? (
                         <input
                             value={exercise?.name}
-                            onChange={(e) =>
+                            onChange={(e) => {
                                 setExercise({ ...exercise, name: e.target.value })
+                                setIsExerciseUpdated(true)
+                            }
                             }
                             className="text-lg font-semibold outline-none border-b border-neutral-300"
                         />
@@ -350,24 +361,31 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
                         </h2>
                     )}
 
+
                     {editMode ? (
-                        <input
-                            value={exercise.muscleGroup}
-                            onChange={(e) =>
-                                setExercise({ ...exercise, category: e.target.value })
-                            }
-                            className="mt-1 text-sm text-neutral-500 outline-none border-b border-neutral-300"
-                        />
+                        <div className="flex gap-2 items-center justify-center">
+                            <IconClipboardText size={18} />
+                            <input
+                                value={exercise?.note}
+                                onChange={(e) => {
+                                    setExercise({ ...exercise, note: e.target.value })
+                                    setIsExerciseUpdated(true)
+                                }
+                                }
+                                className="mt-1 text-sm text-neutral-500 outline-none border-b border-neutral-300"
+                            />
+                        </div>
                     ) : (
-                        <p className="mt-1 text-sm text-neutral-500">
-                            {exercise?.muscleGroup}
+                        <p className="mt-1 text-sm text-neutral-500 flex gap-2 items-center justify-center">
+                            <IconClipboardText size={18} /> {exercise?.note || ""}
                         </p>
                     )}
+
                 </div>
 
                 <div className="flex items-center gap-2">
                     {editMode &&
-                        <MyButton onClick={handleUpdateSet}>
+                        <MyButton onClick={handleUpdateExercise}>
                             save
                         </MyButton>
                     }
