@@ -21,6 +21,7 @@ import axios from "../../lib/axios"
 export default function ProfileCard() {
     const user = useAuth(s => s.user);
     const [isOpen, setIsOpen] = useState(false)
+    const [isInfoChanged, setIsInfoChanged] = useState(false)
     const stats = [
         { label: "Height", value: user.height ? `${user.height}cm` : "—" },
         { label: "Weight", value: user.weight ? `${user.weight}kg` : "—" },
@@ -40,13 +41,16 @@ export default function ProfileCard() {
                     }
                 });
             }
-
+            if (isInfoChanged) {
+                await axios.patch("/user/update-info", { fullname: form.get("fullname"), email: form.get("email"), height: form.get("height"), weight: form.get("weight") })
+            }
             // const res = await axios.patch(`/user/update-user-avatar`, avatar)
         } catch (error) {
             console.log(error)
         }
-        form.reset();
+        e.target.reset();
         setIsOpen(false);
+        setIsInfoChanged(false);
     }
 
     return (
@@ -79,9 +83,9 @@ export default function ProfileCard() {
                 </div>
             </div>
 
-            <Dialog>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
-                    <MyButton className="relative w-full  lg:absolute lg:top-0 lg:right-25 lg:w-auto">
+                    <MyButton className="relative w-full  lg:absolute lg:top-0 lg:right-25 lg:w-auto" onClick={() => setIsOpen(true)}>
                         Edit Profile
                     </MyButton>
                 </DialogTrigger>
@@ -101,19 +105,19 @@ export default function ProfileCard() {
                             </Field>
                             <Field>
                                 <Label htmlFor="fullname">Fullname</Label>
-                                <Input id="fullname" name="fullname" defaultValue={user?.fullname} />
+                                <Input id="fullname" name="fullname" onChange={() => setIsInfoChanged(true)} defaultValue={user?.fullname} />
                             </Field>
                             <Field>
                                 <Label htmlFor="email">Email</Label>
-                                <Input id="email" name="email" defaultValue={user?.email} />
+                                <Input id="email" name="email" onChange={() => setIsInfoChanged(true)} defaultValue={user?.email} />
                             </Field>
                             <Field>
                                 <Label htmlFor="height">Height</Label>
-                                <Input id="height" name="height" defaultValue={user?.height} />
+                                <Input id="height" name="height" onChange={() => setIsInfoChanged(true)} defaultValue={user?.height} />
                             </Field>
                             <Field>
                                 <Label htmlFor="weight">Weight</Label>
-                                <Input id="weight" name="weight" defaultValue={user?.weight} />
+                                <Input id="weight" name="weight" onChange={() => setIsInfoChanged(true)} defaultValue={user?.weight} />
                             </Field>
                         </FieldGroup>
                         <DialogFooter className="mt-7">

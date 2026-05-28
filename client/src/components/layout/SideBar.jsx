@@ -72,7 +72,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const setCurPage = useAppStore((s) => s.setCurPage); // zustand
-    const userId = useAuth((s) => s.userId);
+    const userId = useAuth((s) => s.user?._id);
 
     //Nav items
     const NAV_ITEMS = [

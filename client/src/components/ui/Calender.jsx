@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "./Cncalendar";
 import { useAuth } from "@/stores/user.store";
 
 const CalenderComponent = ({ ...props }) => {
-    const ActiveDates = useAuth(s => s.user.activeDates);
+    const ActiveDates = useAuth(s => s.activeDates)
+    console.log(ActiveDates)
+    ActiveDates.map(date => console.log(typeof date))
 
     return (
         <div

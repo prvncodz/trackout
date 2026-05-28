@@ -5,9 +5,12 @@ const useAuth = create((set) => ({
     user: {},
     errors: null,
     isLoading: false,
+    activeDates: [],
     setIsUserLogged: (bool) => set({ isUserLogged: bool }),
     setUser: (user) => set({ user: user }),
+    setActiveDates: (dates) => set({ activeDates: dates })
 }));
+
 
 export { useAuth };
 

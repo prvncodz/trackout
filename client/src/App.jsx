@@ -14,6 +14,7 @@ function App() {
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged);
     const setUser = useAuth((state) => state.setUser)
     const isUserLogged = useAuth((state) => state.isUserLogged);
+    const setActiveDates = useAuth((state) => state.setActiveDates)
     const [isTokenReceived, setIsTokenReceived] = useState(false);
 
     useEffect(() => {
@@ -44,6 +45,20 @@ function App() {
 
     useEffect(() => {
     }, [isUserLogged])
+
+    useEffect(() => {
+        async function getActiveDates() {
+            try {
+                const res = await axios.get("/user/active-dates")
+                if (res.status === 200) {
+                    setActiveDates(res?.data?.data?.activeDates?.map(date => new Date(date)));
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getActiveDates()
+    }, [])
 
     return (
         <BrowserRouter>
