@@ -245,7 +245,7 @@ function debounce(fn, delay) {
     };
 }
 
-const ExerciseCard = ({ Curexercise, className = "" }) => {
+const ExerciseCard = ({ Curexercise, logId, setExercises, className = "" }) => {
     const [editMode, setEditMode] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [exercise, setExercise] = useState(Curexercise)
@@ -347,6 +347,17 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
                 ...prev,
                 sets: prev.sets.filter((set) => set._id !== id),
             }));
+            addToast("Set deleted successfully", "success")
+        } catch (err) {
+            const message = err.response?.data.message || err.message
+            addToast(message, "error")
+        }
+    }
+
+    async function handleDeleteExercise() {
+        try {
+            await axios.delete(`/exercise/delete/${logId}/${Curexercise?._id}`)
+            setExercises((prev) => prev.filter((ex) => ex._id !== Curexercise?._id));
             addToast("Set deleted successfully", "success")
         } catch (err) {
             const message = err.response?.data.message || err.message
@@ -524,7 +535,7 @@ const ExerciseCard = ({ Curexercise, className = "" }) => {
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                                            <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+                                            <AlertDialogAction variant="destructive" onClick={handleDeleteExercise}>Delete</AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
