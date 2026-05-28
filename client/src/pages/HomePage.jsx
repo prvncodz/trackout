@@ -369,7 +369,7 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "" }) => {
         <div className={`w-full max-w-3xl  bg-neutral-50 p-5  ${className}`}>
             {/* Header */}
             <div className="flex items-start justify-between">
-                <div className="flex flex-col">
+                <div className="flex flex-col items-start">
                     {editMode ? (
                         <input
                             value={exercise?.name}
@@ -640,7 +640,10 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "" }) => {
 
 const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
     const [log, setLog] = useState(null);
+    const [exercises, setExercises] = useState(null)
     const { toasts, removeToast } = useToast();
+    const [addingExercise, setAddingExercise] = useState(false)
+
 
     useEffect(() => {
         async function getLogById() {
@@ -648,6 +651,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
                 const res = await axios.get(`/log/${logId}`)
                 if (res.status === 200) {
                     setLog(res?.data?.data);
+                    setExercises(res?.data?.data?.exercises)
                 }
             } catch (err) {
                 console.log(err)
@@ -655,6 +659,22 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
         }
         getLogById()
     }, [])
+
+    async function handleCreateExercise(e) {
+        e.preventDefault();
+        const name = e.target.name.value
+        const muscleGroup = e.target.muscleGroup.value
+
+        try {
+            const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
+            setExercises(prev => [...prev, res.data?.data])
+            setAddingExercise(false)
+        } catch (err) {
+            const message =
+                err?.response?.data?.message ||
+                err?.message
+        }
+    }
 
     // async function handleSaveLog(content) {
     //     try {
@@ -680,11 +700,51 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
                 <div className={`flex-col h-screen bg-neutral-50 overflow-auto p-10 ${className} w-full no-scrollbar`}>
                     <div className=" flex flex-col w-full">
                         {
-                            log?.exercises?.length > 0 &&
-                            log?.exercises?.map((exercise) => (
-                                <ExerciseCard Curexercise={exercise} key={exercise._id} />
+                            exercises?.length > 0 &&
+                            exercises?.map((exercise) => (
+                                <ExerciseCard Curexercise={exercise} logId={log?._id} setExercises={setExercises} key={exercise._id} />
                             ))
                         }
+                        <div className="flex gap-3">
+
+                            <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
+                                <DialogTrigger asChild>
+
+                                    <Button variant="outline"><IconCircleDashedPlus size={18} /> Add Exercise</Button>
+
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-sm">
+                                    <DialogHeader>
+                                        <DialogTitle>Add Exercise</DialogTitle>
+                                        <DialogDescription>
+                                            Add a new Exercise to log. Click save when you&apos;re
+                                            done.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <form onSubmit={handleCreateExercise}>
+                                        <FieldGroup>
+                                            <Field>
+                                                <Label htmlFor="name">Name</Label>
+                                                <Input id="name" name="name" defaultValue="" />
+                                            </Field>
+                                            <Field>
+                                                <Label htmlFor="muscleGroup">MuscleGroup</Label>
+                                                <Input id="muscleGroup" name="muscleGroup" defaultValue="" />
+                                            </Field>
+                                        </FieldGroup>
+                                        <DialogFooter className="mt-7">
+                                            <DialogClose asChild>
+                                                <Button variant="outline">Cancel</Button>
+                                            </DialogClose>
+                                            <Button type="submit">Save Changes</Button>
+                                        </DialogFooter>
+                                    </form>
+                                </DialogContent>
+                            </Dialog>
+                            {log?.exercises?.length > 0 &&
+                                <Button variant="outline"><IconCircleDashedPlus size={18} /> Mark as Completed</Button>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -699,9 +759,9 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
                     <h1 className="text-xl font-bold antialiased text-left ml-5 mt-5 tracking-wide">{log?.name}</h1>
                     <div className="my-10">
                         {
-                            log?.exercises?.length > 0 &&
-                            log?.exercises?.map((exercise) => (
-                                <ExerciseCard exercise={exercise} key={exercise._id} />
+                            exercises?.length > 0 &&
+                            exercises?.map((exercise) => (
+                                <ExerciseCard Curexercise={exercise} logId={log?._id} setExercises={setExercises} key={exercise._id} />
                             ))
                         }
                     </div>
