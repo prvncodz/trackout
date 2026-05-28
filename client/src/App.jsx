@@ -6,7 +6,7 @@ import ProfilePage from "./pages/UserProfile.jsx";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import SigninPage from "./pages/SigninPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
-import { useAuth } from "./stores/user.store.js";
+import { useAuth, useStats } from "./stores/user.store.js";
 import { useEffect, useState } from "react";
 import axios from "./lib/axios.js";
 
@@ -15,6 +15,7 @@ function App() {
     const setUser = useAuth((state) => state.setUser)
     const isUserLogged = useAuth((state) => state.isUserLogged);
     const setActiveDates = useAuth((state) => state.setActiveDates)
+    const setDashboardStats = useStats((state) => state.setStats)
     const [isTokenReceived, setIsTokenReceived] = useState(false);
 
     useEffect(() => {
@@ -57,7 +58,19 @@ function App() {
                 console.log(err)
             }
         }
+        async function getDashBoardStats() {
+            try {
+                const res = await axios.get("/dashboard/stats")
+                if (res.status === 200) {
+                    setDashboardStats(res?.data?.data);
+                }
+            } catch (err) {
+                console.log(err)
+            }
+
+        }
         getActiveDates()
+        getDashBoardStats()
     }, [])
 
     return (

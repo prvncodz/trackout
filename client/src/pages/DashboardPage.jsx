@@ -2,11 +2,12 @@ import Calendar from "../components/ui/Calender.jsx";
 import SideBarLayout from "../components/layout/SideBar";
 import { useAuth } from "@/stores/user.store";
 import ChartAreaInteractive from "@/components/dashboard/DashBoardChart.jsx";
-import { Dumbbell, TrendingDown, TrendingUp } from "lucide-react";
+import { Activity, Dumbbell, TrendingDown, TrendingUp } from "lucide-react";
 import { IconCampfireFilled, IconChartLine, IconClipboardData, IconFlameFilled } from "@tabler/icons-react";
+import { useStats } from "../stores/user.store.js";
 
 const Greetings = () => {
-    const fullname = useAuth((s) => s.user.fullname);
+    const fullname = useAuth((state) => state.user?.fullname);
     return (
         <div className="flex flex-col justify-center items-start gap-3 p-10 cursor-default lg:p-0 lg:my-10 lg:justify-start lg:items-start lg:pl-10">
 
@@ -16,12 +17,13 @@ const Greetings = () => {
     );
 }
 const Cards = () => {
-    const user = undefined;
+    const userStats = useStats((state) => state.stats);
+    console.log("userStats", userStats)
     const stats = [
-        { label: "Total Volume", value: user?.height ? `${user.height}kg` : "—", icon: Dumbbell, trending: false, trendingValue: 12 },
-        { label: "Current streak", value: user?.weight ? `${user.weight}` : "—", icon: IconFlameFilled, trending: true, trendingValue: 14 },
-        { label: "Total PRs", value: user?.totalWorkouts ?? "—", icon: IconChartLine, trending: true, trendingValue: 17 },
-        { label: "Total Workouts", value: user?.totalWorkouts ?? "—", icon: IconClipboardData, trending: false, trendingValue: 12 },
+        { label: "Active Days", value: userStats?.totalActiveDays ?? "—", icon: Activity, trending: false, trendingValue: 12 },
+        { label: "Current Streak", value: userStats?.consistencyStreak ?? "—", icon: IconFlameFilled, trending: true, trendingValue: 14 },
+        { label: "Total PRs", value: userStats?.totalPrs ?? "—", icon: IconChartLine, trending: true, trendingValue: 17 },
+        { label: "Total Workouts", value: userStats?.totalWorkouts ?? "—", icon: IconClipboardData, trending: false, trendingValue: 12 },
     ];
 
     return (
@@ -63,58 +65,7 @@ const Cards = () => {
     )
 }
 const PreviousWorkout = () => {
-    const workouts = [
-        {
-            id: 1,
-            name: "Push Day — Chest & Triceps",
-            icon: "🏋️",
-            iconBg: "bg-gray-100",
-            sets: "6 sets",
-            duration: "42 min",
-            timeAgo: "1h ago",
-            pr: true,
-        },
-        {
-            id: 2,
-            name: "Pull Day — Back & Biceps",
-            icon: "🔄",
-            iconBg: "bg-gray-100",
-            sets: "7 sets",
-            duration: "55 min",
-            timeAgo: "2d ago",
-            pr: false,
-        },
-        {
-            id: 3,
-            name: "Leg Day — Squat Focus",
-            icon: "🦵",
-            iconBg: "bg-gray-100",
-            sets: "8 sets",
-            duration: "1h 10m",
-            timeAgo: "4d ago",
-            pr: true,
-        },
-        {
-            id: 4,
-            name: "Cardio — Zone 2 Run",
-            icon: "🏃",
-            iconBg: "bg-gray-100",
-            sets: "5.4 km",
-            duration: "30 min",
-            timeAgo: "1w ago",
-            pr: false,
-        },
-        {
-            id: 5,
-            name: "Core & Mobility",
-            icon: "⚡",
-            iconBg: "bg-gray-100",
-            sets: "4 sets",
-            duration: "25 min",
-            timeAgo: "2w ago",
-            pr: false,
-        },
-    ];
+    const workouts = useStats((state) => state.stats?.recentWorkouts ?? []);
 
     return (
         <div className="bg-white rounded-xl p-5 w-full">
@@ -128,13 +79,13 @@ const PreviousWorkout = () => {
             {/* List */}
             <div className="flex flex-col gap-0.5 divide-y divide-line-color">
                 {workouts.map((w, i) => (
-                    <div key={w.id}>
+                    <div key={w._id}>
                         <div className="flex items-center gap-3 px-2.5 py-2.5 rounded-lg hover:bg-[#f7f7f6] cursor-pointer transition-colors group">
                             {/* Icon */}
                             <div
-                                className={`size-8.5 rounded-lg flex items-center justify-center flex-shrink-0 text-[15px] ${w.iconBg}`}
+                                className={`size-8.5 rounded-lg flex items-center justify-center flex-shrink-0 text-[15px] bg-gray-100`}
                             >
-                                {w.icon}
+                                <Dumbbell className="h-4 w-4" />
                             </div>
 
                             {/* Info */}
@@ -143,19 +94,14 @@ const PreviousWorkout = () => {
                                     {w.name}
                                 </p>
                                 <div className="flex items-center gap-1.5 mt-0.5">
-                                    <span className="text-[11px] text-gray-400 font-mono">{w.sets}</span>
+                                    <span className="text-[11px] text-gray-400 font-mono">{w.noOfSets} sets</span>
                                     <span className="w-0.5 h-0.5 rounded-full bg-gray-300 shrink-0" />
-                                    {w.pr && (
-                                        <span className="text-[9px] font-semibold tracking-wide text-white bg-[#1a1a1a] px-1.5 py-0.5 rounded uppercase">
-                                            PR
-                                        </span>
-                                    )}
                                 </div>
                             </div>
 
                             {/* Time */}
                             <span className="text-[11px] text-gray-300 shrink-0 whitespace-nowrap">
-                                {w.timeAgo}
+                                {w.timeAgo + " ago"}
                             </span>
                         </div>
 

@@ -11,6 +11,10 @@ const useAuth = create((set) => ({
     setActiveDates: (dates) => set({ activeDates: dates })
 }));
 
+const useStats = create((set) => ({
+    stats: {},
+    setStats: (stats) => set({ stats: stats })
+}))
 
-export { useAuth };
+export { useAuth, useStats };
 
