@@ -29,7 +29,7 @@ export default function ChartAreaInteractive({ className }) {
         },
     }
 
-    const filteredData = chartData.filter((item) => {
+    const filteredData = chartData?.filter((item) => {
         const date = new Date(item.date)
         const referenceDate = new Date("2024-06-30")
         let daysToSubtract = 90

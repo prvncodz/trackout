@@ -77,7 +77,7 @@ const DashboardMockup = () => {
     return (
         <div className="my-20 ml-15 flex h-150 w-300 cursor-default items-center justify-center overflow-hidden rounded-lg p-5 select-none lg:ml-0 lg:w-auto">
             <img
-                src="../../public/Screenshot from 2026-05-08 15-01-22.png"
+                src="/mockup.png"
                 className="shadow-aesthetic h-full w-full cursor-default rounded-lg select-none"
             />
         </div>
