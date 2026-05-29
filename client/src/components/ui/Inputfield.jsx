@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react"
+import { Eye, EyeOff } from "lucide-react"
 
 const InputField = ({
   id,
@@ -13,18 +13,15 @@ const InputField = ({
   disabled = false,
   className = "",
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
 
-  const isPassword = type === "password";
-  const resolvedType = isPassword ? (showPassword ? "text" : "password") : type;
+  const isPassword = type === "password"
+  const resolvedType = isPassword ? (showPassword ? "text" : "password") : type
 
   return (
     <div className={`w-full ${className}`}>
       {label && (
-        <label
-          htmlFor={id}
-          className="mb-1.5 block text-xs font-semibold tracking-widest text-gray-500 uppercase"
-        >
+        <label htmlFor={id} className="mb-1.5 block text-xs font-semibold tracking-widest text-gray-500 uppercase">
           {label}
         </label>
       )}
@@ -50,10 +47,8 @@ const InputField = ({
           </button>
         )}
       </div>
-      {error && (
-        <p className="mt-1.5 text-xs font-medium text-red-500">{error}</p>
-      )}
+      {error && <p className="mt-1.5 text-xs font-medium text-red-500">{error}</p>}
     </div>
-  );
-};
-export default InputField;
+  )
+}
+export default InputField

@@ -28,9 +28,10 @@ img {
   --font-poppins: "poppins", sans-serif;
   --color-muted: var(--color-neutral-500);
   --color-mockup-text: #364153;
-  --shadow-standard: 0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08);
-  --shadow-aesthetic: 0 3px 10px rgb(0,0,0,0.1);
-  --shadow-euphonious:  0px 10px 1px rgba(221, 221, 221, 1), 0 10px 20px rgba(204, 204, 204, 1);
+  --shadow-standard:
+    0px 2px 3px -1px rgba(0, 0, 0, 0.1), 0px 1px 0px 0px rgba(25, 28, 33, 0.02), 0px 0px 0px 1px rgba(25, 28, 33, 0.08);
+  --shadow-aesthetic: 0 3px 10px rgb(0, 0, 0, 0.1);
+  --shadow-euphonious: 0px 10px 1px rgba(221, 221, 221, 1), 0 10px 20px rgba(204, 204, 204, 1);
 }
 
 .no-scrollbar::-webkit-scrollbar {

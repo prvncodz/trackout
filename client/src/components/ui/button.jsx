@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cva } from "class-variance-authority";
+import { cva } from "class-variance-authority"
 import { Slot } from "radix-ui"
 
 import { cn } from "@/lib/utils"
@@ -29,8 +29,7 @@ const buttonVariants = cva(
         icon: "size-9",
         "icon-xs":
           "size-6 rounded-[min(var(--radius-md),8px)] in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm":
-          "size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md",
+        "icon-sm": "size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md",
         "icon-lg": "size-10",
       },
     },
@@ -38,16 +37,10 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 )
 
-function Button({
-  className,
-  variant = "default",
-  size = "default",
-  asChild = false,
-  ...props
-}) {
+function Button({ className, variant = "default", size = "default", asChild = false, ...props }) {
   const Comp = asChild ? Slot.Root : "button"
 
   return (
@@ -56,8 +49,9 @@ function Button({
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
-      {...props} />
-  );
+      {...props}
+    />
+  )
 }
 
 export { Button, buttonVariants }
