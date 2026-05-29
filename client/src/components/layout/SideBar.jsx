@@ -40,7 +40,6 @@ import { Button } from "../ui/button.jsx";
 import HamburgerButton from "../ui/HamburgerButton.jsx";
 import { motion } from "motion/react"
 import { Dumbbell, LogOutIcon } from "lucide-react";
-import { useToast } from "../ui/Toast.jsx";
 import { useState } from "react";
 import { useAuth, useStats } from "../../stores/user.store.js";
 import axios from "../../lib/axios.js";
@@ -65,7 +64,6 @@ const Popup = ({ setIsOpen }) => {
             setStats({})
         } catch (err) {
             const message = err.response?.data.message || err.response?.data.error || err.message || "Something went wrong. Please try again."
-            // addToast(message, "error");
             console.log(err)
         }
     }
@@ -81,7 +79,6 @@ const Popup = ({ setIsOpen }) => {
             setStats({})
         } catch (err) {
             const message = err.response?.data.message || err.response?.data.error || err.message || "Something went wrong. Please try again."
-            // addToast(message, "error");
             console.log(err)
         }
     }
@@ -159,7 +156,6 @@ const Popup = ({ setIsOpen }) => {
 // UserInfo component  — receives avatarUrl + fullName from parent
 
 const UserInfo = ({ avatarUrl, fullName }) => {
-    const { addToast } = useToast();
     const [isOpen, setIsOpen] = useState(false);
     return <div className="border-t border-gray-100 px-3 py-4 flex justify-between items-center" >
         <div className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50">

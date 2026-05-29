@@ -1,7 +1,6 @@
 import { motion } from "motion/react"
 import { useState } from "react";
 import axios from "../lib/axios.js";
-import { ToastContainer, useToast } from "../components/ui/Toast.jsx";
 import InputField from "../components/ui/Inputfield.jsx";
 import gymImage from "../assets/gym-hero.jpg";
 import { useNavigate, useNavigation } from "react-router-dom";
@@ -12,7 +11,6 @@ import { userSignUpSchema } from "../../../server/src/schemas/user.schemas.js"
 const SignUpPage = () => {
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
-    const { toasts, addToast, removeToast } = useToast();
     const [form, setForm] = useState({ fullname: "", email: "", password: "", height: "", weight: "" })
     const navigate = useNavigate();
 
@@ -41,7 +39,6 @@ const SignUpPage = () => {
                 weight: parseInt(form.weight)
             });
             if (res.status === 201) {
-                addToast("Signed up successfully!", "success");
                 setForm({ fullname: "", email: "", password: "", height: "", weight: "" });
                 setFieldErrors({});
                 setTimeout(() => {
@@ -55,7 +52,6 @@ const SignUpPage = () => {
                 err?.response?.data?.error ||
                 err?.message ||
                 "Something went wrong. Please try again.";
-            addToast(message, "error");
         } finally {
             setLoading(false);
         }
@@ -96,8 +92,6 @@ const SignUpPage = () => {
                 </div>
             </div>
 
-            {/* ── Toast Container ────────────────────────────────────────────── */}
-            <ToastContainer toasts={toasts} onRemove={removeToast} />
         </>
     );
 };

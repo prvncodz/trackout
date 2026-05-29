@@ -2,7 +2,6 @@ import { motion } from "motion/react"
 import { useState } from "react";
 import axios from "../lib/axios.js";
 import Button from "../components/ui/Button.jsx";
-import { ToastContainer, useToast } from "../components/ui/Toast.jsx";
 import InputField from "../components/ui/Inputfield.jsx";
 import gymImage from "../assets/gym-hero.jpg";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +13,6 @@ const SignInPage = () => {
     const [form, setForm] = useState({ email: "", password: "" });
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
-    const { toasts, addToast, removeToast } = useToast();
     const setUser = useAuth((state) => state.setUser);
     const navigate = useNavigate()
 
@@ -43,7 +41,6 @@ const SignInPage = () => {
 
             if (res.status === 200) {
                 setUser(res.data?.data)
-                addToast("Signed in successfully! Welcome back.", "success");
                 setForm({ email: "", password: "" });
                 setFieldErrors({});
                 setTimeout(() => {
@@ -55,7 +52,6 @@ const SignInPage = () => {
                 err?.response?.data?.message ||
                 err?.response?.data?.error ||
                 "Something went wrong. Please try again.";
-            addToast(message, "error");
         } finally {
             setLoading(false);
         }
@@ -96,8 +92,6 @@ const SignInPage = () => {
                 </div>
             </div>
 
-            {/* ── Toast Container ────────────────────────────────────────────── */}
-            <ToastContainer toasts={toasts} onRemove={removeToast} />
         </>
     );
 };

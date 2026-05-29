@@ -37,7 +37,6 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { motion } from "motion/react"
-import { ToastContainer, useToast } from "../components/ui/Toast.jsx";
 import axios from "../lib/axios.js";
 import CreateSetSchema from "../../../server/src/schemas/set.schema.js";
 
@@ -54,7 +53,6 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
             const message =
                 err?.response?.data?.message ||
                 err?.message
-            // addToast(message, "error")
         }
     }
 
@@ -68,7 +66,6 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
             const message =
                 err?.response?.data?.message ||
                 err?.message
-            // addToast(message, "error")
         }
     }
     async function handleEditLog(e) {
@@ -85,7 +82,6 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
             const message =
                 err?.response?.data?.message ||
                 err?.message
-            // addToast(message, "error")
 
         }
     }
@@ -210,7 +206,6 @@ const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
 
 
 const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
-    const { addToast, toasts, removeToast } = useToast()
     const [isCreating, setIsCreating] = useState(false)
 
     useEffect(() => { }, [logs])
@@ -221,7 +216,6 @@ const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
         try {
             const res = await axios.post(`/log/create`, { logName: name })
             if (res.status === 201) {
-                addToast("Log created successfully", "success")
                 setAllLogs(prev => [...prev, res.data?.data])
                 setIsCreating(false)
             }
@@ -229,7 +223,6 @@ const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
             const message =
                 err?.response?.data?.message ||
                 err?.message
-            addToast(message, "error")
         }
     }
     return (
@@ -279,7 +272,6 @@ const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
                     />
                 ))}
             </div>
-            <ToastContainer toasts={toasts} onRemove={removeToast} />
         </div >
     );
 };
@@ -299,7 +291,6 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
     const [isCreating, setIsCreating] = useState(false)
     const [toBeUpdatedSets, setToBeUpdatedSets] = useState([])
     const [isExerciseUpdated, setIsExerciseUpdated] = useState(false)
-    const { addToast, toasts, removeToast } = useToast();
 
     async function toggleDone(id) {
         setExercise((prev) => ({
@@ -312,7 +303,6 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
             await axios.patch(`/set/toggle-set-completed/${id}`, { isPr: false })
         } catch (err) {
             const message = err.response?.data.message || err.message
-            addToast(message, "error")
         }
     };
 
@@ -350,10 +340,8 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
             setToBeUpdatedSets([])
             setEditMode(false)
             setIsOpen(false)
-            addToast("exercise updated successfully", "success")
         } catch (err) {
             const message = err.response?.data.message || err.message
-            addToast(message, "error")
         }
     }
 
@@ -369,7 +357,6 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
             CreateSetSchema.parse(data)
             const res = await axios.post(`/set/create/${Curexercise?._id}`, data)
             if (res.status === 201) {
-                addToast("Set created successfully", "success")
                 setExercise(prev => ({
                     ...prev,
                     sets: [...prev.sets, res.data?.data]
@@ -382,7 +369,6 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
             const message =
                 err?.response?.data?.message ||
                 err?.message
-            addToast(message, "error")
         }
 
     }
@@ -394,10 +380,8 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                 ...prev,
                 sets: prev.sets.filter((set) => set._id !== id),
             }));
-            addToast("Set deleted successfully", "success")
         } catch (err) {
             const message = err.response?.data.message || err.message
-            addToast(message, "error")
         }
     }
 
@@ -405,10 +389,8 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
         try {
             await axios.delete(`/exercise/delete/${logId}/${Curexercise?._id}`)
             setExercises((prev) => prev.filter((ex) => ex._id !== Curexercise?._id));
-            addToast("Set deleted successfully", "success")
         } catch (err) {
             const message = err.response?.data.message || err.message
-            addToast(message, "error")
         }
     }
 
@@ -690,7 +672,6 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
 const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
     const [log, setLog] = useState(null);
     const [exercises, setExercises] = useState(null)
-    const { toasts, removeToast } = useToast();
     const [addingExercise, setAddingExercise] = useState(false)
 
 
@@ -876,7 +857,6 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
                 </div>
 
             </BottomSheet>
-            <ToastContainer toasts={toasts} removeToast={removeToast} />
         </div>
     );
 };
@@ -899,7 +879,6 @@ const HomePageContent = () => {
                     err?.response?.data?.message ||
                     err?.response?.data?.error ||
                     err?.message
-                addToast(message, "error")
             }
         }
         fetchLogs()
@@ -921,11 +900,9 @@ const HomePageContent = () => {
     );
 };
 const HomePage = () => {
-    const { toasts, addToast, removeToast } = useToast();
     return (
         <SideBarLayout>
-            <HomePageContent addToast={addToast} />
-            <ToastContainer toasts={toasts} onRemove={removeToast} />
+            <HomePageContent />
         </SideBarLayout>
     );
 };
