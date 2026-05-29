@@ -71,8 +71,19 @@ const Popup = ({ setIsOpen }) => {
     }
 
     async function handleDeleteUser() {
-        return
-
+        try {
+            await axios.delete("/user/delete-user")
+            setUser({})
+            setIsOpen(false)
+            setIsUserLogged(false)
+            setActiveDates([])
+            setCurPage("home")
+            setStats({})
+        } catch (err) {
+            const message = err.response?.data.message || err.response?.data.error || err.message || "Something went wrong. Please try again."
+            // addToast(message, "error");
+            console.log(err)
+        }
     }
 
     return (
