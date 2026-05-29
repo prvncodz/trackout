@@ -47,7 +47,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { motion } from "motion/react"
 import axios from "../lib/axios.js"
-import CreateSetSchema from "../../../server/src/schemas/set.schema.js"
+import CreateSetSchema from "../schemas/set.schema.js"
 import { toast } from "sonner"
 
 function debounce(fn, delay) {
@@ -215,7 +215,7 @@ const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
 const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
     const [isCreating, setIsCreating] = useState(false)
 
-    useEffect(() => {}, [logs])
+    useEffect(() => { }, [logs])
 
     async function handleCreateLog(e) {
         e.preventDefault()
@@ -633,9 +633,8 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                             <div className="flex justify-center">
                                 <button
                                     onClick={() => toggleDone(set._id)}
-                                    className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${
-                                        set.completed ? "border-black bg-black text-white" : "border-neutral-300"
-                                    }`}
+                                    className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.completed ? "border-black bg-black text-white" : "border-neutral-300"
+                                        }`}
                                 >
                                     {set.completed && <IconCheck size={14} />}
                                 </button>

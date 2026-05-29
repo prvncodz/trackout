@@ -6,7 +6,7 @@ import gymImage from "../assets/gym-hero.jpg"
 import { useNavigate, useNavigation } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import Button from "@/components/ui/Button.jsx"
-import { userSignUpSchema } from "../../../server/src/schemas/user.schemas.js"
+import { userSignUpSchema } from "../schemas/user.schemas.js"
 import { toast } from "sonner"
 
 const SignUpPage = () => {

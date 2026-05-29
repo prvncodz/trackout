@@ -7,7 +7,7 @@ import gymImage from "../assets/gym-hero.jpg"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import { useAuth } from "../stores/user.store.js"
-import { userSignInSchema } from "../../../server/src/schemas/user.schemas.js"
+import { userSignInSchema } from "../schemas/user.schemas.js"
 import { toast } from "sonner"
 
 const SignInPage = () => {
