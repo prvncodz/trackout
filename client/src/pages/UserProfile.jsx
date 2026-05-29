@@ -4,18 +4,18 @@ import Calender from "@/components/ui/Calender"
 import { useEffect } from "react"
 
 const UserProfile = () => {
-  return (
-    <div className="no-scrollbar md:overflow-x-hidden">
-      <SideBarLayout>
-        <div className="flex h-screen max-h-screen w-full flex-col gap-20 overflow-auto px-5 pt-10 pb-25 lg:px-25">
-          <ProfileCard />
-          <div className="flex items-center justify-center lg:justify-start">
-            <Calender />
-          </div>
+    return (
+        <div className="no-scrollbar md:overflow-x-hidden">
+            <SideBarLayout>
+                <div className="flex h-screen max-h-screen w-full flex-col gap-20 overflow-auto px-5 pt-10 pb-25 lg:px-25">
+                    <ProfileCard />
+                    <div className="flex items-center justify-center lg:justify-start">
+                        <Calender />
+                    </div>
+                </div>
+            </SideBarLayout>
         </div>
-      </SideBarLayout>
-    </div>
-  )
+    )
 }
 
 export default UserProfile
