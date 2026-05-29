@@ -24,5 +24,6 @@ app.use("/api/v1/log", logRouter)
 app.use("/api/v1/exercise", exerciseRouter)
 app.use("/api/v1/set", setRouter)
 app.use("/api/v1/dashboard", dashboardRouter)
+app.get('/health', (req, res) => res.sendStatus(200));
 
 export default app;
