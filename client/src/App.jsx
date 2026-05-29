@@ -9,6 +9,7 @@ import SignupPage from "./pages/SignupPage.jsx";
 import { useAuth, useStats } from "./stores/user.store.js";
 import { useEffect, useState } from "react";
 import axios from "./lib/axios.js";
+import { Toaster } from "@/components/ui/sonner.jsx"
 
 function App() {
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged);
@@ -74,18 +75,21 @@ function App() {
     }, [])
 
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route
-                    path="/"
-                    element={isUserLogged ? <HomePage /> : <LandingPage />}
-                />
-                <Route path="/signin" element={<SigninPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/dashboard/:id" element={<DashboardPage />} />
-                <Route path="/profile/:id" element={<ProfilePage />} />
-            </Routes>
-        </BrowserRouter>
+        <>
+            <Toaster />
+            <BrowserRouter>
+                <Routes>
+                    <Route
+                        path="/"
+                        element={isUserLogged ? <HomePage /> : <LandingPage />}
+                    />
+                    <Route path="/signin" element={<SigninPage />} />
+                    <Route path="/signup" element={<SignupPage />} />
+                    <Route path="/dashboard/:id" element={<DashboardPage />} />
+                    <Route path="/profile/:id" element={<ProfilePage />} />
+                </Routes>
+            </BrowserRouter>
+        </>
     );
 }
 

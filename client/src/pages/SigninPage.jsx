@@ -8,12 +8,14 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "../stores/user.store.js";
 import { userSignInSchema } from "../../../server/src/schemas/user.schemas.js";
+import { toast } from "sonner";
 
 const SignInPage = () => {
     const [form, setForm] = useState({ email: "", password: "" });
     const [fieldErrors, setFieldErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const setUser = useAuth((state) => state.setUser);
+    const setIsUserLogged = useAuth((state) => state.setIsUserLogged)
     const navigate = useNavigate()
 
     const handleChange = (e) => {
@@ -41,8 +43,10 @@ const SignInPage = () => {
 
             if (res.status === 200) {
                 setUser(res.data?.data)
+                setIsUserLogged(true)
                 setForm({ email: "", password: "" });
                 setFieldErrors({});
+                toast.success("Signin successful. Redirecting...")
                 setTimeout(() => {
                     navigate("/")
                 }, 500)
@@ -50,8 +54,9 @@ const SignInPage = () => {
         } catch (err) {
             const message =
                 err?.response?.data?.message ||
-                err?.response?.data?.error ||
+                err?.message ||
                 "Something went wrong. Please try again.";
+            toast.error(message)
         } finally {
             setLoading(false);
         }

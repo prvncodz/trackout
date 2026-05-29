@@ -7,6 +7,7 @@ import { useNavigate, useNavigation } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Button from "@/components/ui/Button.jsx";
 import { userSignUpSchema } from "../../../server/src/schemas/user.schemas.js"
+import { toast } from "sonner";
 
 const SignUpPage = () => {
     const [fieldErrors, setFieldErrors] = useState({});
@@ -41,17 +42,17 @@ const SignUpPage = () => {
             if (res.status === 201) {
                 setForm({ fullname: "", email: "", password: "", height: "", weight: "" });
                 setFieldErrors({});
+                toast.success("Signup successful. Redirecting...")
                 setTimeout(() => {
-                    navigate("/")
+                    navigate("/signin")
                 }, 500)
             }
         } catch (err) {
-            console.log(err.message)
             const message =
                 err?.response?.data?.message ||
-                err?.response?.data?.error ||
                 err?.message ||
                 "Something went wrong. Please try again.";
+            toast.error(message)
         } finally {
             setLoading(false);
         }

@@ -4,9 +4,9 @@ import Calender from "@/components/ui/Calender";
 import { useEffect } from "react";
 
 const UserProfile = () => {
-    
+
     return (
-        <div>
+        <div className=" md:overflow-x-hidden no-scrollbar">
             <SideBarLayout>
                 <div className="flex h-screen max-h-screen w-full flex-col gap-20 overflow-auto px-5 lg:px-25 pt-10 pb-25">
                     <ProfileCard />

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button.jsx";
 import { useAuth } from "@/stores/user.store.js";
 import { useState } from "react";
 import axios from "../../lib/axios"
+import { toast } from "sonner"
 
 export default function ProfileCard() {
     const user = useAuth(s => s.user);
@@ -44,9 +45,11 @@ export default function ProfileCard() {
             if (isInfoChanged) {
                 await axios.patch("/user/update-info", { fullname: form.get("fullname"), email: form.get("email"), height: form.get("height"), weight: form.get("weight") })
             }
+            toast.success("Profile updated successfully")
             // const res = await axios.patch(`/user/update-user-avatar`, avatar)
         } catch (error) {
-            console.log(error)
+            const message = error?.response?.data?.message || error?.message || "Something went wrong. Please try again.";
+            toast.error(message)
         }
         e.target.reset();
         setIsOpen(false);

@@ -39,6 +39,16 @@ import { Input } from "@/components/ui/input";
 import { motion } from "motion/react"
 import axios from "../lib/axios.js";
 import CreateSetSchema from "../../../server/src/schemas/set.schema.js";
+import { toast } from "sonner";
+
+function debounce(fn, delay) {
+    let id;
+    return (...args) => {
+        clearTimeout(id);
+        id = setTimeout(() => fn(...args), delay);
+    };
+}
+
 
 const Popup = ({ log, setIsOpen, setAllLogs }) => {
     const [editing, setEditing] = useState(false)
@@ -49,10 +59,12 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
             const res = await axios.post(`/log/duplicate/${log._id}`)
             setAllLogs(prev => [...prev, res?.data?.data])
             setIsOpen(false)
+            toast.success("Log duplicated successfully")
         } catch (err) {
             const message =
                 err?.response?.data?.message ||
                 err?.message
+            toast.error(message)
         }
     }
 
@@ -62,10 +74,12 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
             setAllLogs(prev => prev.filter((l) => l._id !== log._id))
             setShowDeleteAlert(false)
             setIsOpen(false)
+            toast.success("Log deleted successfully")
         } catch (err) {
             const message =
                 err?.response?.data?.message ||
                 err?.message
+            toast.error(message)
         }
     }
     async function handleEditLog(e) {
@@ -77,12 +91,13 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
                 setAllLogs(prev => prev.map(obj => obj._id === log._id ? { ...obj, logName: name } : obj))
                 setEditing(false)
                 setIsOpen(false)
+                toast.success("Log updated successfully")
             }
         } catch (err) {
             const message =
                 err?.response?.data?.message ||
                 err?.message
-
+            toast.error(message)
         }
     }
     return (
@@ -218,11 +233,13 @@ const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
             if (res.status === 201) {
                 setAllLogs(prev => [...prev, res.data?.data])
                 setIsCreating(false)
+                toast.success("Log created successfully")
             }
         } catch (err) {
             const message =
                 err?.response?.data?.message ||
                 err?.message
+            toast.error(message)
         }
     }
     return (
@@ -276,13 +293,6 @@ const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
     );
 };
 
-function debounce(fn, delay) {
-    let id;
-    return (...args) => {
-        clearTimeout(id);
-        id = setTimeout(() => fn(...args), delay);
-    };
-}
 
 const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", completed }) => {
     const [editMode, setEditMode] = useState(false);
@@ -300,9 +310,11 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
             ),
         }));
         try {
-            await axios.patch(`/set/toggle-set-completed/${id}`, { isPr: false })
+            const res = await axios.patch(`/set/toggle-set-completed/${id}`, { isPr: false })
+            toast.success(`Set ${res.data?.data?.completed ? "marked" : "unmarked"} as completed successfully`)
         } catch (err) {
             const message = err.response?.data.message || err.message
+            toast.error(message)
         }
     };
 
@@ -336,12 +348,14 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                     name: exercise?.name
                 })
             }
+            toast.success(exercise?.name + " updated successfully")
             setIsExerciseUpdated(false)
             setToBeUpdatedSets([])
             setEditMode(false)
             setIsOpen(false)
         } catch (err) {
             const message = err.response?.data.message || err.message
+            toast.error(message)
         }
     }
 
@@ -361,14 +375,15 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                     ...prev,
                     sets: [...prev.sets, res.data?.data]
                 }))
+                toast.success("Set created successfully")
                 setIsCreating(false)
                 setIsOpen(false)
             }
         } catch (err) {
-            console.log(err.message)
             const message =
                 err?.response?.data?.message ||
                 err?.message
+            toast.error(message)
         }
 
     }
@@ -380,8 +395,10 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                 ...prev,
                 sets: prev.sets.filter((set) => set._id !== id),
             }));
+            toast.success("Set deleted successfully")
         } catch (err) {
             const message = err.response?.data.message || err.message
+            toast.error(message)
         }
     }
 
@@ -389,8 +406,10 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
         try {
             await axios.delete(`/exercise/delete/${logId}/${Curexercise?._id}`)
             setExercises((prev) => prev.filter((ex) => ex._id !== Curexercise?._id));
+            toast.success("Exercise deleted successfully")
         } catch (err) {
             const message = err.response?.data.message || err.message
+            toast.error(message)
         }
     }
 
@@ -669,7 +688,7 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
 
 
 
-const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
+const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) => {
     const [log, setLog] = useState(null);
     const [exercises, setExercises] = useState(null)
     const [addingExercise, setAddingExercise] = useState(false)
@@ -684,11 +703,11 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
                     setExercises(res?.data?.data?.exercises)
                 }
             } catch (err) {
-                console.log(err)
+                toast.error(err?.response?.data?.message || err?.message)
             }
         }
         getLogById()
-    }, [isActive])
+    }, [isActive, ActiveLog])
 
     async function handleCreateExercise(e) {
         e.preventDefault();
@@ -699,10 +718,12 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
             const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
             setExercises(prev => [...prev, res.data?.data])
             setAddingExercise(false)
+            toast.success("Exercise created successfully")
         } catch (err) {
             const message =
                 err?.response?.data?.message ||
                 err?.message
+            toast.error(message)
         }
     }
 
@@ -710,17 +731,17 @@ const ShowLog = ({ logId, isActive, setActiveLog, className = "" }) => {
         try {
             const res = await axios.patch(`/log/mark-completed/${log._id}`);
             setLog(prev => ({ ...prev, completedAt: res.data?.data?.completedAt }))
+            toast.success("Log marked as completed successfully")
         } catch (err) {
             const message =
                 err?.response?.data?.message ||
                 err?.message
+            toast.error(message)
 
         }
     }
 
-    //
-    // const handleUpdate = useCallback(debounce((newContent) => handleSaveLog(newContent), 3000), [log?.id]);
-    //
+
 
 
     return (
@@ -892,6 +913,7 @@ const HomePageContent = () => {
                     <ShowLog
                         logId={ActiveLog}
                         isActive={ActiveLog !== null}
+                        ActiveLog={ActiveLog}
                         setActiveLog={setActiveLog}
                     />
                 </>

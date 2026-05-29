@@ -31,6 +31,7 @@ import {
     IconDotsVertical,
     IconLogout,
     IconPencilPlus,
+    IconSettings,
     IconTrash,
     IconUser,
 } from "@tabler/icons-react";
@@ -179,7 +180,7 @@ const UserInfo = ({ avatarUrl, fullName }) => {
             </motion.span>
         </div>
         <div className="relative">
-            <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
+            <IconSettings onClick={() => setIsOpen(!isOpen)} className="text-gray-600" />
             {isOpen && <Popup setIsOpen={setIsOpen} />}
         </div>
 
