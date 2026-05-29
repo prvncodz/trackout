@@ -1,10 +1,14 @@
-import express from "express"
-import { AddExerciseToLog, DeleteExerciseFromLog, UpdateExercise } from "../controllers/exercise.controller.js"
+import express from "express";
+import {
+  AddExerciseToLog,
+  DeleteExerciseFromLog,
+  UpdateExercise,
+} from "../controllers/exercise.controller.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/create/:logId", AddExerciseToLog)
-router.patch("/update/:exerciseId", UpdateExercise)
-router.delete("/delete/:logId/:exerciseId", DeleteExerciseFromLog)
+router.post("/create/:logId", AddExerciseToLog);
+router.patch("/update/:exerciseId", UpdateExercise);
+router.delete("/delete/:logId/:exerciseId", DeleteExerciseFromLog);
 
-export default router
+export default router;

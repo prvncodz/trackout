@@ -1,27 +1,30 @@
-import mongoose, { Schema } from "mongoose"
+import mongoose, { Schema } from "mongoose";
 
-
-const LogSchema = new Schema({
+const LogSchema = new Schema(
+  {
     owner: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
-    exercises: [{
+    exercises: [
+      {
         type: Schema.Types.ObjectId,
-        ref: 'Exercise'
-    }],
+        ref: "Exercise",
+      },
+    ],
     logName: {
-        type: String,
-        required: [true, "Log name is required!"],
-        trim: true,
-        minlength: [3, "Log name must be at least 3 characters long!"],
-        maxlength: [50, "Log name must be at most 50 characters long!"]
+      type: String,
+      required: [true, "Log name is required!"],
+      trim: true,
+      minlength: [3, "Log name must be at least 3 characters long!"],
+      maxlength: [50, "Log name must be at most 50 characters long!"],
     },
     completedAt: {
-        type: Date
-    }
+      type: Date,
+    },
+  },
+  { timestamps: true },
+);
 
-}, { timestamps: true })
-
-const Log = mongoose.model('Log', LogSchema)
-export default Log
+const Log = mongoose.model("Log", LogSchema);
+export default Log;

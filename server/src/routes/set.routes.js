@@ -1,12 +1,17 @@
-import express from "express"
-import { CreateSet, DeleteSet, ToggleSetAsCompleted, UpdateSet } from "../controllers/set.controller.js"
-import auth from "../middlewares/auth.middleware.js"
+import express from "express";
+import {
+  CreateSet,
+  DeleteSet,
+  ToggleSetAsCompleted,
+  UpdateSet,
+} from "../controllers/set.controller.js";
+import auth from "../middlewares/auth.middleware.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/create/:exerciseId",auth, CreateSet)
-router.delete("/delete/:setId/:exerciseId",auth, DeleteSet)
-router.patch("/update/:setId",auth, UpdateSet)
-router.patch("/toggle-set-completed/:setId",auth, ToggleSetAsCompleted)
+router.post("/create/:exerciseId", auth, CreateSet);
+router.delete("/delete/:setId/:exerciseId", auth, DeleteSet);
+router.patch("/update/:setId", auth, UpdateSet);
+router.patch("/toggle-set-completed/:setId", auth, ToggleSetAsCompleted);
 
-export default router
+export default router;
