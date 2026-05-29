@@ -10,5 +10,6 @@ DbConn()
     .catch((error) => {
         console.log("Make sure your have a mongodb connection string in your .env file")
         console.log("ERROR :", error.message);
+        process.exit(1);
     })
 

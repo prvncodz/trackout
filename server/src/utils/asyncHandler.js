@@ -3,7 +3,6 @@ const asyncHandler = (fnc) => async (req, res, next) => {
     try {
         return await fnc(req, res, next);
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             success: false,
             message: err.message,
