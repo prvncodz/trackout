@@ -30,7 +30,7 @@ const SignUpUser = asyncHandler(async (req, res) => {
 
     const { fullname, email, height, weight, password } = req.body
     if (!fullname || !email || !height || !weight) {
-        throw new ApiError(400, "all field are required")
+        throw new ApiError(400, "all fields are required")
     }
     if (!password) {
         throw new ApiError(400, "password is required")
@@ -173,8 +173,6 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
 
 const UpdateUserAvatar = asyncHandler(async (req, res) => {
     const filePath = req.file?.path
-    console.log("filePath", filePath)
-    console.log("req.file", req.file)
     if (!filePath) {
         throw new ApiError(400, "file doesn't exists")
     }
