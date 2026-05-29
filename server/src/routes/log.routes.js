@@ -1,12 +1,12 @@
 import express from "express";
 import {
-  CreateLog,
-  DeleteLog,
-  DuplicateLog,
-  GetAllLogs,
-  GetLogWithId,
-  MarkLogCompleted,
-  UpdateLog,
+    CreateLog,
+    DeleteLog,
+    DuplicateLog,
+    GetAllLogs,
+    GetLogWithId,
+    MarkLogCompleted,
+    UpdateLog,
 } from "../controllers/log.controller.js";
 import auth from "../middlewares/auth.middleware.js";
 

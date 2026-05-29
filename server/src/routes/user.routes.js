@@ -1,13 +1,13 @@
 import {
-  SignInUser,
-  SignUpUser,
-  LogOutUser,
-  CurrentUser,
-  UpdateAccessAndRefreshTokens,
-  UpdateUserAvatar,
-  UpdateAccountInfo,
-  DeleteUser,
-  UserActiveDates,
+    SignInUser,
+    SignUpUser,
+    LogOutUser,
+    CurrentUser,
+    UpdateAccessAndRefreshTokens,
+    UpdateUserAvatar,
+    UpdateAccountInfo,
+    DeleteUser,
+    UserActiveDates,
 } from "../controllers/user.controllers.js";
 import express from "express";
 import auth from "../middlewares/auth.middleware.js";

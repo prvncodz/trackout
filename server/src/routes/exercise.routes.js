@@ -1,8 +1,8 @@
 import express from "express";
 import {
-  AddExerciseToLog,
-  DeleteExerciseFromLog,
-  UpdateExercise,
+    AddExerciseToLog,
+    DeleteExerciseFromLog,
+    UpdateExercise,
 } from "../controllers/exercise.controller.js";
 
 const router = express.Router();

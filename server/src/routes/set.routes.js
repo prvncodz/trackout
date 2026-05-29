@@ -1,9 +1,9 @@
 import express from "express";
 import {
-  CreateSet,
-  DeleteSet,
-  ToggleSetAsCompleted,
-  UpdateSet,
+    CreateSet,
+    DeleteSet,
+    ToggleSetAsCompleted,
+    UpdateSet,
 } from "../controllers/set.controller.js";
 import auth from "../middlewares/auth.middleware.js";
 
