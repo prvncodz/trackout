@@ -49,7 +49,8 @@ import { motion } from "motion/react"
 import axios from "../lib/axios.js"
 import CreateSetSchema from "../schemas/set.schema.js"
 import { toast } from "sonner"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useAuth } from "../stores/user.store.js"
 
 function debounce(fn, delay) {
     let id
@@ -647,26 +648,26 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
         </div>
     )
 }
+async function getlogById(id) {
+    const res = await axios.get(`/log/${id}`)
+    return res?.data?.data
+}
 
 const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) => {
     const [log, setLog] = useState(null)
     const [exercises, setExercises] = useState(null)
     const [addingExercise, setAddingExercise] = useState(false)
-
+    const { data, status, error } = useQuery({ queryKey: ['log', ActiveLog], queryFn: () => getlogById(ActiveLog) })
+    const queryClient = useQueryClient()
     useEffect(() => {
-        async function getLogById() {
-            try {
-                const res = await axios.get(`/log/${logId}`)
-                if (res.status === 200) {
-                    setLog(res?.data?.data)
-                    setExercises(res?.data?.data?.exercises)
-                }
-            } catch (err) {
-                toast.error(err?.response?.data?.message || err?.message)
-            }
+        if (status === "success") {
+            setLog(data)
+            setExercises(data?.exercises)
+        } else if (status === "error") {
+            toast.error(error?.response?.data?.message || error?.message)
         }
-        getLogById()
-    }, [isActive, ActiveLog])
+    }, [status, ActiveLog])
+
 
     async function handleCreateExercise(e) {
         e.preventDefault()
@@ -686,7 +687,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
 
     async function handleMarkLogCompleted() {
         try {
-            const res = await axios.patch(`/log/mark-completed/${log._id}`)
+            const res = await axios.patch(`/log/mark-completed/${log?._id}`)
             setLog((prev) => ({ ...prev, completedAt: res.data?.data?.completedAt }))
             toast.success("Log marked as completed successfully")
         } catch (err) {
@@ -694,6 +695,8 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
             toast.error(message)
         }
     }
+
+    if (status === "loading") return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
 
     return (
         <div className="w-full">
@@ -710,7 +713,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
                                     completed={log?.completedAt}
                                 />
                             ))}
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 justify-end">
                             {!log?.completedAt && (
                                 <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
                                     <DialogTrigger asChild>
@@ -777,7 +780,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
                                 />
                             ))}
 
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 justify-end pr-3">
                             {!log?.completedAt && (
                                 <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
                                     <DialogTrigger asChild>
@@ -829,17 +832,18 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
 
 async function fetchAllLogs() {
     const res = await axios.get("/log/all-logs")
-    return res?.data
+    return res?.data?.data
 }
 
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState(null)
     const [allLogs, setAllLogs] = useState([])
-    const { data, status, isLoading } = useQuery({ queryKey: ['logs'], queryFn: fetchAllLogs })
+    const userId = useAuth((state) => state.user?._id)
+    const { data, status, isLoading } = useQuery({ queryKey: ['logs', userId], queryFn: fetchAllLogs })
 
     useEffect(() => {
         if (status === "success") {
-            setAllLogs(data?.data)
+            setAllLogs(data)
         }
     }, [status])
 
