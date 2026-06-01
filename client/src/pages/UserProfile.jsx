@@ -1,11 +1,10 @@
 import ProfileCard from "@/components/profile/ProfileCard"
 import SideBarLayout from "../components/layout/SideBar"
 import Calender from "@/components/ui/Calender"
-import { useEffect } from "react"
 
 const UserProfile = () => {
     return (
-        <div className="no-scrollbar md:overflow-x-hidden">
+        <div className="no-scrollbar h-dvh md:overflow-hidden">
             <SideBarLayout>
                 <div className="flex h-screen max-h-screen w-full flex-col gap-20 overflow-auto px-5 pt-10 pb-25 lg:px-25">
                     <ProfileCard />
