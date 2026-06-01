@@ -51,6 +51,7 @@ import CreateSetSchema from "../schemas/set.schema.js"
 import { toast } from "sonner"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useAuth } from "../stores/user.store.js"
+import useLogStore from "../stores/log.store.js"
 
 function debounce(fn, delay) {
     let id
@@ -60,14 +61,17 @@ function debounce(fn, delay) {
     }
 }
 
-const Popup = ({ log, setIsOpen, setAllLogs }) => {
+const Popup = ({ log, setIsOpen }) => {
     const [editing, setEditing] = useState(false)
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
+    const duplicateLog = useLogStore((state) => state.duplicateLog)
+    const removeLog = useLogStore((state) => state.removeLog)
+    const editLog = useLogStore((state) => state.editLog)
 
     async function handleDuplicateLog() {
         try {
-            const res = await axios.post(`/log/duplicate/${log._id}`)
-            setAllLogs((prev) => [...prev, res?.data?.data])
+            const res = await axios.post(`/log/duplicate/${log?._id}`)
+            duplicateLog(res?.data?.data)
             setIsOpen(false)
             toast.success("Log duplicated successfully")
         } catch (err) {
@@ -79,7 +83,7 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
     async function HandleDeleteLog() {
         try {
             await axios.delete(`/log/delete/${log._id}`)
-            setAllLogs((prev) => prev.filter((l) => l._id !== log._id))
+            removeLog(log?._id)
             setShowDeleteAlert(false)
             setIsOpen(false)
             toast.success("Log deleted successfully")
@@ -94,7 +98,7 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
         try {
             const res = await axios.patch(`/log/update/${log._id}`, { logName: name })
             if (res.status === 200) {
-                setAllLogs((prev) => prev.map((obj) => (obj._id === log._id ? { ...obj, logName: name } : obj)))
+                editLog(log?._id, name)
                 setEditing(false)
                 setIsOpen(false)
                 toast.success("Log updated successfully")
@@ -190,7 +194,7 @@ const Popup = ({ log, setIsOpen, setAllLogs }) => {
     )
 }
 
-const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
+const Log = ({ log, ActiveLog, setActiveLog }) => {
     const [isOpen, setIsOpen] = useState(false)
     return (
         <div
@@ -208,16 +212,19 @@ const Log = ({ log, ActiveLog, setActiveLog, setAllLogs }) => {
             </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
-                {isOpen && <Popup log={log} setIsOpen={setIsOpen} setAllLogs={setAllLogs} />}
+                {isOpen && <Popup log={log} setIsOpen={setIsOpen} />}
             </div>
         </div>
     )
 }
 
-const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
+const AllLogs = ({ ActiveLog, setActiveLog }) => {
     const [isCreating, setIsCreating] = useState(false)
+    const logs = useLogStore((state) => state.logs)
+    const addLog = useLogStore((state) => state.addLog)
 
-    useEffect(() => { }, [logs])
+    useEffect(() => {
+    }, [logs])
 
     async function handleCreateLog(e) {
         e.preventDefault()
@@ -225,7 +232,7 @@ const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
         try {
             const res = await axios.post(`/log/create`, { logName: name })
             if (res.status === 201) {
-                setAllLogs((prev) => [...prev, res.data?.data])
+                addLog(res.data?.data)
                 setIsCreating(false)
                 toast.success("Log created successfully")
             }
@@ -267,13 +274,12 @@ const AllLogs = ({ logs, setAllLogs, ActiveLog, setActiveLog }) => {
                 </DialogContent>
             </Dialog>
             <div className="flex h-auto w-full flex-col items-center justify-center gap-2 lg:mt-15">
-                {logs?.map((log) => (
+                {logs.length > 0 && logs?.map((log) => (
                     <Log
                         key={log._id}
                         log={log}
                         ActiveLog={ActiveLog}
                         setActiveLog={setActiveLog}
-                        setAllLogs={setAllLogs}
                     />
                 ))}
             </div>
@@ -837,9 +843,10 @@ async function fetchAllLogs() {
 
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState(null)
-    const [allLogs, setAllLogs] = useState([])
     const userId = useAuth((state) => state.user?._id)
     const { data, status, isLoading } = useQuery({ queryKey: ['logs', userId], queryFn: fetchAllLogs })
+    const setAllLogs = useLogStore((state) => state.setLogs)
+    const allLogs = useLogStore((state) => state.logs)
 
     useEffect(() => {
         if (status === "success") {
@@ -851,7 +858,7 @@ const HomePageContent = () => {
 
     return (
         <div className="flex h-screen w-full flex-col items-start justify-start lg:flex-row">
-            <AllLogs logs={allLogs} setAllLogs={setAllLogs} ActiveLog={ActiveLog} setActiveLog={setActiveLog} />
+            <AllLogs ActiveLog={ActiveLog} setActiveLog={setActiveLog} />
             {ActiveLog && (
                 <>
                     <ShowLog

@@ -45,6 +45,7 @@ import { useState } from "react"
 import { useAuth, useStats } from "../../stores/user.store.js"
 import axios from "../../lib/axios.js"
 import { toast } from "sonner"
+import useLogStore from "../../stores/log.store.js"
 
 const Popup = ({ setIsOpen }) => {
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
@@ -262,48 +263,67 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
 }
 
 const NavbarForMobile = ({ className }) => {
-    const curPage = useAppStore((s) => s.curPage)
+    const curPage = useAppStore((state) => state.curPage)
+    const [isCreating, setIsCreating] = useState(false)
+    const addLog = useLogStore((state) => state.addLog)
+
+    async function handleCreateLog(e) {
+        e.preventDefault()
+        const name = e.target.name.value
+        try {
+            const res = await axios.post(`/log/create`, { logName: name })
+            if (res.status === 201) {
+                addLog(res.data?.data)
+                setIsCreating(false)
+                toast.success("Log created successfully")
+            }
+        } catch (err) {
+            const message = err?.response?.data?.message || err?.message
+            toast.error(message)
+        }
+    }
+
     return (
         <Navbar className={`${className} relative w-full`}>
             {/*for mobile & tablets view */}
             <div className="flex items-center justify-between gap-3">
                 {curPage === "home" && (
-                    <Dialog>
-                        <form>
-                            <DialogTrigger asChild>
-                                <MyButton>
-                                    Create
-                                    <span>
-                                        <IconPencilPlus size={18} className="ml-2" />
-                                    </span>
-                                </MyButton>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-sm">
-                                <DialogHeader>
-                                    <DialogTitle>Create Log</DialogTitle>
-                                    <DialogDescription>
-                                        Make a workout log. Click save when you&apos;re done.
-                                    </DialogDescription>
-                                </DialogHeader>
+                    <Dialog open={isCreating} onOpenChange={setIsCreating}>
+                        <DialogTrigger asChild>
+                            <MyButton>
+                                Create
+                                <span>
+                                    <IconPencilPlus size={18} className="ml-2" />
+                                </span>
+                            </MyButton>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-sm">
+                            <DialogHeader>
+                                <DialogTitle>Create Log</DialogTitle>
+                                <DialogDescription>
+                                    Make a workout log. Click save when you&apos;re done.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <form onSubmit={(e) => handleCreateLog(e)}>
                                 <FieldGroup>
                                     <Field>
                                         <Label htmlFor="name">Name</Label>
                                         <Input id="name" name="name" defaultValue="" />
                                     </Field>
                                 </FieldGroup>
-                                <DialogFooter>
+                                <DialogFooter className="mt-7">
                                     <DialogClose asChild>
                                         <Button variant="outline">Cancel</Button>
                                     </DialogClose>
                                     <Button type="submit">Save changes</Button>
                                 </DialogFooter>
-                            </DialogContent>
-                        </form>
+                            </form>
+                        </DialogContent>
                     </Dialog>
                 )}
                 <HamburgerButton className="text-gray-700" />
             </div>
-        </Navbar>
+        </Navbar >
     )
 }
 

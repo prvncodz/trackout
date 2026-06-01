@@ -22,7 +22,7 @@ const HamburgerButton = ({ className = "", ...props }) => {
         {
             label: "Profile",
             icon: IconUser,
-            path: `/profile`,
+            path: `/profile/`,
             page: "profile",
         },
     ]
@@ -31,6 +31,7 @@ const HamburgerButton = ({ className = "", ...props }) => {
         setCurPage(item.page)
         navigate(item.path)
     }
+
     const [isNavOpen, setIsNavOpen] = useState(false)
     return (
         <button
@@ -60,8 +61,8 @@ const HamburgerButton = ({ className = "", ...props }) => {
                                 key={item.page}
                                 onClick={() => handleNav(item)}
                                 className={`flex w-full items-center gap-3 rounded-lg px-3 py-4 text-left text-lg font-medium transition-all duration-150 ${isActive
-                                        ? "border-line-color border bg-gray-50 text-gray-800"
-                                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                                    ? "border-line-color border bg-gray-50 text-gray-800"
+                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
                                     } `}
                             >
                                 <Icon
