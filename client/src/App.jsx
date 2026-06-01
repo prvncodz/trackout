@@ -39,14 +39,13 @@ function App() {
                         }
                     }
                 } catch (error) {
-                    toast.error(error?.response?.data?.message || error?.message)
+                    console.log(error)
                 }
             }
         }
         loginUser()
     }, [isTokenReceived])
 
-    useEffect(() => {}, [isUserLogged])
 
     useEffect(() => {
         async function getActiveDates() {
@@ -69,9 +68,11 @@ function App() {
                 toast.error(err?.response?.data?.message || err?.message)
             }
         }
-        getActiveDates()
-        getDashBoardStats()
-    }, [])
+        if (isUserLogged) {
+            getActiveDates()
+            getDashBoardStats()
+        }
+    }, [isUserLogged])
 
     return (
         <>
