@@ -49,6 +49,8 @@ import { motion } from "motion/react"
 import axios from "../lib/axios.js"
 import CreateSetSchema from "../schemas/set.schema.js"
 import { toast } from "sonner"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useAuth } from "../stores/user.store.js"
 
 function debounce(fn, delay) {
     let id
@@ -646,26 +648,26 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
         </div>
     )
 }
+async function getlogById(id) {
+    const res = await axios.get(`/log/${id}`)
+    return res?.data?.data
+}
 
 const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) => {
     const [log, setLog] = useState(null)
     const [exercises, setExercises] = useState(null)
     const [addingExercise, setAddingExercise] = useState(false)
-
+    const { data, status, error } = useQuery({ queryKey: ['log', ActiveLog], queryFn: () => getlogById(ActiveLog) })
+    const queryClient = useQueryClient()
     useEffect(() => {
-        async function getLogById() {
-            try {
-                const res = await axios.get(`/log/${logId}`)
-                if (res.status === 200) {
-                    setLog(res?.data?.data)
-                    setExercises(res?.data?.data?.exercises)
-                }
-            } catch (err) {
-                toast.error(err?.response?.data?.message || err?.message)
-            }
+        if (status === "success") {
+            setLog(data)
+            setExercises(data?.exercises)
+        } else if (status === "error") {
+            toast.error(error?.response?.data?.message || error?.message)
         }
-        getLogById()
-    }, [isActive, ActiveLog])
+    }, [status, ActiveLog])
+
 
     async function handleCreateExercise(e) {
         e.preventDefault()
@@ -685,7 +687,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
 
     async function handleMarkLogCompleted() {
         try {
-            const res = await axios.patch(`/log/mark-completed/${log._id}`)
+            const res = await axios.patch(`/log/mark-completed/${log?._id}`)
             setLog((prev) => ({ ...prev, completedAt: res.data?.data?.completedAt }))
             toast.success("Log marked as completed successfully")
         } catch (err) {
@@ -693,6 +695,8 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
             toast.error(message)
         }
     }
+
+    if (status === "loading") return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
 
     return (
         <div className="w-full">
@@ -709,7 +713,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
                                     completed={log?.completedAt}
                                 />
                             ))}
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 justify-end">
                             {!log?.completedAt && (
                                 <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
                                     <DialogTrigger asChild>
@@ -776,7 +780,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
                                 />
                             ))}
 
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 justify-end pr-3">
                             {!log?.completedAt && (
                                 <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
                                     <DialogTrigger asChild>
@@ -826,23 +830,24 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
     )
 }
 
+async function fetchAllLogs() {
+    const res = await axios.get("/log/all-logs")
+    return res?.data?.data
+}
+
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState(null)
     const [allLogs, setAllLogs] = useState([])
+    const userId = useAuth((state) => state.user?._id)
+    const { data, status, isLoading } = useQuery({ queryKey: ['logs', userId], queryFn: fetchAllLogs })
 
     useEffect(() => {
-        async function fetchLogs() {
-            try {
-                const res = await axios.get("/log/all-logs")
-                if (res.status === 200) {
-                    setAllLogs(res.data?.data)
-                }
-            } catch (err) {
-                const message = err?.response?.data?.message || err?.response?.data?.error || err?.message
-            }
+        if (status === "success") {
+            setAllLogs(data)
         }
-        fetchLogs()
-    }, [])
+    }, [status])
+
+    if (isLoading) return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
 
     return (
         <div className="flex h-screen w-full flex-col items-start justify-start lg:flex-row">
@@ -868,4 +873,12 @@ const HomePage = () => {
     )
 }
 
+function Spinner() {
+    return (
+        <svg className="h-10 w-10 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+    )
+}
 export default HomePage
