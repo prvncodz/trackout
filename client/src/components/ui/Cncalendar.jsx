@@ -21,8 +21,8 @@ function Calendar({
 
     const sizeMap = {
         lg: `[--cell-size:--spacing(8)]  md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(12)]`,
-        md: `[--cell-size:--spacing(8)] md:[--cell-size:--spacing(8)] lg:[--cell-size:--spacing(10)]`,
-        sm: `[--cell-size:--spacing(8)] md:[--cell-size:--spacing(6)] lg:[--cell-size:--spacing(8)]`,
+        md: `[--cell-size:--spacing(6)] md:[--cell-size:--spacing(8)] lg:[--cell-size:--spacing(10)]`,
+        sm: `[--cell-size:--spacing(6)] md:[--cell-size:--spacing(6)] lg:[--cell-size:--spacing(8)]`,
     }
     return (
         <DayPicker

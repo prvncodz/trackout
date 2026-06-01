@@ -194,20 +194,19 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
     const location = useLocation()
     const setCurPage = useAppStore((s) => s.setCurPage) // zustand
     const userId = useAuth((s) => s.user?._id)
-
     //Nav items
     const NAV_ITEMS = [
         { label: "Home", icon: Dumbbell, path: "/", page: "home" },
         {
             label: "Dashboard",
             icon: IconBrandTabler,
-            path: `/dashboard/${userId}`,
+            path: `/dashboard`,
             page: "dashboard",
         },
         {
             label: "Profile",
             icon: IconUser,
-            path: `/profile/${userId}`,
+            path: `/profile`,
             page: "profile",
         },
     ]
@@ -233,11 +232,10 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
                         <button
                             key={item.page}
                             onClick={() => handleNav(item)}
-                            className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-3.5 text-left text-lg font-medium transition-all duration-200 ${
-                                isActive
-                                    ? "border-line-color border bg-gray-50 text-gray-800"
-                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-                            } `}
+                            className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-3.5 text-left text-lg font-medium transition-all duration-200 ${isActive
+                                ? "border-line-color border bg-gray-50 text-gray-800"
+                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                                } `}
                         >
                             <Icon
                                 size={23}

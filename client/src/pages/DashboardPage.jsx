@@ -64,7 +64,7 @@ const Cards = () => {
                 return (
                     <div
                         key={index}
-                        className="bg-card shadow-standard flex w-fit min-w-48 flex-col gap-3 rounded-xl p-6"
+                        className="bg-card shadow-standard flex w-full min-w-43 max-w-48 flex-col gap-3 rounded-xl p-6"
                     >
                         <div className="flex items-center justify-between gap-4">
                             <p className="text-mockup-text text-xs font-medium tracking-wide uppercase antialiased">
@@ -149,14 +149,14 @@ const DashboardPage = () => {
             <div className="no-scrollbar transition-scroll flex h-screen flex-col overflow-auto scroll-smooth duration-300 ease-in-out">
                 <Greetings />
                 <div className="flex flex-col gap-3 lg:flex-row">
-                    <div className="no-scrollbar flex h-screen flex-col gap-6 overflow-hidden px-5 lg:pl-10">
+                    <div className="no-scrollbar flex h-240 flex-col gap-6 overflow-hidden px-5 pb-10 lg:h-screen lg:pl-10">
                         <Cards />
-                        <div className="h-120 w-full rounded-2xl bg-neutral-50">
+                        <div className="h-100 w-full rounded-2xl bg-neutral-500 ">
                             <ChartAreaInteractive />
                         </div>
                     </div>
                     <div className="flex h-screen flex-col gap-10 px-5 lg:px-0">
-                        <div className="shadow-standard h-auto w-full rounded-2xl bg-white p-5">
+                        <div className="shadow-standard h-auto w-full rounded-2xl bg-white p-5 shrink-0 overflow-hidden px-2">
                             <Calendar size={"md"} className="bg-white" />
                         </div>
                         <div className="shadow-standard h-auto w-full rounded-2xl bg-white">

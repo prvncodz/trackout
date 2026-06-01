@@ -82,8 +82,8 @@ function App() {
                     <Route path="/" element={isUserLogged ? <HomePage /> : <LandingPage />} />
                     <Route path="/signin" element={<SigninPage />} />
                     <Route path="/signup" element={<SignupPage />} />
-                    <Route path="/dashboard/:id" element={<DashboardPage />} />
-                    <Route path="/profile/:id" element={<ProfilePage />} />
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
                 </Routes>
             </BrowserRouter>
         </>

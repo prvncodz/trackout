@@ -2,5 +2,5 @@ import axios from "axios"
 
 export default axios.create({
     withCredentials: true,
-    baseURL: "https://localhost:8000/api/v1",
+    baseURL: "http://localhost:8000/api/v1",
 })
