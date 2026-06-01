@@ -16,13 +16,13 @@ const HamburgerButton = ({ className = "", ...props }) => {
         {
             label: "Dashboard",
             icon: IconChartLine,
-            path: `/dashboard/${userId}`,
+            path: `/dashboard`,
             page: "dashboard",
         },
         {
             label: "Profile",
             icon: IconUser,
-            path: `/profile/${userId}`,
+            path: `/profile`,
             page: "profile",
         },
     ]
@@ -59,11 +59,10 @@ const HamburgerButton = ({ className = "", ...props }) => {
                             <li
                                 key={item.page}
                                 onClick={() => handleNav(item)}
-                                className={`flex w-full items-center gap-3 rounded-lg px-3 py-4 text-left text-lg font-medium transition-all duration-150 ${
-                                    isActive
+                                className={`flex w-full items-center gap-3 rounded-lg px-3 py-4 text-left text-lg font-medium transition-all duration-150 ${isActive
                                         ? "border-line-color border bg-gray-50 text-gray-800"
                                         : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-                                } `}
+                                    } `}
                             >
                                 <Icon
                                     size={24}

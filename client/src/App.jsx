@@ -12,6 +12,7 @@ import axios from "./lib/axios.js"
 import { Toaster } from "@/components/ui/sonner.jsx"
 import { toast } from "sonner"
 
+
 function App() {
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged)
     const setUser = useAuth((state) => state.setUser)
