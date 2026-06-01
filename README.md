@@ -2,8 +2,9 @@
 
 A fullstack fitness tracking web app to log workouts, track progress, and manage your fitness journey.
 
----
+ <img width="1280" height="720" alt="1780057688242" src="https://github.com/user-attachments/assets/3dba84a4-6c94-47d2-a1f2-9bf1b2ee791d" />
 
+---
 ## Tech Stack
 
 | Layer    | Tech                                |
