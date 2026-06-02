@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import {
     CreateSet,
     DeleteSet,
@@ -7,7 +7,7 @@ import {
 } from "../controllers/set.controller.js";
 import auth from "../middlewares/auth.middleware.js";
 
-const router = express.Router();
+const router: Router = Router();
 
 router.post("/create/:exerciseId", auth, CreateSet);
 router.delete("/delete/:setId/:exerciseId", auth, DeleteSet);
