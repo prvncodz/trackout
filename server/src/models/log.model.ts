@@ -1,6 +1,15 @@
 import mongoose, { Schema } from "mongoose";
 
-const LogSchema = new Schema(
+interface ILog extends mongoose.Document {
+    owner: Schema.Types.ObjectId,
+    exercises: Schema.Types.ObjectId[],
+    logName: string,
+    completedAt?: Date,
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const LogSchema = new Schema<ILog>(
     {
         owner: {
             type: Schema.Types.ObjectId,
@@ -26,5 +35,5 @@ const LogSchema = new Schema(
     { timestamps: true },
 );
 
-const Log = mongoose.model("Log", LogSchema);
+const Log = mongoose.model<ILog>("Log", LogSchema);
 export default Log;
