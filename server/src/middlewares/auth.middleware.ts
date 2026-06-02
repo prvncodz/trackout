@@ -2,15 +2,16 @@ import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 
-const auth = asyncHandler(async (req, res, next) => {
+const auth = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const token = req?.cookies?.accessToken;
     if (!token) {
         throw new ApiError(400, "invalid token");
     }
     const decodedToken = await jwt.verify(
         token,
-        process.env.ACCESS_TOKEN_SECRET,
+        process.env.ACCESS_TOKEN_SECRET as any,
     );
     if (!decodedToken) {
         throw new ApiError(401, "unauthorized request");

@@ -5,8 +5,6 @@ interface ILog extends mongoose.Document {
     exercises: Schema.Types.ObjectId[],
     logName: string,
     completedAt?: Date,
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 const LogSchema = new Schema<ILog>(

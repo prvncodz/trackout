@@ -6,8 +6,6 @@ interface IExercise extends mongoose.Document {
     muscleGroup: string,
     note?: string,
     sets: Schema.Types.ObjectId[],
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 const ExerciseSchema = new Schema<IExercise>(

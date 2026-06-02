@@ -9,8 +9,6 @@ interface ISet extends mongoose.Document {
     rest?: string,
     isPr?: boolean,
     completed?: boolean,
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 const SetSchema = new Schema<ISet>(

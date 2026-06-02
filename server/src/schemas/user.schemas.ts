@@ -19,4 +19,7 @@ const userSignInSchema = z.object({
     password: z.string().min(3).max(20),
 });
 
-export { userSignUpSchema, userSignInSchema };
+type UserSignUpInput = z.infer<typeof userSignUpSchema>;
+type UserSignInInput = z.infer<typeof userSignInSchema>;
+
+export { userSignUpSchema, userSignInSchema, UserSignUpInput, UserSignInInput };

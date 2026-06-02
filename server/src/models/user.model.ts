@@ -1,8 +1,8 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { HydratedDocument, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-interface IUser extends mongoose.Document {
+interface IUser {
     avatar?: {
         url: string;
         public_id: string;
@@ -13,11 +13,18 @@ interface IUser extends mongoose.Document {
     weight: number;
     password: string;
     refreshToken?: string;
-    createdAt: Date;
-    updatedAt: Date;
 }
 
-const UserSchema = new Schema<IUser>(
+interface IUserMethods {
+    generateAccessToken: () => string,
+    generateRefreshToken: () => string,
+    isPasswordCorrect: (password: string) => Promise<boolean>,
+
+}
+
+type IUserDocument = HydratedDocument<IUser, IUserMethods>;
+
+const UserSchema = new Schema<IUser, IUserMethods>(
     {
         avatar: {
             url: String,
@@ -45,16 +52,14 @@ const UserSchema = new Schema<IUser>(
         height: {
             type: Number,
             required: [true, "Height is required"],
-            trim: true,
-            minlength: [2, "Invalid height!"],
-            maxlength: [3, "Invalid height!"],
+            min: 50,
+            max: 300
         },
         weight: {
             type: Number,
             required: [true, "Weight is required"],
-            trim: true,
-            minlength: [2, "Invalid weight!"],
-            maxlength: [3, "Invalid weight!"],
+            min: 20,
+            max: 500
         },
         password: {
             type: String,
@@ -74,7 +79,7 @@ UserSchema.pre("save", async function () {
     }
 });
 
-UserSchema.methods.generateAccessToken = async function () {
+UserSchema.methods.generateAccessToken = function (this: IUserDocument) {
     return jwt.sign(
         {
             _id: this._id,
@@ -88,7 +93,7 @@ UserSchema.methods.generateAccessToken = async function () {
     );
 };
 
-UserSchema.methods.generateRefreshToken = async function () {
+UserSchema.methods.generateRefreshToken = function (this: IUserDocument) {
     return jwt.sign(
         {
             _id: this._id,
@@ -102,7 +107,7 @@ UserSchema.methods.generateRefreshToken = async function () {
     );
 };
 
-UserSchema.methods.isPasswordCorrect = async function (password: string) {
+UserSchema.methods.isPasswordCorrect = async function (this: IUserDocument, password: string) {
     if (!password) {
         return false;
     }
@@ -111,3 +116,4 @@ UserSchema.methods.isPasswordCorrect = async function (password: string) {
 
 const User = mongoose.model<IUser>("User", UserSchema);
 export default User;
+

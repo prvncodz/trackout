@@ -5,11 +5,12 @@ import Set from "../models/set.model.js";
 import CreateSetSchema from "../schemas/set.schema.js";
 import Exercise from "../models/exercise.model.js";
 import Activity from "../models/activity.model.js";
+import { CreateSetInput } from "../schemas/set.schema.js";
 
 const CreateSet = asyncHandler(async (req, res) => {
     const { exerciseId } = req.params;
     const user = req.user;
-    const { setNo, weight, reps, rest } = req.body;
+    const { setNo, weight, reps, rest }: CreateSetInput = req.body;
     if (!exerciseId) {
         throw new ApiError(400, "exercise id is required");
     }

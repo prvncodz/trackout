@@ -3,8 +3,6 @@ import mongoose from "mongoose";
 
 interface IActivity extends mongoose.Document {
     owner: Schema.Types.ObjectId,
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 const ActivitySchema = new Schema<IActivity>(

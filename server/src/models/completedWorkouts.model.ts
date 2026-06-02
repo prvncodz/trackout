@@ -6,8 +6,6 @@ interface ICompletedWorkouts extends mongoose.Document {
     muscleGroup: string,
     exercises: Schema.Types.ObjectId[],
     noOfSets: number,
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 const CompletedWorkoutsSchema = new Schema<ICompletedWorkouts>(

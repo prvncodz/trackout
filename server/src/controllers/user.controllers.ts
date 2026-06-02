@@ -4,19 +4,23 @@ import Exercise from "../models/exercise.model.js";
 import Log from "../models/log.model.js";
 import CompletedWorkout from "../models/completedWorkouts.model.js";
 import Activity from "../models/activity.model.js";
-import { userSignUpSchema, userSignInSchema } from "../schemas/user.schemas.js";
+import { userSignUpSchema, userSignInSchema, UserSignInInput, UserSignUpInput } from "../schemas/user.schemas.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { DeleteFromCloud, UploadToCloud } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const generateAccessAndRefreshTokens = asyncHandler(async (userId) => {
+
+const generateAccessAndRefreshTokens = asyncHandler(async (userId: Schema.Types.ObjectId) => {
     try {
         const user = await User.findById(userId);
-        const accessToken = await user.generateAccessToken();
-        const refreshToken = await user.generateRefreshToken();
+        if (!user) {
+            throw new ApiError(500, "user not found")
+        }
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
 
         user.refreshToken = refreshToken;
         await user.save({ validateBeforeSave: false });
@@ -27,13 +31,8 @@ const generateAccessAndRefreshTokens = asyncHandler(async (userId) => {
 });
 
 const SignUpUser = asyncHandler(async (req, res) => {
-    const { fullname, email, height, weight, password } = req.body;
-    if (!fullname || !email || !height || !weight) {
-        throw new ApiError(400, "all fields are required");
-    }
-    if (!password) {
-        throw new ApiError(400, "password is required");
-    }
+    const { fullname, email, height, weight, password }: UserSignUpInput = req.body;
+
     const validationResult = userSignUpSchema.safeParse({
         fullname,
         email,
@@ -74,12 +73,9 @@ const SignUpUser = asyncHandler(async (req, res) => {
 });
 
 const SignInUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        throw new ApiError(400, "email and password are required fields");
-    }
+    const { email, password }: UserSignInInput = req.body;
 
-    const validationResult = await userSignInSchema.safeParse({
+    const validationResult = userSignInSchema.safeParse({
         email,
         password,
     });
