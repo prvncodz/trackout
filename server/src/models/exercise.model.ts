@@ -1,6 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
-const ExerciseSchema = new Schema(
+interface IExercise extends mongoose.Document {
+    logId: Schema.Types.ObjectId,
+    name: string,
+    muscleGroup: string,
+    note?: string,
+    sets: Schema.Types.ObjectId[],
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const ExerciseSchema = new Schema<IExercise>(
     {
         logId: {
             type: Schema.Types.ObjectId,
@@ -38,5 +48,5 @@ const ExerciseSchema = new Schema(
     { timestamps: true },
 );
 
-const Exercise = mongoose.model("Exercise", ExerciseSchema);
+const Exercise = mongoose.model<IExercise>("Exercise", ExerciseSchema);
 export default Exercise;
