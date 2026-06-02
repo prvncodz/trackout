@@ -8,12 +8,12 @@ import {
     UpdateAccountInfo,
     DeleteUser,
     UserActiveDates,
-} from "../controllers/user.controllers.js";
-import express from "express";
-import auth from "../middlewares/auth.middleware.js";
-import { upload } from "../middlewares/multer.middleware.js";
+} from "../controllers/user.controllers";
+import  { Router } from "express";
+import auth from "../middlewares/auth.middleware";
+import { upload } from "../middlewares/multer.middleware";
 
-const router = express.Router();
+const router: Router = Router();
 
 router.post("/signup", SignUpUser);
 router.post("/signin", SignInUser);

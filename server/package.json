@@ -4,7 +4,6 @@
     "description": "",
     "license": "ISC",
     "author": "prvn",
-    "type": "module",
     "main": "index.js",
     "scripts": {
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
@@ -25,6 +24,7 @@
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.6",
+        "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
