@@ -1,6 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
-const CompletedWorkoutsSchema = new Schema(
+interface ICompletedWorkouts extends mongoose.Document {
+    owner: Schema.Types.ObjectId,
+    name: string,
+    muscleGroup: string,
+    exercises: Schema.Types.ObjectId[],
+    noOfSets: number,
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const CompletedWorkoutsSchema = new Schema<ICompletedWorkouts>(
     {
         owner: {
             type: Schema.Types.ObjectId,
@@ -35,7 +45,7 @@ const CompletedWorkoutsSchema = new Schema(
     { timestamps: true },
 );
 
-const CompletedWorkouts = mongoose.model(
+const CompletedWorkouts = mongoose.model<ICompletedWorkouts>(
     "CompletedWorkouts",
     CompletedWorkoutsSchema,
 );
