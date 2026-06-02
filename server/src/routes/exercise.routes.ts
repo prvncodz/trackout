@@ -1,11 +1,11 @@
-import express from "express";
+import { Router } from "express";
 import {
     AddExerciseToLog,
     DeleteExerciseFromLog,
     UpdateExercise,
 } from "../controllers/exercise.controller.js";
 
-const router = express.Router();
+const router: Router = Router();
 
 router.post("/create/:logId", AddExerciseToLog);
 router.patch("/update/:exerciseId", UpdateExercise);
