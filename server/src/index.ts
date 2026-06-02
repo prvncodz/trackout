@@ -1,5 +1,7 @@
-import DbConn from "./db/index.js";
-import app from "./app.js";
+import DbConn from "./db/index";
+import app from "./app";
+import dotenv from "dotenv";
+dotenv.config()
 
 DbConn()
     .then(() => {
