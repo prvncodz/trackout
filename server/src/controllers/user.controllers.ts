@@ -25,7 +25,7 @@ const generateAccessAndRefreshTokens = asyncHandler(async (userId: Schema.Types.
         user.refreshToken = refreshToken;
         await user.save({ validateBeforeSave: false });
         return { accessToken, refreshToken };
-    } catch (error) {
+    } catch (error:any) {
         throw new ApiError(500, error.message);
     }
 });

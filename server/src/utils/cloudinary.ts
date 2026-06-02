@@ -7,7 +7,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const UploadToCloud = async (filepath) => {
+const UploadToCloud = async (filepath: string) => {
     try {
         if (!filepath) {
             return null;
@@ -27,14 +27,14 @@ const UploadToCloud = async (filepath) => {
         }
         fs.unlinkSync(filepath);
         return res;
-    } catch (error) {
+    } catch (error: any) {
         fs.unlinkSync(filepath);
         console.error(error.message);
         return null;
     }
 };
 
-const DeleteFromCloud = async (public_id) => {
+const DeleteFromCloud = async (public_id: string) => {
     if (!public_id) {
         return false;
     }
@@ -43,7 +43,7 @@ const DeleteFromCloud = async (public_id) => {
         await cloudinary.uploader.destroy(public_id);
         console.log("file deleted from cloud");
         return true;
-    } catch (error) {
+    } catch (error: any) {
         console.log("failed to delete file from cloud");
         console.error(error.message);
         return false;

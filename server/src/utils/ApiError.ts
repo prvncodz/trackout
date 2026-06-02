@@ -1,10 +1,11 @@
 class ApiError extends Error {
     constructor(
-        statusCode,
+        public statusCode: number,
+        public data = {},
+        public errors = [],
+        public success = false,
+        name = "ApiError",
         message = "something went wrong",
-        data,
-        name,
-        errors = [],
         stack = "",
     ) {
         super(message);
