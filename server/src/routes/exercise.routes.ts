@@ -3,7 +3,7 @@ import {
     AddExerciseToLog,
     DeleteExerciseFromLog,
     UpdateExercise,
-} from "../controllers/exercise.controller.js";
+} from "../controllers/exercise.controller";
 
 const router: Router = Router();
 

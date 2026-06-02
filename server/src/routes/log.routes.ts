@@ -7,8 +7,8 @@ import {
     GetLogWithId,
     MarkLogCompleted,
     UpdateLog,
-} from "../controllers/log.controller.js";
-import auth from "../middlewares/auth.middleware.js";
+} from "../controllers/log.controller";
+import auth from "../middlewares/auth.middleware";
 
 const router = express.Router();
 

@@ -6,9 +6,9 @@
     "author": "prvn",
     "main": "index.js",
     "scripts": {
-        "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+        "dev": "ts-node-dev --respawn --transpile-only -r dotenv/config src/index.ts",
         "format": "prettier --write src/*/*",
-        "start": "node  src/index.ts"
+        "start": "node -r dotenv/config src/index.ts"
     },
     "dependencies": {
         "bcrypt": "^6.0.0",
@@ -23,6 +23,7 @@
         "zod": "^4.3.6"
     },
     "devDependencies": {
+        "@types/bcrypt": "^6.0.0",
         "@types/bcryptjs": "^2.4.6",
         "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",

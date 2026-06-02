@@ -4,8 +4,8 @@ import {
     DeleteSet,
     ToggleSetAsCompleted,
     UpdateSet,
-} from "../controllers/set.controller.js";
-import auth from "../middlewares/auth.middleware.js";
+} from "../controllers/set.controller";
+import auth from "../middlewares/auth.middleware";
 
 const router: Router = Router();
 

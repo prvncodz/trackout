@@ -2,7 +2,22 @@ import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const UserSchema = new Schema(
+interface IUser extends mongoose.Document {
+    avatar?: {
+        url: string;
+        public_id: string;
+    },
+    fullname: string;
+    email: string;
+    height: number;
+    weight: number;
+    password: string;
+    refreshToken?: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const UserSchema = new Schema<IUser>(
     {
         avatar: {
             url: String,
@@ -66,9 +81,9 @@ UserSchema.methods.generateAccessToken = async function () {
             fullname: this.fullname,
             email: this.email,
         },
-        process.env.ACCESS_TOKEN_SECRET,
+        process.env.ACCESS_TOKEN_SECRET!,
         {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY as any,
         },
     );
 };
@@ -80,19 +95,19 @@ UserSchema.methods.generateRefreshToken = async function () {
             fullname: this.fullname,
             email: this.email,
         },
-        process.env.REFRESH_TOKEN_SECRET,
+        process.env.REFRESH_TOKEN_SECRET!,
         {
-            expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY as any,
         },
     );
 };
 
-UserSchema.methods.isPasswordCorrect = async function (password) {
+UserSchema.methods.isPasswordCorrect = async function (password: string) {
     if (!password) {
         return false;
     }
     return await bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model("User", UserSchema);
+const User = mongoose.model<IUser>("User", UserSchema);
 export default User;

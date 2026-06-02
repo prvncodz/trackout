@@ -1,6 +1,19 @@
 import mongoose, { Schema } from "mongoose";
 
-const SetSchema = new Schema(
+interface ISet extends mongoose.Document {
+    owner: Schema.Types.ObjectId,
+    exerciseId: Schema.Types.ObjectId,
+    setNo: number,
+    weight: number,
+    reps: number,
+    rest?: string,
+    isPr?: boolean,
+    completed?: boolean,
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const SetSchema = new Schema<ISet>(
     {
         owner: {
             type: Schema.Types.ObjectId,
@@ -44,5 +57,5 @@ const SetSchema = new Schema(
     { timestamps: true },
 );
 
-const Set = mongoose.model("Set", SetSchema);
+const Set = mongoose.model<ISet>("Set", SetSchema);
 export default Set;
