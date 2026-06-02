@@ -1,7 +1,13 @@
 import { Schema } from "mongoose";
 import mongoose from "mongoose";
 
-const ActivitySchema = new Schema(
+interface IActivity extends mongoose.Document {
+    owner: Schema.Types.ObjectId,
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const ActivitySchema = new Schema<IActivity>(
     {
         owner: {
             type: Schema.Types.ObjectId,
@@ -12,5 +18,5 @@ const ActivitySchema = new Schema(
     { timestamps: true },
 );
 
-const Activity = mongoose.model("Activity", ActivitySchema);
+const Activity = mongoose.model<IActivity>("Activity", ActivitySchema);
 export default Activity;
