@@ -1,6 +1,14 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const CollectionSchema = new Schema(
+interface ICollection extends mongoose.Document {
+    owner: Schema.Types.ObjectId,
+    logs: Schema.Types.ObjectId[],
+    name: string,
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const CollectionSchema = new Schema<ICollection>(
     {
         owner: {
             type: Schema.Types.ObjectId,
@@ -22,5 +30,5 @@ const CollectionSchema = new Schema(
     { timestamps: true },
 );
 
-const Collection = mongoose.model("Collection", CollectionSchema);
+const Collection = mongoose.model<ICollection>("Collection", CollectionSchema);
 export default Collection;
