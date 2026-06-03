@@ -12,9 +12,9 @@ export interface IUser extends Document {
     height: number;
     weight: number;
     password: string;
-    refreshToken?: string
-    createdAt: Date,
-    updatedAt: Date,
+    refreshToken?: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 interface IUserMethods {

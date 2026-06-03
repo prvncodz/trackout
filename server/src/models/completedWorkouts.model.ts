@@ -1,11 +1,13 @@
 import mongoose, { Schema, Types } from "mongoose";
 
 interface ICompletedWorkouts extends mongoose.Document {
-    owner: Types.ObjectId,
-    name: string,
-    muscleGroup: string,
-    exercises: Types.ObjectId[],
-    noOfSets: number,
+    owner: Types.ObjectId;
+    name: string;
+    muscleGroup: string;
+    exercises: Types.ObjectId[];
+    noOfSets: number;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const CompletedWorkoutsSchema = new Schema<ICompletedWorkouts>(

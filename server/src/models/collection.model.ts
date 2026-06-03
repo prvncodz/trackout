@@ -1,9 +1,11 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 interface ICollection extends mongoose.Document {
-    owner: Schema.Types.ObjectId,
-    logs: Schema.Types.ObjectId[],
-    name: string,
+    owner: Types.ObjectId;
+    logs: Types.ObjectId[];
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const CollectionSchema = new Schema<ICollection>(

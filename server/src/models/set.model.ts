@@ -1,16 +1,16 @@
 import mongoose, { Schema, Types, Document } from "mongoose";
 
 interface ISet extends Document {
-    owner: Types.ObjectId,
-    exerciseId: Types.ObjectId,
-    setNo: number,
-    weight: number,
-    reps: number,
-    rest?: string,
-    isPr?: boolean,
-    completed?: boolean,
-    createdAt: Date,
-    updatedAt: Date,
+    owner: Types.ObjectId;
+    exerciseId: Types.ObjectId;
+    setNo: number;
+    weight: number;
+    reps: number;
+    rest?: string;
+    isPr?: boolean;
+    completed?: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const SetSchema = new Schema<ISet>(

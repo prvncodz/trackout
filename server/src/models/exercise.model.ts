@@ -1,13 +1,13 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 
 interface IExercise extends Document {
-    logId: Types.ObjectId,
-    name: string,
-    muscleGroup: string,
-    note?: string,
-    sets: Types.ObjectId[],
-    createdAt: Date,
-    updatedAt: Date,
+    logId: Types.ObjectId;
+    name: string;
+    muscleGroup: string;
+    note?: string;
+    sets: Types.ObjectId[];
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const ExerciseSchema = new Schema<IExercise>(
