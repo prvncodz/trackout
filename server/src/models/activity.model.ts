@@ -1,8 +1,8 @@
-import { Schema } from "mongoose";
+import { Schema, Types } from "mongoose";
 import mongoose from "mongoose";
 
 interface IActivity extends mongoose.Document {
-    owner: Schema.Types.ObjectId,
+    owner: Types.ObjectId,
 }
 
 const ActivitySchema = new Schema<IActivity>(

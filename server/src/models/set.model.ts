@@ -1,8 +1,8 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema ,Types} from "mongoose";
 
 interface ISet extends mongoose.Document {
-    owner: Schema.Types.ObjectId,
-    exerciseId: Schema.Types.ObjectId,
+    owner: Types.ObjectId,
+    exerciseId: Types.ObjectId,
     setNo: number,
     weight: number,
     reps: number,

@@ -1,11 +1,11 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 interface IExercise extends mongoose.Document {
-    logId: Schema.Types.ObjectId,
+    logId: Types.ObjectId,
     name: string,
     muscleGroup: string,
     note?: string,
-    sets: Schema.Types.ObjectId[],
+    sets: Types.ObjectId[],
 }
 
 const ExerciseSchema = new Schema<IExercise>(

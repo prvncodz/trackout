@@ -3,12 +3,12 @@ import asyncHandler from "../utils/asyncHandler.js";
 import User, { IUser } from "../models/user.model.js";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { Types } from "mongoose";
 
-type RequestWithUser = Request & { user?: IUser };
 
-type JwtPayloadWithId = JwtPayload & { _id: string };
+export type JwtPayloadWithId = JwtPayload & { _id: Types.ObjectId };
 
-const auth = asyncHandler(async (req: RequestWithUser, res: Response, next: NextFunction) => {
+const auth = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const token = req?.cookies?.accessToken;
     if (!token) {
         throw new ApiError(400, "invalid token");

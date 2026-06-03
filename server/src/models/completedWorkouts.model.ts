@@ -1,10 +1,10 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 interface ICompletedWorkouts extends mongoose.Document {
-    owner: Schema.Types.ObjectId,
+    owner: Types.ObjectId,
     name: string,
     muscleGroup: string,
-    exercises: Schema.Types.ObjectId[],
+    exercises: Types.ObjectId[],
     noOfSets: number,
 }
 

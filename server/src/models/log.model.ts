@@ -1,8 +1,8 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 interface ILog extends mongoose.Document {
-    owner: Schema.Types.ObjectId,
-    exercises: Schema.Types.ObjectId[],
+    owner: Types.ObjectId,
+    exercises: Types.ObjectId[],
     logName: string,
     completedAt?: Date,
 }

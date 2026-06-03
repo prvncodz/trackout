@@ -1,20 +1,21 @@
-import User from "../models/user.model.js";
-import Set from "../models/set.model.js";
-import Exercise from "../models/exercise.model.js";
-import Log from "../models/log.model.js";
-import CompletedWorkout from "../models/completedWorkouts.model.js";
-import Activity from "../models/activity.model.js";
-import { userSignUpSchema, userSignInSchema, UserSignInInput, UserSignUpInput } from "../schemas/user.schemas.js";
-import ApiError from "../utils/ApiError.js";
-import ApiResponse from "../utils/ApiResponse.js";
-import asyncHandler from "../utils/asyncHandler.js";
-import { DeleteFromCloud, UploadToCloud } from "../utils/cloudinary.js";
+import User from "../models/user.model";
+import Set from "../models/set.model";
+import Exercise from "../models/exercise.model";
+import Log from "../models/log.model";
+import CompletedWorkout from "../models/completedWorkouts.model";
+import Activity from "../models/activity.model";
+import { userSignUpSchema, userSignInSchema, UserSignInInput, UserSignUpInput } from "../schemas/user.schemas";
+import ApiError from "../utils/ApiError";
+import ApiResponse from "../utils/ApiResponse";
+import asyncHandler from "../utils/asyncHandler";
+import { DeleteFromCloud, UploadToCloud } from "../utils/cloudinary";
 import jwt from "jsonwebtoken";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { Request, Response } from "express";
+import { JwtPayloadWithId } from "../middlewares/auth.middleware";
 
 
-const generateAccessAndRefreshTokens = asyncHandler(async (userId: Schema.Types.ObjectId) => {
+const generateAccessAndRefreshTokens = async (userId: Types.ObjectId) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
@@ -29,7 +30,7 @@ const generateAccessAndRefreshTokens = asyncHandler(async (userId: Schema.Types.
     } catch (error: any) {
         throw new ApiError(500, error.message);
     }
-});
+};
 
 const SignUpUser = asyncHandler(async (req: Request, res: Response) => {
     const { fullname, email, height, weight, password }: UserSignUpInput = req.body;
@@ -41,8 +42,9 @@ const SignUpUser = asyncHandler(async (req: Request, res: Response) => {
         weight,
         password,
     });
+
     if (!validationResult.success) {
-        throw new ApiError(400, result?.error?.issues?.[0]?.message);
+        throw new ApiError(400, validationResult?.error?.issues?.[0]?.message);
     }
 
     const userExists = await User.findOne({ fullname }).lean();
@@ -73,13 +75,14 @@ const SignUpUser = asyncHandler(async (req: Request, res: Response) => {
         );
 });
 
-const SignInUser = asyncHandler(async (req, res) => {
+const SignInUser = asyncHandler(async (req: Request, res: Response) => {
     const { email, password }: UserSignInInput = req.body;
 
     const validationResult = userSignInSchema.safeParse({
         email,
         password,
     });
+
     if (!validationResult.success) {
         throw new ApiError(400, "invalid input credentials");
     }
@@ -97,6 +100,7 @@ const SignInUser = asyncHandler(async (req, res) => {
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
         user?._id,
     );
+
     const loggedUser = await User.findById(user?._id)
         .lean()
         .select("-password -refreshToken");
@@ -121,7 +125,7 @@ const SignInUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, loggedUser, "user logged successfully"));
 });
 
-const LogOutUser = asyncHandler(async (req, res) => {
+const LogOutUser = asyncHandler(async (req: Request, res: Response) => {
     return res
         .status(200)
         .clearCookie("accessToken")
@@ -129,7 +133,7 @@ const LogOutUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "user logged out successfully"));
 });
 
-const CurrentUser = asyncHandler(async (req, res) => {
+const CurrentUser = asyncHandler(async (req: Request, res: Response) => {
     return res
         .status(200)
         .json(
@@ -137,22 +141,22 @@ const CurrentUser = asyncHandler(async (req, res) => {
         );
 });
 
-const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
+const UpdateAccessAndRefreshTokens = asyncHandler(async (req: Request, res: Response) => {
     const token = req.cookies?.refreshToken;
     if (!token) {
         throw new ApiError(400, "invalid refresh token");
     }
-    const decodedToken = await jwt.verify(
+    const decodedToken = jwt.verify(
         token,
-        process.env.REFRESH_TOKEN_SECRET,
+        process.env.REFRESH_TOKEN_SECRET as any,
     );
     if (!decodedToken) {
         throw new ApiError(400, "unauthorized request");
     }
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-        decodedToken?._id,
+        (decodedToken as JwtPayloadWithId)?._id,
     );
-    const loggedUser = await User.findById(decodedToken?._id)
+    const loggedUser = await User.findById((decodedToken as JwtPayloadWithId)?._id)
         .lean()
         .select("-password -refreshToken");
 
@@ -176,7 +180,7 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, loggedUser, "tokens updated successfully"));
 });
 
-const UpdateUserAvatar = asyncHandler(async (req, res) => {
+const UpdateUserAvatar = asyncHandler(async (req: Request, res: Response) => {
     const filePath = req.file?.path;
     if (!filePath) {
         throw new ApiError(400, "file doesn't exists");
@@ -217,11 +221,16 @@ const UpdateUserAvatar = asyncHandler(async (req, res) => {
         );
 });
 
-const UpdateAccountInfo = asyncHandler(async (req, res) => {
+const UpdateAccountInfo = asyncHandler(async (req: Request, res: Response) => {
     const { fullname, email, height, weight } = req.body;
-    const UpdatedFields = {};
+    const UpdatedFields: {
+        fullname?: string,
+        email?: string,
+        height?: number,
+        weight?: number
+    } = {};
     if (fullname) {
-        UpdatedFields.fullName = fullname;
+        UpdatedFields.fullname = fullname;
     }
     if (email) {
         UpdatedFields.email = email;
@@ -235,8 +244,7 @@ const UpdateAccountInfo = asyncHandler(async (req, res) => {
 
     if (
         !UpdatedFields ||
-        Object.keys(UpdatedFields).length === 0 ||
-        UpdatedFields.length === 0
+        Object.keys(UpdatedFields).length === 0 
     ) {
         throw new ApiError(400, "nothing to update");
     }
@@ -258,7 +266,7 @@ const UpdateAccountInfo = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, user, "information updated successfully"));
 });
 
-const UserActiveDates = asyncHandler(async (req, res) => {
+const UserActiveDates = asyncHandler(async (req:Request, res:Response) => {
     const user = req.user;
     if (!user) {
         throw new ApiError(400, "user is undefined");
@@ -314,7 +322,7 @@ const UserActiveDates = asyncHandler(async (req, res) => {
         );
 });
 
-const DeleteUser = asyncHandler(async (req, res) => {
+const DeleteUser = asyncHandler(async (req:Request, res:Response) => {
     const user = req.user;
     if (!user) {
         throw new ApiError(400, "user is undefined");
