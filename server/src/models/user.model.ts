@@ -1,4 +1,4 @@
-import mongoose, { HydratedDocument, Schema } from "mongoose";
+import mongoose, { HydratedDocument, Model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -24,7 +24,7 @@ interface IUserMethods {
 
 type IUserDocument = HydratedDocument<IUser, IUserMethods>;
 
-const UserSchema = new Schema<IUser, IUserMethods>(
+const UserSchema = new Schema<IUser, Model<IUser, {}, IUserMethods>>(
     {
         avatar: {
             url: String,
@@ -114,6 +114,6 @@ UserSchema.methods.isPasswordCorrect = async function (this: IUserDocument, pass
     return await bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model<IUser>("User", UserSchema);
+const User = mongoose.model<IUser, Model<IUser, {}, IUserMethods>>("User", UserSchema);
 export default User;
 
