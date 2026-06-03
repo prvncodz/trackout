@@ -1,8 +1,8 @@
-import mongoose, { HydratedDocument, Model, Schema } from "mongoose";
+import mongoose, { HydratedDocument, Model, Schema, Document } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export interface IUser {
+export interface IUser extends Document {
     avatar?: {
         url: string;
         public_id: string;
@@ -12,7 +12,9 @@ export interface IUser {
     height: number;
     weight: number;
     password: string;
-    refreshToken?: string;
+    refreshToken?: string
+    createdAt: Date,
+    updatedAt: Date,
 }
 
 interface IUserMethods {

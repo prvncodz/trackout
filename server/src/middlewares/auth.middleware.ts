@@ -1,6 +1,6 @@
-import ApiError from "../utils/ApiError.js";
-import asyncHandler from "../utils/asyncHandler.js";
-import User, { IUser } from "../models/user.model.js";
+import ApiError from "../utils/ApiError";
+import asyncHandler from "../utils/asyncHandler";
+import User, { IUser } from "../models/user.model";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { Types } from "mongoose";

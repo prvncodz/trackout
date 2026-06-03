@@ -1,6 +1,6 @@
-import mongoose, { Schema ,Types} from "mongoose";
+import mongoose, { Schema, Types, Document } from "mongoose";
 
-interface ISet extends mongoose.Document {
+interface ISet extends Document {
     owner: Types.ObjectId,
     exerciseId: Types.ObjectId,
     setNo: number,
@@ -9,6 +9,8 @@ interface ISet extends mongoose.Document {
     rest?: string,
     isPr?: boolean,
     completed?: boolean,
+    createdAt: Date,
+    updatedAt: Date,
 }
 
 const SetSchema = new Schema<ISet>(

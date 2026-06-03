@@ -1,9 +1,10 @@
-import asyncHandler from "../utils/asyncHandler.js";
-import ApiError from "../utils/ApiError.js";
-import ApiResponse from "../utils/ApiResponse.js";
-import User from "../models/user.model.js";
+import asyncHandler from "../utils/asyncHandler";
+import ApiError from "../utils/ApiError";
+import ApiResponse from "../utils/ApiResponse";
+import User from "../models/user.model";
+import { Request, Response } from "express";
 
-const DashBoardController = asyncHandler(async (req, res) => {
+const DashBoardController = asyncHandler(async (req: Request, res: Response) => {
     const user = req.user;
     if (!user) {
         throw new ApiError(400, "user not found");
@@ -494,25 +495,25 @@ const DashBoardController = asyncHandler(async (req, res) => {
                                                                 $eq: [
                                                                     {
                                                                         $dateTrunc:
-                                                                            {
-                                                                                date: {
-                                                                                    $dateSubtract:
-                                                                                        {
-                                                                                            startDate:
-                                                                                                "$$value.prevDate",
-                                                                                            unit: "day",
-                                                                                            amount: 1,
-                                                                                        },
+                                                                        {
+                                                                            date: {
+                                                                                $dateSubtract:
+                                                                                {
+                                                                                    startDate:
+                                                                                        "$$value.prevDate",
+                                                                                    unit: "day",
+                                                                                    amount: 1,
                                                                                 },
-                                                                                unit: "day",
                                                                             },
+                                                                            unit: "day",
+                                                                        },
                                                                     },
                                                                     {
                                                                         $dateTrunc:
-                                                                            {
-                                                                                date: "$$this.createdAt",
-                                                                                unit: "day",
-                                                                            },
+                                                                        {
+                                                                            date: "$$this.createdAt",
+                                                                            unit: "day",
+                                                                        },
                                                                     },
                                                                 ],
                                                             },
@@ -545,17 +546,17 @@ const DashBoardController = asyncHandler(async (req, res) => {
                                                                         $eq: [
                                                                             {
                                                                                 $dateTrunc:
-                                                                                    {
-                                                                                        date: "$$this.createdAt",
-                                                                                        unit: "day",
-                                                                                    },
+                                                                                {
+                                                                                    date: "$$this.createdAt",
+                                                                                    unit: "day",
+                                                                                },
                                                                             },
                                                                             {
                                                                                 $dateTrunc:
-                                                                                    {
-                                                                                        date: "$$NOW",
-                                                                                        unit: "day",
-                                                                                    },
+                                                                                {
+                                                                                    date: "$$NOW",
+                                                                                    unit: "day",
+                                                                                },
                                                                             },
                                                                         ],
                                                                     },
@@ -564,25 +565,25 @@ const DashBoardController = asyncHandler(async (req, res) => {
                                                                         $eq: [
                                                                             {
                                                                                 $dateTrunc:
-                                                                                    {
-                                                                                        date: "$$this.createdAt",
-                                                                                        unit: "day",
-                                                                                    },
+                                                                                {
+                                                                                    date: "$$this.createdAt",
+                                                                                    unit: "day",
+                                                                                },
                                                                             },
                                                                             {
                                                                                 $dateTrunc:
-                                                                                    {
-                                                                                        date: {
-                                                                                            $dateSubtract:
-                                                                                                {
-                                                                                                    startDate:
-                                                                                                        "$$NOW",
-                                                                                                    unit: "day",
-                                                                                                    amount: 1,
-                                                                                                },
+                                                                                {
+                                                                                    date: {
+                                                                                        $dateSubtract:
+                                                                                        {
+                                                                                            startDate:
+                                                                                                "$$NOW",
+                                                                                            unit: "day",
+                                                                                            amount: 1,
                                                                                         },
-                                                                                        unit: "day",
                                                                                     },
+                                                                                    unit: "day",
+                                                                                },
                                                                             },
                                                                         ],
                                                                     },

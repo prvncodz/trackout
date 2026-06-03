@@ -1,13 +1,14 @@
-import Exercise from "../models/exercise.model.js";
-import ApiError from "../utils/ApiError.js";
-import asyncHandler from "../utils/asyncHandler.js";
-import ApiResponse from "../utils/ApiResponse.js";
-import Log from "../models/log.model.js";
-import Set from "../models/set.model.js";
+import Exercise from "../models/exercise.model";
+import ApiError from "../utils/ApiError";
+import asyncHandler from "../utils/asyncHandler";
+import ApiResponse from "../utils/ApiResponse";
+import Log from "../models/log.model";
+import Set from "../models/set.model";
 import mongoose from "mongoose";
+import { Request, Response } from "express";
 
-const AddExerciseToLog = asyncHandler(async (req, res) => {
-    const { logId } = req.params;
+const AddExerciseToLog = asyncHandler(async (req: Request, res: Response) => {
+    const logId = req.params.logId;
     const { name, muscleGroup } = req.body;
     if (!logId) {
         throw new ApiError(400, "log id is required");
@@ -17,13 +18,13 @@ const AddExerciseToLog = asyncHandler(async (req, res) => {
     }
     //create the exercise
     const exercise = await Exercise.create({
-        logId,
+        logId: (logId as string),
         name,
         muscleGroup,
     });
 
     if (!exercise) {
-        throw new apiError(500, "failed to add exercise to log");
+        throw new ApiError(500, "failed to add exercise to log");
     }
     //add exercise to log
     const updatedLog = await Log.findByIdAndUpdate(
@@ -46,10 +47,10 @@ const AddExerciseToLog = asyncHandler(async (req, res) => {
         );
 });
 
-const UpdateExercise = asyncHandler(async (req, res) => {
+const UpdateExercise = asyncHandler(async (req: Request, res: Response) => {
     const { exerciseId } = req.params;
     const { name, muscleGroup, note } = req.body;
-    let feildsToUpdate = {};
+    let feildsToUpdate: any = {};
     if (!name && !muscleGroup && !note) {
         throw new ApiError(400, "no feilds to update");
     }
@@ -76,7 +77,7 @@ const UpdateExercise = asyncHandler(async (req, res) => {
         );
 });
 
-const DeleteExerciseFromLog = asyncHandler(async (req, res) => {
+const DeleteExerciseFromLog = asyncHandler(async (req: Request, res: Response) => {
     const { exerciseId } = req.params;
     if (!exerciseId) {
         throw new ApiError(400, "log id and exercise id is required");

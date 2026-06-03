@@ -1,13 +1,14 @@
-import ApiError from "../utils/ApiError.js";
-import asyncHandler from "../utils/asyncHandler.js";
-import ApiResponse from "../utils/ApiResponse.js";
-import Set from "../models/set.model.js";
-import CreateSetSchema from "../schemas/set.schema.js";
-import Exercise from "../models/exercise.model.js";
-import Activity from "../models/activity.model.js";
-import { CreateSetInput } from "../schemas/set.schema.js";
+import ApiError from "../utils/ApiError";
+import asyncHandler from "../utils/asyncHandler";
+import ApiResponse from "../utils/ApiResponse";
+import Set from "../models/set.model";
+import CreateSetSchema from "../schemas/set.schema";
+import Exercise from "../models/exercise.model";
+import Activity from "../models/activity.model";
+import { CreateSetInput } from "../schemas/set.schema";
+import { Request, Response } from "express";
 
-const CreateSet = asyncHandler(async (req, res) => {
+const CreateSet = asyncHandler(async (req: Request, res: Response) => {
     const { exerciseId } = req.params;
     const user = req.user;
     const { setNo, weight, reps, rest }: CreateSetInput = req.body;
@@ -15,7 +16,7 @@ const CreateSet = asyncHandler(async (req, res) => {
         throw new ApiError(400, "exercise id is required");
     }
 
-    let allItems = { setNo, weight, reps, owner: user?._id };
+    let allItems: any = { setNo, weight, reps, owner: user?._id };
     if (rest) allItems.rest = rest;
 
     //validate
@@ -49,7 +50,7 @@ const CreateSet = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, createdSet, "set created successfully"));
 });
 
-const DeleteSet = asyncHandler(async (req, res) => {
+const DeleteSet = asyncHandler(async (req: Request, res: Response) => {
     const { setId, exerciseId } = req.params;
     if (!setId || !exerciseId) {
         throw new ApiError(400, "set id and exercise id is required");
@@ -77,7 +78,7 @@ const DeleteSet = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, deleted, "set deleted successfully"));
 });
 
-const UpdateSet = asyncHandler(async (req, res) => {
+const UpdateSet = asyncHandler(async (req: Request, res: Response) => {
     const { setId } = req.params;
     const { weight, reps, rest } = req.body;
 
@@ -87,12 +88,12 @@ const UpdateSet = asyncHandler(async (req, res) => {
     if (!req.body) {
         throw new ApiError(400, "no fields to update");
     }
-    let fieldsToUpdate = {};
+    let fieldsToUpdate: { weight?: number, reps?: number, rest?: string } = {};
     if (weight) fieldsToUpdate.weight = weight;
     if (reps) fieldsToUpdate.reps = reps;
     if (rest) fieldsToUpdate.rest = rest;
 
-    if (!fieldsToUpdate || fieldsToUpdate?.length === 0) {
+    if (!fieldsToUpdate || !Object.keys(fieldsToUpdate).length) {
         throw new ApiError(400, "no fields to update");
     }
 
@@ -109,7 +110,7 @@ const UpdateSet = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, updatedSet, "set updated succccessfully"));
 });
 
-const ToggleSetAsCompleted = asyncHandler(async (req, res) => {
+const ToggleSetAsCompleted = asyncHandler(async (req: Request, res: Response) => {
     const { setId } = req.params;
     const { isPr } = req.body;
     if (!setId) {

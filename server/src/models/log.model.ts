@@ -1,10 +1,12 @@
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
 
-interface ILog extends mongoose.Document {
+interface ILog extends Document {
     owner: Types.ObjectId,
     exercises: Types.ObjectId[],
     logName: string,
     completedAt?: Date,
+    createdAt: Date,
+    updatedAt: Date,
 }
 
 const LogSchema = new Schema<ILog>(

@@ -1,14 +1,15 @@
-import asyncHandler from "../utils/asyncHandler.js";
-import ApiError from "../utils/ApiError.js";
-import ApiResponse from "../utils/ApiResponse.js";
-import Log from "../models/log.model.js";
-import CompletedWorkout from "../models/completedWorkouts.model.js";
-import Set from "../models/set.model.js";
-import Exercise from "../models/exercise.model.js";
-import Activity from "../models/activity.model.js";
-import mongoose from "mongoose";
+import asyncHandler from "../utils/asyncHandler";
+import ApiError from "../utils/ApiError";
+import ApiResponse from "../utils/ApiResponse";
+import Log from "../models/log.model";
+import CompletedWorkout from "../models/completedWorkouts.model";
+import Set from "../models/set.model";
+import Exercise from "../models/exercise.model";
+import Activity from "../models/activity.model";
+import mongoose, { Types } from "mongoose";
+import { Request, Response } from "express";
 
-const CreateLog = asyncHandler(async (req, res) => {
+const CreateLog = asyncHandler(async (req: Request, res: Response) => {
     const { logName } = req.body;
     if (!logName) {
         throw new ApiError(400, "log name is required");
@@ -27,7 +28,7 @@ const CreateLog = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, log, "log created successfully"));
 });
 
-const GetAllLogs = asyncHandler(async (req, res) => {
+const GetAllLogs = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user?._id;
     const { page = 1, limit = 10 } = req.query;
     const pageNum = Number(page) || 1;
@@ -59,7 +60,7 @@ const GetAllLogs = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, logs, "logs fetched successfully"));
 });
 
-const MarkLogCompleted = asyncHandler(async (req, res) => {
+const MarkLogCompleted = asyncHandler(async (req: Request, res: Response) => {
     const { logId } = req.params;
 
     if (!logId) {
@@ -107,7 +108,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
         const totalSets = await Log.aggregate([
             {
                 $match: {
-                    _id: new mongoose.Types.ObjectId(logId),
+                    _id: new mongoose.Types.ObjectId(logId as string),
                 },
             },
             {
@@ -144,7 +145,6 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
                 {
                     owner: req?.user?._id,
                     name: markedLog?.logName,
-                    muscleGroup: markedLog?.muscleGroup,
                     noOfSets: totalSets?.[0]?.noOfSets,
                     exercises: markedLog?.exercises,
                 },
@@ -193,7 +193,7 @@ const MarkLogCompleted = asyncHandler(async (req, res) => {
     }
 });
 
-const GetLogWithId = asyncHandler(async (req, res) => {
+const GetLogWithId = asyncHandler(async (req: Request, res: Response) => {
     const { logId } = req.params;
     if (!logId) {
         throw new ApiError(400, "log id is required");
@@ -201,7 +201,7 @@ const GetLogWithId = asyncHandler(async (req, res) => {
     const log = await Log.aggregate([
         {
             $match: {
-                _id: new mongoose.Types.ObjectId(logId),
+                _id: new mongoose.Types.ObjectId(logId as string),
             },
         },
         {
@@ -232,7 +232,7 @@ const GetLogWithId = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, log[0], "log fetched successfully"));
 });
 
-const UpdateLog = asyncHandler(async (req, res) => {
+const UpdateLog = asyncHandler(async (req: Request, res: Response) => {
     const { logId } = req.params;
     const { logName } = req.body;
     if (!logId) {
@@ -258,7 +258,7 @@ const UpdateLog = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, log, "log updated successfully"));
 });
 
-const DeleteLog = asyncHandler(async (req, res) => {
+const DeleteLog = asyncHandler(async (req: Request, res: Response) => {
     const { logId } = req.params;
     if (!logId) {
         throw new ApiError(400, "log id is required");
@@ -270,7 +270,7 @@ const DeleteLog = asyncHandler(async (req, res) => {
         const log = await Log.aggregate([
             {
                 $match: {
-                    _id: new mongoose.Types.ObjectId(logId),
+                    _id: new mongoose.Types.ObjectId(logId as string),
                 },
             },
             {
@@ -291,7 +291,7 @@ const DeleteLog = asyncHandler(async (req, res) => {
             try {
                 const allsets = log[0]?.exercises?.sets;
                 allsets.forEach(
-                    async (set) =>
+                    async (set: Types.ObjectId) =>
                         await Set.findByIdAndDelete(set, { session }).lean(),
                 );
             } catch (err) {
@@ -302,7 +302,7 @@ const DeleteLog = asyncHandler(async (req, res) => {
             try {
                 const allExercises = log[0]?.exercises;
                 allExercises.forEach(
-                    async (ex) =>
+                    async (ex: Types.ObjectId) =>
                         await Exercise.findByIdAndDelete(ex?._id, {
                             session,
                         }).lean(),
@@ -330,13 +330,13 @@ const DeleteLog = asyncHandler(async (req, res) => {
     }
 });
 
-const DuplicateLog = asyncHandler(async (req, res) => {
+const DuplicateLog = asyncHandler(async (req: Request, res: Response) => {
     const { logId } = req.params;
     if (!logId) {
         throw new ApiError(400, "log id is required");
     }
     const session = await mongoose.startSession();
-    let newLog;
+    let newLog: any;
     try {
         session.startTransaction();
         const log = await Log.findById(logId, null, { session }).lean();
@@ -361,6 +361,11 @@ const DuplicateLog = asyncHandler(async (req, res) => {
                 const exercise = await Exercise.findById(e._id, null, {
                     session,
                 }).lean();
+
+                if (!exercise) {
+                    throw new ApiError(500, "failed to find exercise");
+                }
+
                 const {
                     _id,
                     __v,
@@ -390,23 +395,29 @@ const DuplicateLog = asyncHandler(async (req, res) => {
                 }
 
                 await Promise.all(
-                    sets.map(async (s) => {
+                    sets.map(async (s: Types.ObjectId) => {
                         const set = await Set.findById(
                             s._id,
                             null,
                             session,
                         ).lean();
+
+                        if (!set) {
+                            throw new ApiError(500, "failed to find set")
+                        }
+
                         const {
                             _id,
                             __v,
                             createdAt,
                             updatedAt,
-                            completed,
                             ...setCopy
                         } = set;
+
                         setCopy.exerciseId = newExercise[0]?._id;
                         setCopy.completed = false;
                         setCopy.isPr = false;
+
                         const newSet = await Set.create([setCopy], { session });
                         if (!newSet[0]) {
                             throw new ApiError(
