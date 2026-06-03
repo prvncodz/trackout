@@ -11,6 +11,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { DeleteFromCloud, UploadToCloud } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 import mongoose, { Schema } from "mongoose";
+import { Request, Response } from "express";
 
 
 const generateAccessAndRefreshTokens = asyncHandler(async (userId: Schema.Types.ObjectId) => {
@@ -25,12 +26,12 @@ const generateAccessAndRefreshTokens = asyncHandler(async (userId: Schema.Types.
         user.refreshToken = refreshToken;
         await user.save({ validateBeforeSave: false });
         return { accessToken, refreshToken };
-    } catch (error:any) {
+    } catch (error: any) {
         throw new ApiError(500, error.message);
     }
 });
 
-const SignUpUser = asyncHandler(async (req, res) => {
+const SignUpUser = asyncHandler(async (req: Request, res: Response) => {
     const { fullname, email, height, weight, password }: UserSignUpInput = req.body;
 
     const validationResult = userSignUpSchema.safeParse({

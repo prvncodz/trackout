@@ -2,7 +2,7 @@ import mongoose, { HydratedDocument, Model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-interface IUser {
+export interface IUser {
     avatar?: {
         url: string;
         public_id: string;
