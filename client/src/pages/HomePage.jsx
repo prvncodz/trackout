@@ -92,6 +92,7 @@ const Popup = ({ log, setIsOpen }) => {
             toast.error(message)
         }
     }
+
     async function handleEditLog(e) {
         e.preventDefault()
         const name = e.target.name.value
