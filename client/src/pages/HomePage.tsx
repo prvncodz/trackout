@@ -9,7 +9,7 @@ import {
     AlertDialogMedia,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog.js"
 import {
     IconCheck,
     IconCircleDashedCheck,
@@ -27,11 +27,11 @@ import {
     IconPlus,
     IconTrash,
 } from "@tabler/icons-react"
-import SideBarLayout from "../components/layout/SideBar.jsx"
-import MyButton from "../components/ui/Button.jsx"
-import { Button } from "../components/ui/button.jsx"
+import SideBarLayout from "../components/layout/SideBar.js"
+import MyButton from "../components/ui/Button.js"
+import { Button } from "../components/ui/button.js"
 import { useEffect, useState } from "react"
-import BottomSheet from "@/components/ui/BottomSheet.jsx"
+import BottomSheet from "@/components/ui/BottomSheet.js"
 import {
     Dialog,
     DialogClose,
@@ -41,10 +41,10 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
-import { Field, FieldGroup } from "@/components/ui/field"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dialog.js"
+import { Field, FieldGroup } from "@/components/ui/field.js"
+import { Label } from "@/components/ui/label.js"
+import { Input } from "@/components/ui/input.js"
 import { motion } from "motion/react"
 import axios from "../lib/axios.js"
 import CreateSetSchema from "../schemas/set.schema.js"

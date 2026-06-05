@@ -1,7 +1,7 @@
-import Calendar from "../components/ui/Calender.jsx"
-import SideBarLayout from "../components/layout/SideBar"
+import Calendar from "../components/ui/Calender.js"
+import SideBarLayout from "../components/layout/SideBar.js"
 import { useAuth } from "@/stores/user.store"
-import ChartAreaInteractive from "@/components/dashboard/DashBoardChart.jsx"
+import ChartAreaInteractive from "@/components/dashboard/DashBoardChart.js"
 import { Activity, Dumbbell, TrendingDown, TrendingUp } from "lucide-react"
 import {
     IconCampfireFilled,

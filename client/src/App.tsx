@@ -8,8 +8,8 @@ import SigninPage from "./pages/SigninPage"
 import SignupPage from "./pages/SignupPage"
 import { useAuth, useStats } from "./stores/user.store"
 import { useEffect, useState } from "react"
-import axios from "./lib/axios.js"
-import { Toaster } from "@/components/ui/sonner.jsx"
+import axios from "./lib/axios"
+import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 
 
@@ -29,7 +29,7 @@ function App() {
                     setUser(response?.data?.data)
                     setIsUserLogged(true)
                 }
-            } catch (error) {
+            } catch (error:any) {
                 setUser({})
                 setIsUserLogged(false)
                 try {

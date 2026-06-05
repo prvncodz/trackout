@@ -1,6 +1,25 @@
 import { create } from "zustand"
 
-const useLogStore = create((set) => ({
+export interface Log {
+    _id: string;
+    owner: string;
+    exercises: string[];
+    logName: string;
+    completedAt?: Date;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface LogStore {
+    logs: Log[];
+    setLogs(logs: Log[]): void;
+    addLog(log: Log): void;
+    removeLog(id: string): void;
+    duplicateLog(log: Log): void;
+    editLog(id: string, name: string): void;
+}
+
+const useLogStore = create<LogStore>((set) => ({
     logs: [],
     setLogs: (logs) => set({ logs }),
     addLog: (log) => set((state) => ({ logs: [...state.logs, log] })),

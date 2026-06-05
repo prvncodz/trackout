@@ -1,11 +1,11 @@
 import { motion } from "motion/react"
 import { useState } from "react"
 import axios from "../lib/axios.js"
-import InputField from "../components/ui/Inputfield.jsx"
+import InputField from "../components/ui/Inputfield.js"
 import gymImage from "../assets/gym-hero.jpg"
 import { useNavigate, useNavigation } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
-import Button from "@/components/ui/Button.jsx"
+import Button from "@/components/ui/Button.js"
 import { userSignUpSchema } from "../schemas/user.schemas.js"
 import { toast } from "sonner"
 
