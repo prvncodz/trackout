@@ -2,7 +2,7 @@ import * as z from "zod";
 
 const userSignUpSchema = z.object({
     fullname: z.string(),
-    email: z.string().email("invalid email format"),
+    email: z.email("invalid email format"),
     height: z.coerce
         .number()
         .min(20, "height must be at least 20 cm")
@@ -15,8 +15,11 @@ const userSignUpSchema = z.object({
 });
 
 const userSignInSchema = z.object({
-    email: z.string().email("invalid email format"),
+    email: z.email("invalid email format"),
     password: z.string().min(3).max(20),
 });
+
+export type UserSignUpInput = z.infer<typeof userSignUpSchema>;
+export type UserSignInInput = z.infer<typeof userSignInSchema>;
 
 export { userSignUpSchema, userSignInSchema };

@@ -9,4 +9,6 @@ const CreateSetSchema = z.object({
     isPr: z.boolean().optional(),
 });
 
+export type CreateSetInput = z.infer<typeof CreateSetSchema>
+
 export default CreateSetSchema;
