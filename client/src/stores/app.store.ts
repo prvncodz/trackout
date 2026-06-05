@@ -3,14 +3,14 @@ import { createJSONStorage, persist } from "zustand/middleware"
 
 interface AppStore {
     curPage: string;
-    setCurPage(): void;
+    setCurPage(page: string): void;
 }
 
-const useAppStore = create(
+const useAppStore = create<AppStore>()(
     persist(
         (set) => ({
             curPage: "home",
-            setCurPage: (page: string) => set({ curPage: page }),
+            setCurPage: (page) => set({ curPage: page }),
         }),
         {
             name: "curpage-storage",

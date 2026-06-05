@@ -1,9 +1,37 @@
 import { create } from "zustand"
 
-const useAuth = create((set) => ({
+export interface User {
+    _id: string;
+    avatar?: {
+        url: string;
+        public_id: string;
+    },
+    fullname: string;
+    email: string;
+    height: number;
+    weight: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface AuthStore {
+    isUserLogged: boolean;
+    user: User | null;
+    isLoading: boolean;
+    activeDates: string[];
+    setIsUserLogged: (bool: boolean) => void;
+    setUser: (user: User) => void;
+    setActiveDates: (dates: string[]) => void;
+}
+
+interface StasStore {
+    stats: object;
+    setStats: (stats: object) => void;
+}
+
+const useAuth = create<AuthStore>((set) => ({
     isUserLogged: false,
-    user: {},
-    errors: null,
+    user: null,
     isLoading: false,
     activeDates: [],
     setIsUserLogged: (bool) => set({ isUserLogged: bool }),
@@ -11,7 +39,7 @@ const useAuth = create((set) => ({
     setActiveDates: (dates) => set({ activeDates: dates }),
 }))
 
-const useStats = create((set) => ({
+const useStats = create<StasStore>((set) => ({
     stats: {},
     setStats: (stats) => set({ stats: stats }),
 }))

@@ -5,9 +5,9 @@ export interface Log {
     owner: string;
     exercises: string[];
     logName: string;
-    completedAt?: Date;
-    createdAt: Date;
-    updatedAt: Date;
+    completedAt?: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface LogStore {

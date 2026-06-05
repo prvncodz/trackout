@@ -30,7 +30,7 @@ function App() {
                     setIsUserLogged(true)
                 }
             } catch (error:any) {
-                setUser({})
+                setUser(null)
                 setIsUserLogged(false)
                 try {
                     if (error.status === 500) {
