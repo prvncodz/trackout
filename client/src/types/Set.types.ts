@@ -1,5 +1,6 @@
 
 export interface Set  {
+    _id:string
     owner: string;
     exerciseId: string;
     setNo: number;

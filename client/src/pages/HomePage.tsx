@@ -27,7 +27,7 @@ import {
 import SideBarLayout from "../components/layout/SideBar"
 import MyButton from "../components/ui/Button"
 import { Button } from "../components/ui/button"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import BottomSheet from "@/components/ui/BottomSheet"
 import {
     Dialog,
@@ -46,10 +46,12 @@ import { motion } from "motion/react"
 import axios from "../lib/axios"
 import CreateSetSchema from "../schemas/set.schema"
 import { toast } from "sonner"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../stores/user.store"
 import useLogStore from "../stores/log.store"
-import type { Log } from "../stores/log.store"
+import type { Log } from "../types/Log.types"
+import type { Exercise } from "@/types/Exercise.types"
+import type { Set } from "@/types/Set.types"
 
 interface PopupProps {
     log: Log;
@@ -193,7 +195,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
 
 interface LogProps {
     log: Log;
-    ActiveLog: string,
+    ActiveLog: string | null,
     setActiveLog: Dispatch<SetStateAction<string | null>>
 }
 const Log = ({ log, ActiveLog, setActiveLog }: LogProps) => {
@@ -221,11 +223,11 @@ const Log = ({ log, ActiveLog, setActiveLog }: LogProps) => {
 }
 
 interface AllLogsProps {
-    ActiveLog: string,
+    ActiveLog: string | null,
     setActiveLog: Dispatch<SetStateAction<string | null>>
 }
 
-const AllLogs = ({ ActiveLog, setActiveLog }:AllLogsProps) => {
+const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
     const [isCreating, setIsCreating] = useState(false)
     const logs = useLogStore((state) => state.logs)
     const addLog = useLogStore((state) => state.addLog)
@@ -233,7 +235,7 @@ const AllLogs = ({ ActiveLog, setActiveLog }:AllLogsProps) => {
     useEffect(() => {
     }, [logs])
 
-    async function handleCreateLog(e:React.SubmitEvent<HTMLFormElement>) {
+    async function handleCreateLog(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
         const name = e.target.name
         try {
@@ -243,7 +245,7 @@ const AllLogs = ({ ActiveLog, setActiveLog }:AllLogsProps) => {
                 setIsCreating(false)
                 toast.success("Log created successfully")
             }
-        } catch (err:any) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message
             toast.error(message)
         }
@@ -297,22 +299,22 @@ const AllLogs = ({ ActiveLog, setActiveLog }:AllLogsProps) => {
 
 
 interface ExerciseCardProps {
-    Curexercise: Exercise; 
+    Curexercise: Exercise;
     logId: string
-    setExercises: Dispatch<SetStateAction<Exercise[]>>
+    setExercises: Dispatch<SetStateAction<Exercise[] | null>>
     className?: string
     completed?: boolean
 }
 
-const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", completed }) => {
+const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", completed }: ExerciseCardProps) => {
     const [editMode, setEditMode] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
     const [exercise, setExercise] = useState(Curexercise)
     const [isCreating, setIsCreating] = useState(false)
-    const [toBeUpdatedSets, setToBeUpdatedSets] = useState([])
+    const [toBeUpdatedSets, setToBeUpdatedSets] = useState<Set[] | null>(null)
     const [isExerciseUpdated, setIsExerciseUpdated] = useState(false)
 
-    async function toggleDone(id) {
+    async function toggleDone(id: string) {
         setExercise((prev) => ({
             ...prev,
             sets: prev.sets.map((set) => (set._id === id ? { ...set, completed: !set.completed } : set)),
@@ -320,28 +322,29 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
         try {
             const res = await axios.patch(`/set/toggle-set-completed/${id}`, { isPr: false })
             toast.success(`Set ${res.data?.data?.completed ? "marked" : "unmarked"} as completed successfully`)
-        } catch (err) {
+        } catch (err: any) {
             const message = err.response?.data.message || err.message
             toast.error(message)
         }
     }
 
-    function updateSet(set, id, field, value) {
+
+    function updateSet(set: Set, id: string, field: string, value: number | string) {
         setExercise((prev) => ({
             ...prev,
             sets: prev.sets.map((set) => (set._id === id ? { ...set, [field]: value } : set)),
         }))
-        const listed = toBeUpdatedSets.some((obj) => obj._id === id)
+        const listed = toBeUpdatedSets?.some((obj: Set) => obj._id === id)
         if (!listed) {
-            setToBeUpdatedSets((prev) => [...prev, { ...set, [field]: value }])
+            setToBeUpdatedSets((prev) => [...prev ?? [], { ...set, [field]: value }])
         } else {
-            setToBeUpdatedSets((prev) => prev.map((obj) => (obj._id === id ? { ...set, [field]: value } : obj)))
+            setToBeUpdatedSets((prev) => prev?.map((obj) => (obj._id === id ? { ...set ?? [], [field]: value } : obj)) ?? prev)
         }
     }
 
     async function handleUpdateExercise() {
         try {
-            toBeUpdatedSets?.map(async (set) => {
+            toBeUpdatedSets?.map(async (set: Set) => {
                 await axios.patch(`/set/update/${set?._id}`, {
                     reps: set?.reps,
                     weight: set?.weight,
@@ -359,15 +362,15 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
             setToBeUpdatedSets([])
             setEditMode(false)
             setIsOpen(false)
-        } catch (err) {
+        } catch (err: any) {
             const message = err.response?.data.message || err.message
             toast.error(message)
         }
     }
 
-    async function handleCreateSet(e) {
+    async function handleCreateSet(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const data = Object.fromEntries(new FormData(e.target))
+        const data = Object.fromEntries(new FormData(e.target)) as Record<string, string | number>
         const setNo = Curexercise?.sets?.length + 1
         data.setNo = setNo
 
@@ -383,13 +386,13 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                 setIsCreating(false)
                 setIsOpen(false)
             }
-        } catch (err) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message
             toast.error(message)
         }
     }
 
-    async function handleDeleteSet(id) {
+    async function handleDeleteSet(id: string) {
         try {
             await axios.delete(`/set/delete/${id}/${Curexercise?._id}`)
             setExercise((prev) => ({
@@ -397,7 +400,7 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                 sets: prev.sets.filter((set) => set._id !== id),
             }))
             toast.success("Set deleted successfully")
-        } catch (err) {
+        } catch (err: any) {
             const message = err.response?.data.message || err.message
             toast.error(message)
         }
@@ -406,9 +409,9 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
     async function handleDeleteExercise() {
         try {
             await axios.delete(`/exercise/delete/${logId}/${Curexercise?._id}`)
-            setExercises((prev) => prev.filter((ex) => ex._id !== Curexercise?._id))
+            setExercises((prev) => prev?.filter((ex) => ex._id !== Curexercise?._id) ?? prev)
             toast.success("Exercise deleted successfully")
-        } catch (err) {
+        } catch (err: any) {
             const message = err.response?.data.message || err.message
             toast.error(message)
         }
@@ -470,10 +473,11 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                                 }}
                                 animate={{
                                     opacity: 1,
-                                    duration: 100,
                                 }}
                                 exit={{
                                     opacity: 0,
+                                }}
+                                transition={{
                                     duration: 100,
                                 }}
                                 tabIndex={0}
@@ -671,38 +675,47 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
         </div>
     )
 }
-async function getlogById(id) {
+async function getlogById(id: string | null) {
+    if (!id) return
     const res = await axios.get(`/log/${id}`)
     return res?.data?.data
 }
 
-const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) => {
-    const [log, setLog] = useState(null)
-    const [exercises, setExercises] = useState(null)
+interface ShowLogProps {
+    logId: string,
+    isActive: boolean,
+    setActiveLog: Dispatch<SetStateAction<string | null>>
+    ActiveLog: string | null;
+    className?: string;
+}
+
+const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: ShowLogProps) => {
+    const [log, setLog] = useState<Log | null>(null)
+    const [exercises, setExercises] = useState<Exercise[] | null>(null)
     const [addingExercise, setAddingExercise] = useState(false)
     const { data, status, error } = useQuery({ queryKey: ['log', ActiveLog], queryFn: () => getlogById(ActiveLog) })
-    const queryClient = useQueryClient()
+
     useEffect(() => {
         if (status === "success") {
             setLog(data)
             setExercises(data?.exercises)
         } else if (status === "error") {
-            toast.error(error?.response?.data?.message || error?.message)
+            toast.error(error?.message)
         }
     }, [status, ActiveLog])
 
 
-    async function handleCreateExercise(e) {
+    async function handleCreateExercise(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const name = e.target.name.value
+        const name = e.target.name
         const muscleGroup = e.target.muscleGroup.value
 
         try {
             const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
-            setExercises((prev) => [...prev, res.data?.data])
+            setExercises((prev) => [...prev ?? [], res.data?.data])
             setAddingExercise(false)
             toast.success("Exercise created successfully")
-        } catch (err) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message
             toast.error(message)
         }
@@ -710,30 +723,30 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
 
     async function handleMarkLogCompleted() {
         try {
-            const res = await axios.patch(`/log/mark-completed/${log?._id}`)
-            setLog((prev) => ({ ...prev, completedAt: res.data?.data?.completedAt }))
+            const res = await axios.patch(`/log/mark-completed/${logId}`)
+            setLog(res.data?.data)
             toast.success("Log marked as completed successfully")
-        } catch (err) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message
             toast.error(message)
         }
     }
 
-    if (status === "loading") return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
+    if (status === "pending") return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
 
     return (
         <div className="w-full">
             <div className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"} hidden lg:flex`}>
                 <div className={`h-screen flex-col overflow-auto bg-neutral-50 p-10 ${className} no-scrollbar w-full`}>
                     <div className="flex w-full flex-col">
-                        {exercises?.length > 0 &&
+                        {exercises?.length &&
                             exercises?.map((exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
-                                    logId={log?._id}
+                                    logId={logId}
                                     setExercises={setExercises}
                                     key={exercise._id}
-                                    completed={log?.completedAt}
+                                    completed={log?.completedAt ? true : false}
                                 />
                             ))}
                         <div className="flex gap-3 justify-end">
@@ -772,8 +785,8 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length > 0 && (
-                                <Button variant="outline" disabled={log?.completedAt} onClick={handleMarkLogCompleted}>
+                            {log?.exercises?.length && (
+                                <Button variant="outline" disabled={log?.completedAt ? true : false} onClick={handleMarkLogCompleted}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {log?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
@@ -790,16 +803,16 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
                 open={isActive}
             >
                 <div className={`mt-0 h-screen overflow-auto ${className}`}>
-                    <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased">{log?.name}</h1>
+                    <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased">{log?.logName}</h1>
                     <div className="my-10">
-                        {exercises?.length > 0 &&
+                        {exercises?.length &&
                             exercises?.map((exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
-                                    logId={log?._id}
+                                    logId={logId}
                                     setExercises={setExercises}
                                     key={exercise._id}
-                                    completed={log?.completedAt}
+                                    completed={log?.completedAt ? true : false}
                                 />
                             ))}
 
@@ -839,8 +852,8 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }) =
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length > 0 && (
-                                <Button variant="outline" disabled={log?.completedAt}>
+                            {log?.exercises?.length && (
+                                <Button variant="outline" disabled={log?.completedAt ? true : false}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {log?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
@@ -859,11 +872,10 @@ async function fetchAllLogs() {
 }
 
 const HomePageContent = () => {
-    const [ActiveLog, setActiveLog] = useState<string|null>(null)
+    const [ActiveLog, setActiveLog] = useState<string | null>(null)
     const userId = useAuth((state) => state.user?._id)
     const { data, status, isLoading } = useQuery({ queryKey: ['logs', userId], queryFn: fetchAllLogs })
     const setAllLogs = useLogStore((state) => state.setLogs)
-    const allLogs = useLogStore((state) => state.logs)
 
     useEffect(() => {
         if (status === "success") {

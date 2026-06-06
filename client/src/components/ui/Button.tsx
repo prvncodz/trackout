@@ -2,7 +2,7 @@ import { HTMLMotionProps, motion } from "motion/react"
 
 type ButtonProps = {
     children: React.ReactNode,
-    className: string | undefined,
+    className?: string,
 } & Omit<HTMLMotionProps<"button">, "ref">
 
 const Button = ({ children, className = "", ...props }: ButtonProps) => {
