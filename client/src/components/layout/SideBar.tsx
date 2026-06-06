@@ -28,7 +28,6 @@ import { useAppStore } from "../../stores/app.store.js"
 import Logo from "../ui/Logo"
 import {
     IconBrandTabler,
-    IconDotsVertical,
     IconLogout,
     IconPencilPlus,
     IconSettings,
@@ -40,14 +39,14 @@ import MyButton from "../ui/Button.jsx"
 import { Button } from "../ui/button.jsx"
 import HamburgerButton from "../ui/HamburgerButton.jsx"
 import { motion } from "motion/react"
-import { Dumbbell, LogOutIcon } from "lucide-react"
-import { useState } from "react"
+import { Dumbbell, LucideProps } from "lucide-react"
+import { Dispatch, ForwardRefExoticComponent, RefAttributes, SetStateAction, useState } from "react"
 import { useAuth, useStats } from "../../stores/user.store.js"
 import axios from "../../lib/axios.js"
 import { toast } from "sonner"
 import useLogStore from "../../stores/log.store.js"
 
-const Popup = ({ setIsOpen }) => {
+const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) => {
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
     const [showLogoutDailogue, setShowLogoutDailogue] = useState(false)
     const setUser = useAuth((state) => state.setUser)
@@ -59,14 +58,14 @@ const Popup = ({ setIsOpen }) => {
     async function handleLogout() {
         try {
             await axios.post("/user/logout")
-            setUser({})
+            setUser(null)
             setIsOpen(false)
             setIsUserLogged(false)
             setActiveDates([])
             setCurPage("home")
             toast.success("Logged out successfully")
-            setStats({})
-        } catch (err) {
+            setStats(null)
+        } catch (err: any) {
             const message = err.response?.data.message || err.message || "Something went wrong. Please try again."
             toast.error(message)
         }
@@ -75,14 +74,14 @@ const Popup = ({ setIsOpen }) => {
     async function handleDeleteUser() {
         try {
             await axios.delete("/user/delete-user")
-            setUser({})
+            setUser(null)
             setIsOpen(false)
             setIsUserLogged(false)
             setActiveDates([])
             setCurPage("home")
-            setStats({})
+            setStats(null)
             toast.success("User deleted successfully")
-        } catch (err) {
+        } catch (err: any) {
             const message = err.response?.data.message || err.message || "Something went wrong. Please try again."
             toast.error(message)
         }
@@ -96,11 +95,12 @@ const Popup = ({ setIsOpen }) => {
             }}
             animate={{
                 opacity: 1,
-                duration: 100,
             }}
             exit={{
                 opacity: 0,
-                duration: 100,
+            }}
+            transition={{
+                duration: 100
             }}
         >
             <Dialog open={showLogoutDailogue} onOpenChange={setShowLogoutDailogue}>
@@ -157,7 +157,12 @@ const Popup = ({ setIsOpen }) => {
 
 // UserInfo component  — receives avatarUrl + fullName from parent
 
-const UserInfo = ({ avatarUrl, fullName }) => {
+interface UserInfoProps {
+    avatarUrl?: string;
+    fullName?: string;
+}
+
+const UserInfo = ({ avatarUrl, fullName }: UserInfoProps) => {
     const [isOpen, setIsOpen] = useState(false)
     return (
         <div className="flex items-center justify-between border-t border-gray-100 px-3 py-4">
@@ -190,11 +195,16 @@ const UserInfo = ({ avatarUrl, fullName }) => {
     )
 }
 
-const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
+interface SidebarProps {
+    avatarUrl?: string;
+    fullName?: string;
+    className?: string;
+}
+
+const Sidebar = ({ avatarUrl, fullName, className = "" }: SidebarProps) => {
     const navigate = useNavigate()
     const location = useLocation()
     const setCurPage = useAppStore((s) => s.setCurPage) // zustand
-    const userId = useAuth((s) => s.user?._id)
     //Nav items
     const NAV_ITEMS = [
         { label: "Home", icon: Dumbbell, path: "/", page: "home" },
@@ -212,7 +222,12 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
         },
     ]
 
-    const handleNav = (item) => {
+    const handleNav = (item: {
+        label: string,
+        icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
+        path: string,
+        page: string,
+    }) => {
         setCurPage(item.page)
         navigate(item.path)
     }
@@ -262,14 +277,16 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }) => {
     )
 }
 
-const NavbarForMobile = ({ className }) => {
+
+
+const NavbarForMobile = ({ className = "" }) => {
     const curPage = useAppStore((state) => state.curPage)
     const [isCreating, setIsCreating] = useState(false)
     const addLog = useLogStore((state) => state.addLog)
 
-    async function handleCreateLog(e) {
+    async function handleCreateLog(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const name = e.target.name.value
+        const name = e.target.name
         try {
             const res = await axios.post(`/log/create`, { logName: name })
             if (res.status === 201) {
@@ -277,7 +294,7 @@ const NavbarForMobile = ({ className }) => {
                 setIsCreating(false)
                 toast.success("Log created successfully")
             }
-        } catch (err) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message
             toast.error(message)
         }
@@ -327,7 +344,7 @@ const NavbarForMobile = ({ className }) => {
     )
 }
 
-const SideBarLayout = ({ children }) => {
+const SideBarLayout = ({ children }: { children: React.ReactNode }) => {
     const user = useAuth((s) => s.user)
 
     return (
@@ -335,6 +352,8 @@ const SideBarLayout = ({ children }) => {
             className="flex h-screen w-full flex-col overflow-hidden bg-neutral-50 lg:flex-row"
             exit={{
                 opacity: 0,
+            }}
+            transition={{
                 duration: 0.3,
             }}
         >

@@ -1,6 +1,6 @@
 import { User } from "@/types/User.types";
 import { create } from "zustand"
-
+import { CompletedWorkout } from "@/types/CompletedWorkout.types";
 
 
 interface AuthStore {
@@ -24,13 +24,23 @@ const useAuth = create<AuthStore>((set) => ({
     setActiveDates: (dates) => set({ activeDates: dates }),
 }))
 
-interface StasStore {
-    stats: object;
-    setStats: (stats: object) => void;
+interface Stats {
+    recentWorkouts: (CompletedWorkout & { timeAgo: string })[];
+    totalWorkouts: number;
+    totalActiveDays: number;
+    consistencyStreak: number
+    totalPrs: number;
+    chartStats: any;
+
 }
 
-const useStats = create<StasStore>((set) => ({
-    stats: {},
+interface StatsStore {
+    stats: Stats | null
+    setStats: (stats: Stats | null) => void;
+}
+
+const useStats = create<StatsStore>((set) => ({
+    stats: null,
     setStats: (stats) => set({ stats: stats }),
 }))
 

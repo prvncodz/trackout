@@ -24,15 +24,15 @@ export default function ProfileCard() {
     const [isOpen, setIsOpen] = useState(false)
     const [isInfoChanged, setIsInfoChanged] = useState(false)
     const stats = [
-        { label: "Height", value: user.height ? `${user.height}cm` : "—" },
-        { label: "Weight", value: user.weight ? `${user.weight}kg` : "—" },
+        { label: "Height", value: user?.height ? `${user?.height}cm` : "—" },
+        { label: "Weight", value: user?.weight ? `${user?.weight}kg` : "—" },
     ]
 
-    async function handleSubmit(e) {
+    async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
         const form = new FormData(e.target)
         const avatar = form.get("avatar")
-        const hasNewfile = avatar && avatar.size > 0
+        const hasNewfile = avatar 
 
         try {
             if (hasNewfile) {
@@ -56,7 +56,7 @@ export default function ProfileCard() {
             }
             toast.success("Profile updated successfully")
             // const res = await axios.patch(`/user/update-user-avatar`, avatar)
-        } catch (error) {
+        } catch (error:any) {
             const message =
                 error?.response?.data?.message || error?.message || "Something went wrong. Please try again."
             toast.error(message)

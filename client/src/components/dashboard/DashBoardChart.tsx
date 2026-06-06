@@ -14,7 +14,7 @@ import { useStats } from "../../stores/user.store.js"
 
 export const description = "An interactive area chart"
 
-export default function ChartAreaInteractive({ className }) {
+export default function ChartAreaInteractive({ className="" }) {
     const [timeRange, setTimeRange] = React.useState("90d")
 
     const chartData = useStats((state) => state.stats?.chartStats)
@@ -29,7 +29,7 @@ export default function ChartAreaInteractive({ className }) {
         },
     }
 
-    const filteredData = chartData?.filter((item) => {
+    const filteredData = chartData?.filter((item:any) => {
         const date = new Date(item.date)
         const referenceDate = new Date("2024-06-30")
         let daysToSubtract = 90

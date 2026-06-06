@@ -2,9 +2,8 @@ import Calendar from "../components/ui/Calender.js"
 import SideBarLayout from "../components/layout/SideBar.js"
 import { useAuth } from "@/stores/user.store"
 import ChartAreaInteractive from "@/components/dashboard/DashBoardChart.js"
-import { Activity, Dumbbell, TrendingDown, TrendingUp } from "lucide-react"
+import { Activity, TrendingDown, TrendingUp } from "lucide-react"
 import {
-    IconCampfireFilled,
     IconChartLine,
     IconCircleDotted,
     IconClipboardData,
@@ -111,12 +110,12 @@ const PreviousWorkout = () => {
 
             {/* List */}
             <div className="divide-line-color flex flex-col gap-0.5 divide-y">
-                {workouts.map((w, i) => (
+                {workouts.map((w) => (
                     <div key={w._id}>
                         <div className="group flex cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2.5 transition-colors hover:bg-[#f7f7f6]">
                             {/* Icon */}
                             <div
-                                className={`flex size-8.5 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-[15px]`}
+                                className={`flex size-8.5 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-[15px]`}
                             >
                                 <IconCircleDotted className="h-4 w-4" />
                             </div>
@@ -134,7 +133,7 @@ const PreviousWorkout = () => {
 
                             {/* Time */}
                             <span className="shrink-0 text-[11px] whitespace-nowrap text-gray-300">
-                                {w.timeAgo + " ago"}
+                                {w?.timeAgo + " ago"}
                             </span>
                         </div>
                     </div>
