@@ -39,7 +39,7 @@ function App() {
                             setIsTokenReceived(true)
                         }
                     }
-                } catch (error) {
+                } catch (error:any) {
                     console.log(error)
                 }
             }
@@ -53,9 +53,9 @@ function App() {
             try {
                 const res = await axios.get("/user/active-dates")
                 if (res.status === 200) {
-                    setActiveDates(res?.data?.data?.activeDates?.map((date) => new Date(date)))
+                    setActiveDates(res?.data?.data?.activeDates?.map((date: string) => new Date(date)))
                 }
-            } catch (err) {
+            } catch (err:any) {
                 toast.error(err?.response?.data?.message || err?.message)
             }
         }
@@ -65,7 +65,7 @@ function App() {
                 if (res.status === 200) {
                     setDashboardStats(res?.data?.data)
                 }
-            } catch (err) {
+            } catch (err:any) {
                 toast.error(err?.response?.data?.message || err?.message)
             }
         }

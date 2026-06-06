@@ -1,6 +1,19 @@
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
 
+interface InputFieldProps {
+    id: string
+    name: string
+    type?: string
+    placeholder?: string
+    value?: string
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    label?: string
+    error?: string
+    disabled?: boolean
+    className?: string
+}
+
 const InputField = ({
     id,
     name,
@@ -12,7 +25,7 @@ const InputField = ({
     error,
     disabled = false,
     className = "",
-}) => {
+}: InputFieldProps) => {
     const [showPassword, setShowPassword] = useState(false)
 
     const isPassword = type === "password"

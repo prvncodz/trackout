@@ -18,16 +18,12 @@ interface AuthStore {
     isUserLogged: boolean;
     user: User | null;
     isLoading: boolean;
-    activeDates: string[];
+    activeDates: Date[];
     setIsUserLogged: (bool: boolean) => void;
-    setUser: (user: User) => void;
-    setActiveDates: (dates: string[]) => void;
+    setUser: (user: User | null) => void;
+    setActiveDates: (dates: Date[]) => void;
 }
 
-interface StasStore {
-    stats: object;
-    setStats: (stats: object) => void;
-}
 
 const useAuth = create<AuthStore>((set) => ({
     isUserLogged: false,
@@ -38,6 +34,11 @@ const useAuth = create<AuthStore>((set) => ({
     setUser: (user) => set({ user: user }),
     setActiveDates: (dates) => set({ activeDates: dates }),
 }))
+
+interface StasStore {
+    stats: object;
+    setStats: (stats: object) => void;
+}
 
 const useStats = create<StasStore>((set) => ({
     stats: {},

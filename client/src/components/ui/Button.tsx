@@ -1,6 +1,11 @@
-import { motion } from "motion/react"
+import { HTMLMotionProps, motion } from "motion/react"
 
-const Button = ({ children, className = "", ...props }) => {
+type ButtonProps = {
+    children: React.ReactNode,
+    className: string | undefined,
+} & Omit<HTMLMotionProps<"button">, "ref">
+
+const Button = ({ children, className = "", ...props }: ButtonProps) => {
     return (
         <motion.button
             whileHover={{ y: -1 }}

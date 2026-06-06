@@ -1,33 +1,33 @@
 import { motion } from "motion/react"
 import { useState } from "react"
-import axios from "../lib/axios.js"
-import Button from "../components/ui/Button.js"
-import InputField from "../components/ui/Inputfield.js"
-import gymImage from "../assets/gym-hero.jpg"
+import axios from "../lib/axios"
+import Button from "../components/ui/Button"
+import InputField from "../components/ui/Inputfield"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
-import { useAuth } from "../stores/user.store.js"
-import { userSignInSchema } from "../schemas/user.schemas.js"
+import { useAuth } from "../stores/user.store"
+import { userSignInSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
+
 
 const SignInPage = () => {
     const [form, setForm] = useState({ email: "", password: "" })
-    const [fieldErrors, setFieldErrors] = useState({})
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string> | null>(null)
     const [loading, setLoading] = useState(false)
     const setUser = useAuth((state) => state.setUser)
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged)
     const navigate = useNavigate()
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setForm((prev) => ({ ...prev, [name]: value }))
         // Clear field error on change
-        if (fieldErrors[name]) {
+        if (fieldErrors && fieldErrors[name]) {
             setFieldErrors((prev) => ({ ...prev, [name]: "" }))
         }
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e?.preventDefault?.()
 
         setLoading(true)
@@ -45,13 +45,13 @@ const SignInPage = () => {
                 setUser(res.data?.data)
                 setIsUserLogged(true)
                 setForm({ email: "", password: "" })
-                setFieldErrors({})
+                setFieldErrors(null)
                 toast.success("Signin successful. Redirecting...")
                 setTimeout(() => {
                     navigate("/")
                 }, 500)
             }
-        } catch (err) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message || "Something went wrong. Please try again."
             toast.error(message)
         } finally {
@@ -61,7 +61,7 @@ const SignInPage = () => {
 
     return (
         <>
-            <div className="hidden h-screen min-h-[520px] w-full overflow-hidden rounded-2xl bg-white shadow-sm md:flex">
+            <div className="hidden h-screen min-h-130 w-full overflow-hidden rounded-2xl bg-white shadow-sm md:flex">
                 <div className="flex w-full flex-1 flex-col items-start justify-center px-12 py-14">
                     <FormContent
                         form={form}
@@ -73,7 +73,7 @@ const SignInPage = () => {
                 </div>
 
                 <div className="relative w-[50%] shrink-0 overflow-hidden">
-                    <img src={gymImage} alt="Gym illustration" className="h-full w-full object-cover" />
+                    <img src={"../assets/gym-hero.jpg"} alt="Gym illustration" className="h-full w-full object-cover" />
                 </div>
             </div>
 
@@ -93,11 +93,21 @@ const SignInPage = () => {
     )
 }
 
-const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
+interface FormInputProps {
+    form: {
+        email: string,
+        password: string,
+    };
+    fieldErrors: Record<string, string> | null;
+    loading: boolean;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSubmit: (e: React.SubmitEvent<HTMLFormElement>) => Promise<void>;
+}
+const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }: FormInputProps) => {
     const navigate = useNavigate()
 
     return (
-        <div className="mx-auto w-full max-w-lg tracking-normal">
+        <form onSubmit={(e: React.SubmitEvent<HTMLFormElement>) => onSubmit(e)} className="mx-auto w-full max-w-lg tracking-normal">
             <Backbtn />
             <div className="mb-8">
                 <h1 className="text-center text-3xl font-bold text-gray-900 md:text-left">Welcome Back</h1>
@@ -112,9 +122,9 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                     name="email"
                     type="email"
                     placeholder="Email address"
-                    value={form.email}
-                    onChange={onChange}
-                    error={fieldErrors.email}
+                    value={form?.email}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e)}
+                    error={fieldErrors?.email}
                     disabled={loading}
                 />
 
@@ -123,14 +133,14 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                     name="password"
                     type="password"
                     placeholder="Password"
-                    value={form.password}
-                    onChange={onChange}
-                    error={fieldErrors.password}
+                    value={form?.password}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e)}
+                    error={fieldErrors?.password}
                     disabled={loading}
                 />
             </div>
 
-            <Button onClick={onSubmit} disabled={loading} className="mt-14 h-14 w-full text-lg">
+            <Button disabled={loading} className="mt-14 h-14 w-full text-lg">
                 {loading ? (
                     <span className="flex items-center justify-center gap-2">
                         <Spinner />
@@ -150,7 +160,7 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                     Sign Up
                 </span>
             </p>
-        </div>
+        </form>
     )
 }
 
@@ -175,6 +185,8 @@ const Backbtn = () => {
             }}
             animate={{
                 opacity: 1,
+            }}
+            transition={{
                 duration: 0.3,
             }}
             whileHover={{

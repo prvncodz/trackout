@@ -1,32 +1,32 @@
 import { motion } from "motion/react"
-import { useState } from "react"
-import axios from "../lib/axios.js"
-import InputField from "../components/ui/Inputfield.js"
-import gymImage from "../assets/gym-hero.jpg"
-import { useNavigate, useNavigation } from "react-router-dom"
+import React, { useState } from "react"
+import axios from "../lib/axios"
+import InputField from "../components/ui/Inputfield"
+import { useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
-import Button from "@/components/ui/Button.js"
-import { userSignUpSchema } from "../schemas/user.schemas.js"
+import gymImage from "../assets/gym-hero.jpg"
+import Button from "../components/ui/Button"
+import { userSignUpSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
 
 const SignUpPage = () => {
-    const [fieldErrors, setFieldErrors] = useState({})
     const [loading, setLoading] = useState(false)
     const [form, setForm] = useState({ fullname: "", email: "", password: "", height: "", weight: "" })
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string> | null>(null)
     const navigate = useNavigate()
 
-    const handleChange = (e) => {
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setForm((prev) => ({ ...prev, [name]: value }))
         // Clear field error on change
-        if (fieldErrors[name]) {
+        if (fieldErrors && fieldErrors[name]) {
             setFieldErrors((prev) => ({ ...prev, [name]: "" }))
         }
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e?.preventDefault?.()
-
         setLoading(true)
 
         try {
@@ -41,13 +41,13 @@ const SignUpPage = () => {
             })
             if (res.status === 201) {
                 setForm({ fullname: "", email: "", password: "", height: "", weight: "" })
-                setFieldErrors({})
+                setFieldErrors(null)
                 toast.success("Signup successful. Redirecting...")
                 setTimeout(() => {
                     navigate("/signin")
                 }, 500)
             }
-        } catch (err) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message || "Something went wrong. Please try again."
             toast.error(message)
         } finally {
@@ -57,12 +57,12 @@ const SignUpPage = () => {
 
     return (
         <>
-            <div className="hidden h-dvh min-h-[520px] w-full overflow-hidden rounded-2xl bg-white shadow-sm md:flex">
+            <div className="hidden h-dvh min-h-130 w-full overflow-hidden rounded-2xl bg-white shadow-sm md:flex">
                 <div className="flex w-full flex-1 flex-col items-start justify-center px-12 py-14">
                     <FormContent
                         form={form}
-                        fieldErrors={fieldErrors}
                         loading={loading}
+                        fieldErrors={fieldErrors}
                         onChange={handleChange}
                         onSubmit={handleSubmit}
                     />
@@ -78,8 +78,8 @@ const SignUpPage = () => {
                 <div className="px-8 py-10">
                     <FormContent
                         form={form}
-                        fieldErrors={fieldErrors}
                         loading={loading}
+                        fieldErrors={fieldErrors}
                         onChange={handleChange}
                         onSubmit={handleSubmit}
                     />
@@ -89,11 +89,25 @@ const SignUpPage = () => {
     )
 }
 
-const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
+interface FormInputProps {
+    form: {
+        fullname: string,
+        email: string,
+        password: string,
+        height: string,
+        weight: string,
+    };
+    fieldErrors: Record<string, string> | null;
+    loading: boolean;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSubmit: (e: React.SubmitEvent<HTMLFormElement>) => Promise<void>;
+}
+
+const FormContent = ({ form, loading, fieldErrors, onChange, onSubmit }: FormInputProps) => {
     const navigate = useNavigate()
 
     return (
-        <div className="mx-auto w-full max-w-lg tracking-normal">
+        <form onSubmit={(e: React.SubmitEvent<HTMLFormElement>) => onSubmit(e)} className="mx-auto w-full max-w-lg tracking-normal">
             <Backbtn />
             <div className="mb-8">
                 <h1 className="text-center text-3xl font-bold text-gray-900 md:text-left">Create Your Account</h1>
@@ -108,9 +122,9 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                     name="fullname"
                     type="text"
                     placeholder="Fullname"
-                    value={form.fullname}
-                    onChange={onChange}
-                    error={fieldErrors.fullname}
+                    value={form?.fullname}
+                    error={fieldErrors?.email}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e)}
                     disabled={loading}
                 />
                 <InputField
@@ -118,9 +132,9 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                     name="email"
                     type="email"
                     placeholder="Email address"
-                    value={form.email}
-                    onChange={onChange}
-                    error={fieldErrors.email}
+                    value={form?.email}
+                    error={fieldErrors?.email}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e)}
                     disabled={loading}
                 />
 
@@ -129,9 +143,9 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                     name="password"
                     type="password"
                     placeholder="Password"
-                    value={form.password}
-                    onChange={onChange}
-                    error={fieldErrors.password}
+                    value={form?.password}
+                    error={fieldErrors?.email}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e)}
                     disabled={loading}
                 />
                 <div className="flex gap-3">
@@ -140,9 +154,9 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                         name="height"
                         type="number"
                         placeholder="Height (cm)"
-                        value={form.height}
-                        onChange={onChange}
-                        error={fieldErrors.height}
+                        value={form?.height}
+                        error={fieldErrors?.email}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e)}
                         disabled={loading}
                     />
                     <InputField
@@ -150,15 +164,15 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                         name="weight"
                         type="number"
                         placeholder="Weight (kg)"
-                        value={form.weight}
-                        onChange={onChange}
-                        error={fieldErrors.weight}
+                        value={form?.weight}
+                        error={fieldErrors?.email}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e)}
                         disabled={loading}
                     />
                 </div>
             </div>
 
-            <Button onClick={onSubmit} disabled={loading} className="mt-14 h-14 w-full text-base">
+            <Button type="submit" disabled={loading} className="mt-14 h-14 w-full text-base">
                 {loading ? (
                     <span className="flex items-center justify-center gap-2">
                         <Spinner />
@@ -178,7 +192,7 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }) => {
                     Sign In
                 </span>
             </p>
-        </div>
+        </form>
     )
 }
 
@@ -201,6 +215,8 @@ const Backbtn = () => {
             }}
             animate={{
                 opacity: 1,
+            }}
+            transition={{
                 duration: 0.3,
             }}
             whileHover={{
