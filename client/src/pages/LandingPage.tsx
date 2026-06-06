@@ -1,7 +1,7 @@
 import { Activity, Calendar, TrendingUp } from "lucide-react"
 import Navbar from "../components/layout/Navbar"
 import Button from "../components/ui/Button"
-import { IconTreadmill, ReactNode } from "@tabler/icons-react"
+import { IconTreadmill } from "@tabler/icons-react"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-scroll"
 import { motion } from "motion/react"
@@ -167,7 +167,13 @@ const Workflow = () => {
     )
 }
 
-const WorkflowCard = ({ no, title, description }) => {
+interface WorkflowCardProps {
+    no: number;
+    title: string;
+    description: string;
+}
+
+const WorkflowCard = ({ no, title, description }: WorkflowCardProps) => {
     return (
         <div className="flex-start my-4 flex w-auto items-center justify-center px-8 text-center md:flex-col">
             <div className="text-near-black flex h-15 w-15 items-center justify-center rounded-full bg-gray-100 p-2 font-serif font-bold">
@@ -205,11 +211,12 @@ const LandingPage = () => {
             }}
             animate={{
                 opacity: 1,
+            }}
+            transition={{
                 duration: 0.3,
             }}
             exit={{
                 opacity: 0,
-                duration: 0.3,
             }}
         >
             <Navbar>
