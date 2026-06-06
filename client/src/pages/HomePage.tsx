@@ -9,7 +9,7 @@ import {
     AlertDialogMedia,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog.js"
+} from "@/components/ui/alert-dialog"
 import {
     IconCheck,
     IconCircleDashedCheck,
@@ -19,19 +19,16 @@ import {
     IconDots,
     IconDotsVertical,
     IconLogs,
-    IconNotebook,
-    IconNotes,
     IconPencil,
     IconPencilPlus,
     IconPlaylistAdd,
-    IconPlus,
     IconTrash,
 } from "@tabler/icons-react"
-import SideBarLayout from "../components/layout/SideBar.js"
-import MyButton from "../components/ui/Button.js"
-import { Button } from "../components/ui/button.js"
-import { useEffect, useState } from "react"
-import BottomSheet from "@/components/ui/BottomSheet.js"
+import SideBarLayout from "../components/layout/SideBar"
+import MyButton from "../components/ui/Button"
+import { Button } from "../components/ui/button"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import BottomSheet from "@/components/ui/BottomSheet"
 import {
     Dialog,
     DialogClose,
@@ -41,27 +38,25 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog.js"
-import { Field, FieldGroup } from "@/components/ui/field.js"
-import { Label } from "@/components/ui/label.js"
-import { Input } from "@/components/ui/input.js"
+} from "@/components/ui/dialog"
+import { Field, FieldGroup } from "@/components/ui/field"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import { motion } from "motion/react"
-import axios from "../lib/axios.js"
-import CreateSetSchema from "../schemas/set.schema.js"
+import axios from "../lib/axios"
+import CreateSetSchema from "../schemas/set.schema"
 import { toast } from "sonner"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useAuth } from "../stores/user.store.js"
-import useLogStore from "../stores/log.store.js"
+import { useAuth } from "../stores/user.store"
+import useLogStore from "../stores/log.store"
+import type { Log } from "../stores/log.store"
 
-function debounce(fn, delay) {
-    let id
-    return (...args) => {
-        clearTimeout(id)
-        id = setTimeout(() => fn(...args), delay)
-    }
+interface PopupProps {
+    log: Log;
+    setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const Popup = ({ log, setIsOpen }) => {
+const Popup = ({ log, setIsOpen }: PopupProps) => {
     const [editing, setEditing] = useState(false)
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
     const duplicateLog = useLogStore((state) => state.duplicateLog)
@@ -74,7 +69,7 @@ const Popup = ({ log, setIsOpen }) => {
             duplicateLog(res?.data?.data)
             setIsOpen(false)
             toast.success("Log duplicated successfully")
-        } catch (err) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message
             toast.error(message)
         }
@@ -87,15 +82,15 @@ const Popup = ({ log, setIsOpen }) => {
             setShowDeleteAlert(false)
             setIsOpen(false)
             toast.success("Log deleted successfully")
-        } catch (err) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message
             toast.error(message)
         }
     }
 
-    async function handleEditLog(e) {
+    async function handleEditLog(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const name = e.target.name.value
+        const name = e.target.name
         try {
             const res = await axios.patch(`/log/update/${log._id}`, { logName: name })
             if (res.status === 200) {
@@ -104,7 +99,7 @@ const Popup = ({ log, setIsOpen }) => {
                 setIsOpen(false)
                 toast.success("Log updated successfully")
             }
-        } catch (err) {
+        } catch (err: any) {
             const message = err?.response?.data?.message || err?.message
             toast.error(message)
         }
@@ -117,10 +112,11 @@ const Popup = ({ log, setIsOpen }) => {
             }}
             animate={{
                 opacity: 1,
-                duration: 100,
             }}
             exit={{
                 opacity: 0,
+            }}
+            transition={{
                 duration: 100,
             }}
         >
