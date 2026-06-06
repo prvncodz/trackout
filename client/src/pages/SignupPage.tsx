@@ -5,7 +5,7 @@ import InputField from "../components/ui/Inputfield"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import gymImage from "../assets/gym-hero.jpg"
-import Button from "../components/ui/Button"
+import MyButton from "../components/ui/MyButton"
 import { userSignUpSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
 
@@ -172,7 +172,7 @@ const FormContent = ({ form, loading, fieldErrors, onChange, onSubmit }: FormInp
                 </div>
             </div>
 
-            <Button type="submit" disabled={loading} className="mt-14 h-14 w-full text-base">
+            <MyButton type="submit" disabled={loading} className="mt-14 h-14 w-full text-base">
                 {loading ? (
                     <span className="flex items-center justify-center gap-2">
                         <Spinner />
@@ -181,7 +181,7 @@ const FormContent = ({ form, loading, fieldErrors, onChange, onSubmit }: FormInp
                 ) : (
                     "Create Account"
                 )}
-            </Button>
+            </MyButton>
 
             <p className="mt-5 text-center text-sm text-gray-500">
                 Already have an account?{" "}

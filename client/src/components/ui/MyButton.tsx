@@ -5,7 +5,7 @@ type ButtonProps = {
     className?: string,
 } & Omit<HTMLMotionProps<"button">, "ref">
 
-const Button = ({ children, className = "", ...props }: ButtonProps) => {
+const MyButton = ({ children, className = "", ...props }: ButtonProps) => {
     return (
         <motion.button
             whileHover={{ y: -1 }}
@@ -17,4 +17,4 @@ const Button = ({ children, className = "", ...props }: ButtonProps) => {
     )
 }
 
-export default Button
+export default MyButton

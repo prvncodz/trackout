@@ -35,7 +35,7 @@ import {
     IconUser,
 } from "@tabler/icons-react"
 import Navbar from "./Navbar"
-import MyButton from "../ui/Button"
+import MyButton from "../ui/MyButton"
 import { Button } from "../ui/button"
 import HamburgerButton from "../ui/HamburgerButton"
 import { motion } from "motion/react"

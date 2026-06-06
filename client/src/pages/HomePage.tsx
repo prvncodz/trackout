@@ -25,7 +25,7 @@ import {
     IconTrash,
 } from "@tabler/icons-react"
 import SideBarLayout from "../components/layout/SideBar"
-import MyButton from "../components/ui/Button"
+import MyButton from "../components/ui/MyButton"
 import { Button } from "../components/ui/button"
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import BottomSheet from "@/components/ui/BottomSheet"

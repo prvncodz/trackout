@@ -1,7 +1,7 @@
 import { motion } from "motion/react"
 import { useState } from "react"
 import axios from "../lib/axios"
-import Button from "../components/ui/Button"
+import MyButton from "../components/ui/MyButton"
 import InputField from "../components/ui/Inputfield"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
@@ -140,7 +140,7 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }: FormInp
                 />
             </div>
 
-            <Button disabled={loading} className="mt-14 h-14 w-full text-lg">
+            <MyButton disabled={loading} className="mt-14 h-14 w-full text-lg">
                 {loading ? (
                     <span className="flex items-center justify-center gap-2">
                         <Spinner />
@@ -149,7 +149,7 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }: FormInp
                 ) : (
                     "Sign In"
                 )}
-            </Button>
+            </MyButton>
 
             <p className="mt-5 text-center text-sm text-gray-500">
                 Don't have an account?{" "}

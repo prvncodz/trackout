@@ -1,6 +1,6 @@
 import { Activity, Calendar, TrendingUp } from "lucide-react"
 import Navbar from "../components/layout/Navbar"
-import Button from "../components/ui/Button"
+import MyButton from "../components/ui/MyButton"
 import { IconTreadmill } from "@tabler/icons-react"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-scroll"
@@ -38,9 +38,9 @@ const HeroSection = () => {
                 <HeroText />
             </div>
             <div className="mt-10 flex items-center justify-center gap-5 px-2 md:px-0">
-                <Button onClick={() => navigate("/signup")} className="text-sm md:text-base">
+                <MyButton onClick={() => navigate("/signup")} className="text-sm md:text-base">
                     Get started for free
-                </Button>
+                </MyButton>
                 <motion.div whileHover={{ y: -3 }}>
                     <Link
                         to="features"
@@ -262,9 +262,9 @@ const LandingPage = () => {
                     >
                         Log in{" "}
                     </button>
-                    <Button onClick={() => navigate("/signup")} className="hidden md:block">
+                    <MyButton onClick={() => navigate("/signup")} className="hidden md:block">
                         Get started
-                    </Button>
+                    </MyButton>
                 </div>
             </Navbar>
             <Layout>
