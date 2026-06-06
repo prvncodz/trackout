@@ -191,7 +191,12 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
     )
 }
 
-const Log = ({ log, ActiveLog, setActiveLog }) => {
+interface LogProps {
+    log: Log;
+    ActiveLog: string,
+    setActiveLog: Dispatch<SetStateAction<string | null>>
+}
+const Log = ({ log, ActiveLog, setActiveLog }: LogProps) => {
     const [isOpen, setIsOpen] = useState(false)
     return (
         <div
@@ -215,7 +220,12 @@ const Log = ({ log, ActiveLog, setActiveLog }) => {
     )
 }
 
-const AllLogs = ({ ActiveLog, setActiveLog }) => {
+interface AllLogsProps {
+    ActiveLog: string,
+    setActiveLog: Dispatch<SetStateAction<string | null>>
+}
+
+const AllLogs = ({ ActiveLog, setActiveLog }:AllLogsProps) => {
     const [isCreating, setIsCreating] = useState(false)
     const logs = useLogStore((state) => state.logs)
     const addLog = useLogStore((state) => state.addLog)
@@ -223,9 +233,9 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
     useEffect(() => {
     }, [logs])
 
-    async function handleCreateLog(e) {
+    async function handleCreateLog(e:React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const name = e.target.name.value
+        const name = e.target.name
         try {
             const res = await axios.post(`/log/create`, { logName: name })
             if (res.status === 201) {
@@ -233,7 +243,7 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
                 setIsCreating(false)
                 toast.success("Log created successfully")
             }
-        } catch (err) {
+        } catch (err:any) {
             const message = err?.response?.data?.message || err?.message
             toast.error(message)
         }
@@ -282,6 +292,16 @@ const AllLogs = ({ ActiveLog, setActiveLog }) => {
             </div>
         </div>
     )
+}
+
+
+
+interface ExerciseCardProps {
+    Curexercise: Exercise; 
+    logId: string
+    setExercises: Dispatch<SetStateAction<Exercise[]>>
+    className?: string
+    completed?: boolean
 }
 
 const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", completed }) => {
@@ -839,7 +859,7 @@ async function fetchAllLogs() {
 }
 
 const HomePageContent = () => {
-    const [ActiveLog, setActiveLog] = useState(null)
+    const [ActiveLog, setActiveLog] = useState<string|null>(null)
     const userId = useAuth((state) => state.user?._id)
     const { data, status, isLoading } = useQuery({ queryKey: ['logs', userId], queryFn: fetchAllLogs })
     const setAllLogs = useLogStore((state) => state.setLogs)
