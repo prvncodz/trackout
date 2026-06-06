@@ -1,8 +1,8 @@
-import { Activity, Calendar, TrendingUp, TrendingUpDown } from "lucide-react"
+import { Activity, Calendar, TrendingUp } from "lucide-react"
 import Navbar from "../components/layout/Navbar"
 import Button from "../components/ui/Button"
-import { IconTreadmill } from "@tabler/icons-react"
-import { Navigate, useNavigate } from "react-router-dom"
+import { IconTreadmill, ReactNode } from "@tabler/icons-react"
+import { useNavigate } from "react-router-dom"
 import { Link } from "react-scroll"
 import { motion } from "motion/react"
 
@@ -57,7 +57,7 @@ const HeroSection = () => {
     )
 }
 
-const Layout = ({ children }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
     return (
         <motion.div
             className="relative mx-auto w-full overflow-hidden lg:max-w-[60vw]"
@@ -123,7 +123,15 @@ const Features = () => {
     )
 }
 
-const FeaturesCard = ({ Logo, title, description, className }) => {
+interface FeatureCardProps {
+    Logo: React.ReactNode;
+    title: string;
+    description: string;
+    className: string;
+}
+
+
+const FeaturesCard = ({ Logo, title, description, className }: FeatureCardProps) => {
     return (
         <div
             className={`border-line-color flex flex-col items-start gap-4 rounded-xl border bg-gray-50 p-10 pr-13 pb-13 shadow-md ${className}`}

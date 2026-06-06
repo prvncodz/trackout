@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react"
 import { useAuth } from "../stores/user.store"
 import { userSignInSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
-
+import gymImage from "../assets/gym-hero.jpg"
 
 const SignInPage = () => {
     const [form, setForm] = useState({ email: "", password: "" })
@@ -73,7 +73,7 @@ const SignInPage = () => {
                 </div>
 
                 <div className="relative w-[50%] shrink-0 overflow-hidden">
-                    <img src={"../assets/gym-hero.jpg"} alt="Gym illustration" className="h-full w-full object-cover" />
+                    <img src={gymImage} alt="Gym illustration" className="h-full w-full object-cover" />
                 </div>
             </div>
 
@@ -95,8 +95,8 @@ const SignInPage = () => {
 
 interface FormInputProps {
     form: {
-        email: string,
-        password: string,
+        email: string;
+        password: string;
     };
     fieldErrors: Record<string, string> | null;
     loading: boolean;

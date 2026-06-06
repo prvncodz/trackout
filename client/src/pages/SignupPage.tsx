@@ -91,11 +91,11 @@ const SignUpPage = () => {
 
 interface FormInputProps {
     form: {
-        fullname: string,
-        email: string,
-        password: string,
-        height: string,
-        weight: string,
+        fullname: string;
+        email: string;
+        password: string;
+        height: string;
+        weight: string;
     };
     fieldErrors: Record<string, string> | null;
     loading: boolean;

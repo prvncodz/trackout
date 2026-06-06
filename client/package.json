@@ -47,6 +47,7 @@
         "@types/lodash.throttle": "^4.1.9",
         "@types/react": "^19.2.16",
         "@types/react-dom": "^19.2.3",
+        "@types/react-scroll": "^1.8.10",
         "@vitejs/plugin-react": "^6.0.1",
         "class-variance-authority": "^0.7.1",
         "eslint": "^9.39.4",

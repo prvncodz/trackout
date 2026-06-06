@@ -1,11 +1,11 @@
-import { cn } from "@/lib/utils"
+import { cn } from "../../lib/utils"
 import React from "react";
 
 type InputProps = {
     className?: string;
-    type?: string,
-    props?: unknown[],
-}& React.ComponentPropsWithoutRef<"input">
+    type?: string;
+    props?: unknown[];
+} & React.ComponentPropsWithoutRef<"input">
 
 function Input({ className, type, ...props }: InputProps) {
     return (
