@@ -10,7 +10,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useStats } from "../../stores/user.store.js"
+import { useStats } from "../../stores/user.store"
 
 export const description = "An interactive area chart"
 

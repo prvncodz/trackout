@@ -24,7 +24,7 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAppStore } from "../../stores/app.store.js"
+import { useAppStore } from "../../stores/app.store"
 import Logo from "../ui/Logo"
 import {
     IconBrandTabler,
@@ -34,17 +34,17 @@ import {
     IconTrash,
     IconUser,
 } from "@tabler/icons-react"
-import Navbar from "./Navbar.jsx"
-import MyButton from "../ui/Button.jsx"
-import { Button } from "../ui/button.jsx"
-import HamburgerButton from "../ui/HamburgerButton.jsx"
+import Navbar from "./Navbar"
+import MyButton from "../ui/Button"
+import { Button } from "../ui/button"
+import HamburgerButton from "../ui/HamburgerButton"
 import { motion } from "motion/react"
 import { Dumbbell, LucideProps } from "lucide-react"
 import { Dispatch, ForwardRefExoticComponent, RefAttributes, SetStateAction, useState } from "react"
-import { useAuth, useStats } from "../../stores/user.store.js"
-import axios from "../../lib/axios.js"
+import { useAuth, useStats } from "../../stores/user.store"
+import axios from "../../lib/axios"
 import { toast } from "sonner"
-import useLogStore from "../../stores/log.store.js"
+import useLogStore from "../../stores/log.store"
 
 const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) => {
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)

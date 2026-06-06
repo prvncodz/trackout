@@ -1,7 +1,7 @@
-import Calendar from "../components/ui/Calender.js"
-import SideBarLayout from "../components/layout/SideBar.js"
-import { useAuth } from "@/stores/user.store"
-import ChartAreaInteractive from "@/components/dashboard/DashBoardChart.js"
+import Calendar from "../components/ui/Calender"
+import SideBarLayout from "../components/layout/SideBar"
+import { useAuth, useStats } from "../stores/user.store"
+import ChartAreaInteractive from "@/components/dashboard/DashBoardChart"
 import { Activity, TrendingDown, TrendingUp } from "lucide-react"
 import {
     IconChartLine,
@@ -9,7 +9,7 @@ import {
     IconClipboardData,
     IconFlameFilled,
 } from "@tabler/icons-react"
-import { useStats } from "../stores/user.store.js"
+
 
 const Greetings = () => {
     const fullname = useAuth((state) => state.user?.fullname)
