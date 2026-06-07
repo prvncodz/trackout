@@ -92,7 +92,8 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
 
     async function handleEditLog(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const name = e.target.name
+        const name = e.target.logName.value
+
         try {
             const res = await axios.patch(`/log/update/${log._id}`, { logName: name })
             if (res.status === 200) {
@@ -142,8 +143,8 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                     <form onSubmit={handleEditLog}>
                         <FieldGroup>
                             <Field>
-                                <Label htmlFor="name">Name</Label>
-                                <Input id="name" name="name" defaultValue={log?.logName} />
+                                <Label htmlFor="logName">Name</Label>
+                                <Input id="logName" name="logName" defaultValue={log?.logName} />
                             </Field>
                         </FieldGroup>
                         <DialogFooter className="mt-7">
@@ -237,7 +238,7 @@ const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
 
     async function handleCreateLog(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const name = e.target.name
+        const name = e.target.logName.value
         try {
             const res = await axios.post(`/log/create`, { logName: name })
             if (res.status === 201) {
@@ -269,8 +270,8 @@ const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
                     <form onSubmit={(e) => handleCreateLog(e)}>
                         <FieldGroup>
                             <Field>
-                                <Label htmlFor="name-1">Name</Label>
-                                <Input id="name-1" name="name" defaultValue="" />
+                                <Label htmlFor="logName">Name</Label>
+                                <Input id="logName" name="logName" defaultValue="" />
                             </Field>
                         </FieldGroup>
                         <DialogFooter className="mt-7">
@@ -707,9 +708,8 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
 
     async function handleCreateExercise(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const form = new FormData(e.target)
-        const name = form.get("name")
-        const muscleGroup = form.get("muscleGroup")
+        const name = e.target.logName.value
+        const muscleGroup = e.target.muscleGroup.value
 
         try {
             const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
@@ -740,7 +740,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
             <div className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"} hidden lg:flex`}>
                 <div className={`h-screen flex-col overflow-auto bg-neutral-50 p-10 ${className} no-scrollbar w-full`}>
                     <div className="flex w-full flex-col">
-                        {exercises?.length &&
+                        {exercises?.length > 0 &&
                             exercises?.map((exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
@@ -768,8 +768,8 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                         <form onSubmit={handleCreateExercise}>
                                             <FieldGroup>
                                                 <Field>
-                                                    <Label htmlFor="name">Name</Label>
-                                                    <Input id="name" name="name" defaultValue="" />
+                                                    <Label htmlFor="logName">Name</Label>
+                                                    <Input id="logName" name="logName" defaultValue="" />
                                                 </Field>
                                                 <Field>
                                                     <Label htmlFor="muscleGroup">MuscleGroup</Label>
@@ -786,7 +786,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length && (
+                            {log?.exercises?.length > 0 && (
                                 <Button variant="outline" disabled={log?.completedAt ? true : false} onClick={handleMarkLogCompleted}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {log?.completedAt ? "Completed" : "Mark as Completed"}
@@ -806,7 +806,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                 <div className={`mt-0 h-screen overflow-auto ${className}`}>
                     <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased">{log?.logName}</h1>
                     <div className="my-10">
-                        {exercises?.length &&
+                        {exercises?.length > 0 &&
                             exercises?.map((exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
@@ -835,8 +835,8 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                         <form onSubmit={handleCreateExercise}>
                                             <FieldGroup>
                                                 <Field>
-                                                    <Label htmlFor="name">Name</Label>
-                                                    <Input id="name" name="name" defaultValue="" />
+                                                    <Label htmlFor="logName">Name</Label>
+                                                    <Input id="logName" name="logName" defaultValue="" />
                                                 </Field>
                                                 <Field>
                                                     <Label htmlFor="muscleGroup">MuscleGroup</Label>
@@ -853,7 +853,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {(log?.exercises?.length && log.exercises?.length > 0) && (
+                            {log?.exercises?.length > 0 && (
                                 <Button variant="outline" disabled={log?.completedAt ? true : false}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {log?.completedAt ? "Completed" : "Mark as Completed"}
