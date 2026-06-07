@@ -707,8 +707,9 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
 
     async function handleCreateExercise(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const name = e.target.name
-        const muscleGroup = e.target.muscleGroup.value
+        const form = new FormData(e.target)
+        const name = form.get("name")
+        const muscleGroup = form.get("muscleGroup")
 
         try {
             const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
@@ -852,7 +853,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length && (
+                            {(log?.exercises?.length && log.exercises?.length > 0) && (
                                 <Button variant="outline" disabled={log?.completedAt ? true : false}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {log?.completedAt ? "Completed" : "Mark as Completed"}

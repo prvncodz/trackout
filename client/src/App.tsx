@@ -35,7 +35,7 @@ function App() {
                 try {
                     if (error.status === 500) {
                         const res = await axios.get("/user/refresh-tokens")
-                        if (res.status == 200) {
+                        if (res.status === 200) {
                             setIsTokenReceived(true)
                         }
                     }
