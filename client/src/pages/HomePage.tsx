@@ -284,14 +284,15 @@ const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
                 </DialogContent>
             </Dialog>
             <div className="flex h-auto w-full flex-col items-center justify-center gap-2 lg:mt-15">
-                {logs.length > 0 && logs?.map((log) => (
+                {logs.length? 
+                logs?.map((log) => (
                     <Log
                         key={log._id}
                         log={log}
                         ActiveLog={ActiveLog}
                         setActiveLog={setActiveLog}
                     />
-                ))}
+                )):null}
             </div>
         </div>
     )
@@ -610,7 +611,8 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                 </div>
 
                 {/* Rows */}
-                {exercise?.sets?.map((set) => (
+                { exercise?.sets?.length ?(
+                    exercise?.sets?.map((set) => (
                     <div
                         key={set?._id}
                         className="grid grid-cols-5 items-center border-b border-neutral-100 px-4 py-4 last:border-none"
@@ -669,9 +671,10 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                                     {set.completed && <IconCheck size={14} />}
                                 </button>
                             </div>
-                        )}
+                        )
+                        }
                     </div>
-                ))}
+                ))):null}
             </div>
         </div>
     )
@@ -740,7 +743,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
             <div className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"} hidden lg:flex`}>
                 <div className={`h-screen flex-col overflow-auto bg-neutral-50 p-10 ${className} no-scrollbar w-full`}>
                     <div className="flex w-full flex-col">
-                        {exercises?.length > 0 &&
+                        {exercises?.length ? 
                             exercises?.map((exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
@@ -749,7 +752,9 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     key={exercise._id}
                                     completed={log?.completedAt ? true : false}
                                 />
-                            ))}
+                            )):
+                            null
+                            }
                         <div className="flex gap-3 justify-end">
                             {!log?.completedAt && (
                                 <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
@@ -786,12 +791,12 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length > 0 && (
+                            {log?.exercises?.length  ? (
                                 <Button variant="outline" disabled={log?.completedAt ? true : false} onClick={handleMarkLogCompleted}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {log?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
-                            )}
+                            ):null}
                         </div>
                     </div>
                 </div>
@@ -806,7 +811,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                 <div className={`mt-0 h-screen overflow-auto ${className}`}>
                     <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased">{log?.logName}</h1>
                     <div className="my-10">
-                        {exercises?.length > 0 &&
+                        {exercises?.length?
                             exercises?.map((exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
@@ -815,7 +820,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     key={exercise._id}
                                     completed={log?.completedAt ? true : false}
                                 />
-                            ))}
+                            )):null}
 
                         <div className="flex gap-3 justify-end pr-3">
                             {!log?.completedAt && (
@@ -853,12 +858,12 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length > 0 && (
+                            {log?.exercises?.length ?(
                                 <Button variant="outline" disabled={log?.completedAt ? true : false}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {log?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
-                            )}
+                            ):null}
                         </div>
                     </div>
                 </div>
