@@ -100,7 +100,7 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
                 opacity: 0,
             }}
             transition={{
-                duration: 100
+                duration: 0.3
             }}
         >
             <Dialog open={showLogoutDailogue} onOpenChange={setShowLogoutDailogue}>

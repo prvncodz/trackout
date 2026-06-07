@@ -120,7 +120,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                 opacity: 0,
             }}
             transition={{
-                duration: 100,
+                duration: 0.15,
             }}
         >
             <Dialog open={editing} onOpenChange={setEditing}>
@@ -217,7 +217,7 @@ const Log = ({ log, ActiveLog, setActiveLog }: LogProps) => {
             </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
-                {isOpen && <Popup log={log} setIsOpen={setIsOpen} />}
+                {isOpen ? <Popup log={log} setIsOpen={setIsOpen} />:null}
             </div>
         </div>
     )
@@ -480,7 +480,7 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                                     opacity: 0,
                                 }}
                                 transition={{
-                                    duration: 100,
+                                    duration: 0.3,
                                 }}
                                 tabIndex={0}
                                 className="menu dropdown-content absolute top-10 right-1 z-10 mt-2 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl"
