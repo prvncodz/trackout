@@ -11,7 +11,7 @@ import { useEffect, useState } from "react"
 import axios from "./lib/axios"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 function App() {
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged)
@@ -29,7 +29,7 @@ function App() {
                     setUser(response?.data?.data)
                     setIsUserLogged(true)
                 }
-            } catch (error:any) {
+            } catch (error: any) {
                 setUser(null)
                 setIsUserLogged(false)
                 try {
@@ -39,7 +39,7 @@ function App() {
                             setIsTokenReceived(true)
                         }
                     }
-                } catch (error:any) {
+                } catch (error: any) {
                     console.log(error)
                 }
             }
@@ -55,7 +55,7 @@ function App() {
                 if (res.status === 200) {
                     setActiveDates(res?.data?.data?.activeDates?.map((date: string) => new Date(date)))
                 }
-            } catch (err:any) {
+            } catch (err: any) {
                 toast.error(err?.response?.data?.message || err?.message)
             }
         }
@@ -65,7 +65,7 @@ function App() {
                 if (res.status === 200) {
                     setDashboardStats(res?.data?.data)
                 }
-            } catch (err:any) {
+            } catch (err: any) {
                 toast.error(err?.response?.data?.message || err?.message)
             }
         }
@@ -78,6 +78,7 @@ function App() {
     return (
         <>
             <Toaster />
+            <ReactQueryDevtools initialIsOpen={false} />
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={isUserLogged ? <HomePage /> : <LandingPage />} />
