@@ -52,7 +52,7 @@ import useLogStore from "../stores/log.store"
 import type { Log } from "../types/Log.types"
 import type { Exercise } from "@/types/Exercise.types"
 import type { Set } from "@/types/Set.types"
-import { fetchAllLogs, useCreateLog, useDeleteLog, useDuplicateLog, useEditLog } from "@/hooks/useLog"
+import { fetchAllLogs, useCreateExercise, useCreateLog, useDeleteLog, useDuplicateLog, useEditLog, useMarkLogCompleted } from "@/hooks/useLog"
 
 interface PopupProps {
     log: Log;
@@ -189,24 +189,23 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
 
 interface LogProps {
     log: Log;
-    ActiveLog: string | null,
-    setActiveLog: Dispatch<SetStateAction<string | null>>
 }
-const Log = ({ log, ActiveLog, setActiveLog }: LogProps) => {
+const Log = ({ log }: LogProps) => {
     const [isOpen, setIsOpen] = useState(false)
+    const logStore = useLogStore()
     return (
         <div
-            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 ${ActiveLog === log?._id ? " bg-neutral-100" : ""}`}
+            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 ${logStore.activeLog === log?._id ? " bg-neutral-100" : ""}`}
         >
             <IconLogs
                 className="text-neutral-500"
-                onClick={() => setActiveLog((p) => (p == null ? log._id : p == log?._id ? null : log._id))}
+                onClick={() => logStore.setActiveLog(logStore.activeLog == null ? log._id : logStore.activeLog == log?._id ? null : log._id)}
             />
             <h3
                 className="ml-5 w-full truncate text-left text-base text-neutral-700"
-                onClick={() => setActiveLog((p) => (p == null ? log._id : p == log?._id ? null : log._id))}
+                onClick={() => logStore.setActiveLog(logStore.activeLog == null ? log._id : logStore.activeLog == log?._id ? null : log._id)}
             >
-                {log?.logName || "Log title"}{" "}
+                {log?.logName || "Log title"} {" "}
             </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
@@ -216,14 +215,11 @@ const Log = ({ log, ActiveLog, setActiveLog }: LogProps) => {
     )
 }
 
-interface AllLogsProps {
-    ActiveLog: string | null,
-    setActiveLog: Dispatch<SetStateAction<string | null>>
-}
 
-const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
+const AllLogs = () => {
     const [isCreating, setIsCreating] = useState(false)
-    const logs = useLogStore((state) => state.logs)
+    const logStore = useLogStore()
+    const logs = logStore.logs
     const userId = useAuth((state) => state.user?._id)
     const { mutate: createLog, isSuccess: isCreated, isError } = useCreateLog(userId)
 
@@ -273,8 +269,6 @@ const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
                         <Log
                             key={log._id}
                             log={log}
-                            ActiveLog={ActiveLog}
-                            setActiveLog={setActiveLog}
                         />
                     )) : null}
             </div>
@@ -292,13 +286,14 @@ interface ExerciseCardProps {
     completed?: boolean
 }
 
-const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", completed }: ExerciseCardProps) => {
+const ExerciseCard = ({ Curexercise, logId, className = "", completed }: ExerciseCardProps) => {
     const [editMode, setEditMode] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
     const [exercise, setExercise] = useState(Curexercise)
     const [isCreating, setIsCreating] = useState(false)
     const [toBeUpdatedSets, setToBeUpdatedSets] = useState<Set[] | null>(null)
     const [isExerciseUpdated, setIsExerciseUpdated] = useState(false)
+    const { mutate: deleteExercise, isSuccess: isDeleted, isError: isNotDeleted } = useDeleteExercise(logId)
 
     async function toggleDone(id: string) {
         setExercise((prev) => ({
@@ -392,16 +387,6 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
         }
     }
 
-    async function handleDeleteExercise() {
-        try {
-            await axios.delete(`/exercise/delete/${logId}/${Curexercise?._id}`)
-            setExercises((prev) => prev?.filter((ex) => ex._id !== Curexercise?._id) ?? prev)
-            toast.success("Exercise deleted successfully")
-        } catch (err: any) {
-            const message = err.response?.data.message || err.message
-            toast.error(message)
-        }
-    }
 
     return (
         <div className={`w-full max-w-3xl bg-neutral-50 p-5 ${className}`}>
@@ -672,75 +657,55 @@ async function getlogById(id: string | null) {
 interface ShowLogProps {
     logId: string,
     isActive: boolean,
-    setActiveLog: Dispatch<SetStateAction<string | null>>
-    ActiveLog: string | null;
     className?: string;
 }
 
-const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: ShowLogProps) => {
-    const [log, setLog] = useState<Log | null>(null)
+const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
+    const logStore = useLogStore()
     const [exercises, setExercises] = useState<Exercise[] | null>(null)
     const [addingExercise, setAddingExercise] = useState(false)
-    const { data, status, error } = useQuery({ queryKey: ['log', ActiveLog], queryFn: () => getlogById(ActiveLog) })
+    const { data, status, error } = useQuery({ queryKey: ['log', logStore.activeLog], queryFn: () => getlogById(logStore.activeLog) })
+    const { mutate: createExercise, isSuccess: createdExercise, isError: exerciseCreationErr } = useCreateExercise(logId, logStore.activeLog)
+    const { mutate: markLogCompleted, isSuccess: isMarked, isError: isMarkedError } = useMarkLogCompleted(logId, logStore.activeLog)
 
     useEffect(() => {
         if (status === "success") {
-            setLog(data)
             setExercises(data?.exercises)
-        } else if (status === "error") {
+        } else if (error) {
             toast.error(error?.message)
         }
-    }, [status, ActiveLog])
 
-
-    async function handleCreateExercise(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault()
-        const name = e.target.logName.value
-        const muscleGroup = e.target.muscleGroup.value
-
-        try {
-            const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
-            setExercises((prev) => [...prev ?? [], res.data?.data])
+        if (createdExercise) setAddingExercise(false)
+        if (exerciseCreationErr) {
             setAddingExercise(false)
-            toast.success("Exercise created successfully")
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message
-            toast.error(message)
+            toast.error("Failed to create exercise")
         }
-    }
 
-    async function handleMarkLogCompleted() {
-        try {
-            const res = await axios.patch(`/log/mark-completed/${logId}`)
-            setLog(res.data?.data)
-            toast.success("Log marked as completed successfully")
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message
-            toast.error(message)
-        }
-    }
+    }, [status, logStore.activeLog, createdExercise, exerciseCreationErr, createExercise])
+
+
+
 
     if (status === "pending") return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
 
     return (
-        <div className="w-full">
+        <div className="w-full h-dvh ">
             <div className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"} hidden lg:flex`}>
                 <div className={`h-screen flex-col overflow-auto bg-neutral-50 p-10 ${className} no-scrollbar w-full`}>
                     <div className="flex w-full flex-col">
-                        {exercises?.length ?
-                            exercises?.map((exercise) => (
+                        {data?.exercises?.length ?
+                            data?.exercises?.map((exercise: Exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
                                     logId={logId}
-                                    setExercises={setExercises}
                                     key={exercise._id}
-                                    completed={log?.completedAt ? true : false}
+                                    completed={data?.completedAt ? true : false}
                                 />
                             )) :
                             null
                         }
                         <div className="flex gap-3 justify-end">
-                            {!log?.completedAt && (
+                            {!data?.completedAt && (
                                 <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
                                     <DialogTrigger asChild>
                                         <Button variant="outline">
@@ -754,15 +719,20 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                                 Add a new Exercise to log. Click save when you&apos;re done.
                                             </DialogDescription>
                                         </DialogHeader>
-                                        <form onSubmit={handleCreateExercise}>
+                                        <form onSubmit={(e) => {
+                                            e.preventDefault()
+                                            const name = e.target.logName.value,
+                                                muscleGroup = e.target.muscleGroup.value;
+                                            createExercise({ name, muscleGroup })
+                                        }}>
                                             <FieldGroup>
                                                 <Field>
                                                     <Label htmlFor="logName">Name</Label>
-                                                    <Input id="logName" name="logName" defaultValue="" />
+                                                    <Input id="logName" name="logName" defaultValue="" required />
                                                 </Field>
                                                 <Field>
                                                     <Label htmlFor="muscleGroup">MuscleGroup</Label>
-                                                    <Input id="muscleGroup" name="muscleGroup" defaultValue="" />
+                                                    <Input id="muscleGroup" name="muscleGroup" defaultValue="" required />
                                                 </Field>
                                             </FieldGroup>
                                             <DialogFooter className="mt-7">
@@ -775,10 +745,10 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length ? (
-                                <Button variant="outline" disabled={log?.completedAt ? true : false} onClick={handleMarkLogCompleted}>
+                            {data?.exercises?.length ? (
+                                <Button variant="outline" disabled={data?.completedAt ? true : false} onClick={() => markLogCompleted()}>
                                     <IconCircleDashedCheck size={18} />{" "}
-                                    {log?.completedAt ? "Completed" : "Mark as Completed"}
+                                    {data?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
                             ) : null}
                         </div>
@@ -787,13 +757,13 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
             </div>
             {/* show logs in mobile as a bottom sheet*/}
             <BottomSheet
-                onClose={() => setActiveLog(null)}
+                onClose={() => logStore.setActiveLog(null)}
                 className="lg:hidden"
-                setOpen={setActiveLog}
+                setOpen={logStore.setActiveLog}
                 open={isActive}
             >
-                <div className={`mt-0 h-screen overflow-auto ${className}`}>
-                    <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased">{log?.logName}</h1>
+                <div className={`mt-0 h-dvh pb-5 overflow-auto ${className}`}>
+                    <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased">{data?.logName}</h1>
                     <div className="my-10">
                         {exercises?.length ?
                             exercises?.map((exercise) => (
@@ -802,12 +772,12 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     logId={logId}
                                     setExercises={setExercises}
                                     key={exercise._id}
-                                    completed={log?.completedAt ? true : false}
+                                    completed={data?.completedAt ? true : false}
                                 />
                             )) : null}
 
                         <div className="flex gap-3 justify-end pr-3">
-                            {!log?.completedAt && (
+                            {!data?.completedAt && (
                                 <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
                                     <DialogTrigger asChild>
                                         <Button variant="outline">
@@ -821,7 +791,13 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                                 Add a new Exercise to log. Click save when you&apos;re done.
                                             </DialogDescription>
                                         </DialogHeader>
-                                        <form onSubmit={handleCreateExercise}>
+                                        <form onSubmit={(e) => {
+                                            e.preventDefault()
+                                            const name = e.target.logName.value,
+                                                muscleGroup = e.target.muscleGroup.value;
+                                            createExercise({ name, muscleGroup })
+                                        }}>
+
                                             <FieldGroup>
                                                 <Field>
                                                     <Label htmlFor="logName">Name</Label>
@@ -842,10 +818,10 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length ? (
-                                <Button variant="outline" disabled={log?.completedAt ? true : false}>
+                            {data?.exercises?.length ? (
+                                <Button variant="outline" disabled={data?.completedAt ? true : false}>
                                     <IconCircleDashedCheck size={18} />{" "}
-                                    {log?.completedAt ? "Completed" : "Mark as Completed"}
+                                    {data?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
                             ) : null}
                         </div>
@@ -858,7 +834,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
 
 
 const HomePageContent = () => {
-    const [ActiveLog, setActiveLog] = useState<string | null>(null)
+    const logStore = useLogStore()
     const userId = useAuth((state) => state.user?._id)
     const { data, status, isLoading } = useQuery(
         {
@@ -866,7 +842,7 @@ const HomePageContent = () => {
             queryFn: fetchAllLogs
         })
 
-    const setAllLogs = useLogStore((state) => state.setLogs)
+    const setAllLogs = logStore.setLogs
 
     useEffect(() => {
         if (status === "success") {
@@ -878,14 +854,12 @@ const HomePageContent = () => {
 
     return (
         <div className="flex h-screen w-full flex-col items-start justify-start lg:flex-row">
-            <AllLogs ActiveLog={ActiveLog} setActiveLog={setActiveLog} />
-            {ActiveLog && (
+            <AllLogs />
+            {logStore.activeLog && (
                 <>
                     <ShowLog
-                        logId={ActiveLog}
-                        isActive={ActiveLog !== null}
-                        ActiveLog={ActiveLog}
-                        setActiveLog={setActiveLog}
+                        logId={logStore.activeLog}
+                        isActive={logStore.activeLog !== null}
                     />
                 </>
             )}

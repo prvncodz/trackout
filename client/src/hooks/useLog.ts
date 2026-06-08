@@ -71,6 +71,50 @@ export function useCreateLog(userId: string | undefined) {
             queryClient.invalidateQueries({ queryKey: ["logs", userId] })
         },
     })
+}
 
+async function handleCreateExercise(logId: string, muscleGroup: string, name: string) {
+    const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
+    return res.data
+}
+
+export function useCreateExercise(logId: string, ActiveLog: string | null) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ name, muscleGroup }: { name: string, muscleGroup: string }) => handleCreateExercise(logId, muscleGroup, name),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
+        },
+    })
+}
+
+async function handleMarkLogCompleted(logId: string) {
+    const res = await axios.patch(`/log/mark-completed/${logId}`)
+    return res.data
+}
+
+export function useMarkLogCompleted(logId: string, ActiveLog: string | null) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: () => handleMarkLogCompleted(logId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
+        },
+    })
+}
+
+async function handleDeleteExercise(logId: string, id: string) {
+    const res = await axios.delete(`/exercise/delete/${logId}/${id}`)
+    return res.data
+}
+
+export function useDeleteExercise(logId: string, ActiveLog: string | null) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (exerciseId: string) => handleDeleteExercise(logId, exerciseId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
+        },
+    })
 }
 
