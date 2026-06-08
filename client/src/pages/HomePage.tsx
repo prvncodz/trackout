@@ -52,7 +52,7 @@ import useLogStore from "../stores/log.store"
 import type { Log } from "../types/Log.types"
 import type { Exercise } from "@/types/Exercise.types"
 import type { Set } from "@/types/Set.types"
-import { fetchAllLogs, useDuplicateLog } from "@/hooks/useLog"
+import { fetchAllLogs, useDeleteLog, useDuplicateLog, useEditLog } from "@/hooks/useLog"
 
 interface PopupProps {
     log: Log;
@@ -62,56 +62,20 @@ interface PopupProps {
 const Popup = ({ log, setIsOpen }: PopupProps) => {
     const [editing, setEditing] = useState(false)
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
-    // const duplicateLog = useLogStore((state) => state.duplicateLog)
-    const removeLog = useLogStore((state) => state.removeLog)
-    const editLog = useLogStore((state) => state.editLog)
     const userId = useAuth((state) => state.user?._id)
 
-    // async function handleDuplicateLog() {
-    //     try {
-    //         const res = await axios.post(`/log/duplicate/${log?._id}`)
-    //         duplicateLog(res?.data?.data)
-    //         setIsOpen(false)
-    //         toast.success("Log duplicated successfully")
-    //     } catch (err: any) {
-    //         const message = err?.response?.data?.message || err?.message
-    //         toast.error(message)
-    //     }
-    // }
+    const { mutateAsync: duplicateLog, isPending: isDuplicating } = useDuplicateLog(log?._id, userId)
+    const { mutateAsync: deleteLog, isPending: isDeleting } = useDeleteLog(log?._id, userId)
+    const { mutateAsync: editLog, isPending: isEditing } = useEditLog(log?._id, userId)
 
-    const { mutate: duplicateLog, isPending, isSuccess } = useDuplicateLog(log?._id, userId)
-    if (isSuccess) setIsOpen(false)
-
-    async function HandleDeleteLog() {
-        try {
-            await axios.delete(`/log/delete/${log._id}`)
-            removeLog(log?._id)
-            setShowDeleteAlert(false)
-            setIsOpen(false)
-            toast.success("Log deleted successfully")
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message
-            toast.error(message)
-        }
+    if (isDuplicating || isDeleting || isEditing) {
+        setIsOpen(false)
+        setEditing(false)
+        setShowDeleteAlert(false)
     }
 
-    async function handleEditLog(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault()
-        const name = e.target.logName.value
 
-        try {
-            const res = await axios.patch(`/log/update/${log._id}`, { logName: name })
-            if (res.status === 200) {
-                editLog(log?._id, name)
-                setEditing(false)
-                setIsOpen(false)
-                toast.success("Log updated successfully")
-            }
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message
-            toast.error(message)
-        }
-    }
+
     return (
         <motion.ul
             className="menu dropdown-content shadow-euphonious absolute top-10 right-1 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2"
@@ -145,7 +109,11 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                             Make changes to the log. Click save when you&apos;re done.
                         </DialogDescription>
                     </DialogHeader>
-                    <form onSubmit={handleEditLog}>
+                    <form onSubmit={(e) => {
+                        e.preventDefault()
+                        const name: string = e.target.logName.value;
+                        editLog(name);
+                    }}>
                         <FieldGroup>
                             <Field>
                                 <Label htmlFor="logName">Name</Label>
@@ -163,7 +131,17 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
             </Dialog>
             <button
                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
-                onClick={() => duplicateLog()}
+                onClick={() => {
+                    toast.promise(
+                        () =>
+                            duplicateLog(),
+                        {
+                            loading: "Duplicating log...",
+                            success: () => `Log duplicated successfully`,
+                            error: "Error while duplicating log",
+                        }
+                    )
+                }}
             >
                 <IconCopy size={18} />
                 Duplicate log
@@ -189,13 +167,23 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                        <AlertDialogAction variant="destructive" onClick={HandleDeleteLog}>
+                        <AlertDialogAction variant="destructive" onClick={() => {
+                            toast.promise(
+                                () =>
+                                    deleteLog(),
+                                {
+                                    loading: "Deleting log...",
+                                    success: () => `Log deleted successfully`,
+                                    error: "Error while deleted log",
+                                }
+                            )
+                        }}>
                             Delete
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-        </motion.ul>
+        </motion.ul >
     )
 }
 
