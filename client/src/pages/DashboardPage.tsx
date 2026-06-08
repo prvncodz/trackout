@@ -154,8 +154,8 @@ const DashboardPage = () => {
                             <ChartAreaInteractive />
                         </div>
                     </div>
-                    <div className="flex h-screen flex-col gap-10 px-5 md:align-center lg:px-0">
-                        <div className="shadow-standard w-full rounded-2xl bg-white shrink-0 p-5 overflow-hidden md:w-100 lg:w-full">
+                    <div className="flex h-screen flex-col gap-10 px-5 md:items-start md:flex-row lg:flex-col lg:px-0">
+                        <div className="shadow-standard w-full rounded-2xl bg-white shrink-0 p-5 overflow-hidden md:w-80 lg:w-120">
                             <Calendar size="md" className="bg-white w-full md:w-auto lg:w-full" />
                         </div>
                         <div className="shadow-standard h-auto w-full rounded-2xl bg-white">

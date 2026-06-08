@@ -46,6 +46,14 @@ import axios from "../../lib/axios"
 import { toast } from "sonner"
 import useLogStore from "../../stores/log.store"
 
+function Spinner() {
+    return (
+        <svg className="h-10 w-10 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+    )
+}
 const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) => {
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
     const [showLogoutDailogue, setShowLogoutDailogue] = useState(false)
@@ -54,6 +62,8 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
     const setActiveDates = useAuth((state) => state.setActiveDates)
     const setCurPage = useAppStore((state) => state.setCurPage)
     const setStats = useStats((state) => state.setStats)
+    const setLoading = useAppStore((state) => state.setLoading);
+    const navigate = useNavigate()
 
     async function handleLogout() {
         try {
@@ -63,9 +73,14 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
             setIsOpen(false)
             setIsUserLogged(false)
             setActiveDates([])
-            setCurPage("home")
             toast.success("Logged out successfully")
             setStats(null)
+            setLoading(true)
+            setTimeout(() => {
+                setCurPage("home")
+                navigate("/")
+                setLoading(false)
+            }, 200)
         } catch (err: any) {
             const message = err.response?.data.message || err.message || "Something went wrong. Please try again."
             toast.error(message)
@@ -79,14 +94,22 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
             setIsOpen(false)
             setIsUserLogged(false)
             setActiveDates([])
+            useAuth.persist.clearStorage()
             setCurPage("home")
             setStats(null)
             toast.success("User deleted successfully")
+            setLoading(true)
+            setTimeout(() => {
+                setCurPage("home")
+                navigate("/")
+                setLoading(false)
+            }, 200)
         } catch (err: any) {
             const message = err.response?.data.message || err.message || "Something went wrong. Please try again."
             toast.error(message)
         }
     }
+
 
     return (
         <motion.ul
@@ -346,7 +369,12 @@ const NavbarForMobile = ({ className = "" }) => {
 }
 
 const SideBarLayout = ({ children }: { children: React.ReactNode }) => {
-    const user = useAuth((s) => s.user)
+    const user = useAuth((state) => state.user)
+    const loading = useAppStore((state) => state.loading)
+
+    if (loading) return <div className="h-dvh w-dvw flex items-center justify-center">
+        <Spinner />
+    </div>
 
     return (
         <motion.div
