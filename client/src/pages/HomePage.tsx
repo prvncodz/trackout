@@ -52,6 +52,7 @@ import useLogStore from "../stores/log.store"
 import type { Log } from "../types/Log.types"
 import type { Exercise } from "@/types/Exercise.types"
 import type { Set } from "@/types/Set.types"
+import { fetchAllLogs, useDuplicateLog } from "@/hooks/useLog"
 
 interface PopupProps {
     log: Log;
@@ -61,21 +62,25 @@ interface PopupProps {
 const Popup = ({ log, setIsOpen }: PopupProps) => {
     const [editing, setEditing] = useState(false)
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
-    const duplicateLog = useLogStore((state) => state.duplicateLog)
+    // const duplicateLog = useLogStore((state) => state.duplicateLog)
     const removeLog = useLogStore((state) => state.removeLog)
     const editLog = useLogStore((state) => state.editLog)
+    const userId = useAuth((state) => state.user?._id)
 
-    async function handleDuplicateLog() {
-        try {
-            const res = await axios.post(`/log/duplicate/${log?._id}`)
-            duplicateLog(res?.data?.data)
-            setIsOpen(false)
-            toast.success("Log duplicated successfully")
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message
-            toast.error(message)
-        }
-    }
+    // async function handleDuplicateLog() {
+    //     try {
+    //         const res = await axios.post(`/log/duplicate/${log?._id}`)
+    //         duplicateLog(res?.data?.data)
+    //         setIsOpen(false)
+    //         toast.success("Log duplicated successfully")
+    //     } catch (err: any) {
+    //         const message = err?.response?.data?.message || err?.message
+    //         toast.error(message)
+    //     }
+    // }
+
+    const { mutate: duplicateLog, isPending, isSuccess } = useDuplicateLog(log?._id, userId)
+    if (isSuccess) setIsOpen(false)
 
     async function HandleDeleteLog() {
         try {
@@ -158,7 +163,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
             </Dialog>
             <button
                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
-                onClick={handleDuplicateLog}
+                onClick={() => duplicateLog()}
             >
                 <IconCopy size={18} />
                 Duplicate log
@@ -217,7 +222,7 @@ const Log = ({ log, ActiveLog, setActiveLog }: LogProps) => {
             </h3>
             <div className="relative">
                 <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
-                {isOpen ? <Popup log={log} setIsOpen={setIsOpen} />:null}
+                {isOpen ? <Popup log={log} setIsOpen={setIsOpen} /> : null}
             </div>
         </div>
     )
@@ -284,15 +289,15 @@ const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
                 </DialogContent>
             </Dialog>
             <div className="flex h-auto w-full flex-col items-center justify-center gap-2 lg:mt-15">
-                {logs.length? 
-                logs?.map((log) => (
-                    <Log
-                        key={log._id}
-                        log={log}
-                        ActiveLog={ActiveLog}
-                        setActiveLog={setActiveLog}
-                    />
-                )):null}
+                {logs.length ?
+                    logs?.map((log) => (
+                        <Log
+                            key={log._id}
+                            log={log}
+                            ActiveLog={ActiveLog}
+                            setActiveLog={setActiveLog}
+                        />
+                    )) : null}
             </div>
         </div>
     )
@@ -611,70 +616,70 @@ const ExerciseCard = ({ Curexercise, logId, setExercises, className = "", comple
                 </div>
 
                 {/* Rows */}
-                { exercise?.sets?.length ?(
+                {exercise?.sets?.length ? (
                     exercise?.sets?.map((set) => (
-                    <div
-                        key={set?._id}
-                        className="grid grid-cols-5 items-center border-b border-neutral-100 px-4 py-4 last:border-none"
-                    >
-                        <span className="font-medium text-neutral-700">{String(set?.setNo).padStart(2, "0")}</span>
+                        <div
+                            key={set?._id}
+                            className="grid grid-cols-5 items-center border-b border-neutral-100 px-4 py-4 last:border-none"
+                        >
+                            <span className="font-medium text-neutral-700">{String(set?.setNo).padStart(2, "0")}</span>
 
-                        {/* Reps */}
-                        {editMode ? (
-                            <input
-                                type="number"
-                                value={set.reps}
-                                onChange={(e) => updateSet(set, set._id, "reps", Number(e.target.value))}
-                                className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
-                            />
-                        ) : (
-                            <span>{set?.reps}</span>
-                        )}
-
-                        {/* KG */}
-                        {editMode ? (
-                            <input
-                                type="number"
-                                value={set.weight}
-                                onChange={(e) => updateSet(set, set._id, "weight", Number(e.target.value))}
-                                className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
-                            />
-                        ) : (
-                            <span>{set?.weight}</span>
-                        )}
-
-                        {/* Rest */}
-                        {editMode ? (
-                            <input
-                                value={set.rest}
-                                onChange={(e) => updateSet(set, set._id, "rest", e.target.value)}
-                                className="w-16 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
-                            />
-                        ) : (
-                            <span>{set.rest}</span>
-                        )}
-
-                        {editMode ? (
-                            <div onClick={() => handleDeleteSet(set._id)}>
-                                <IconTrash
-                                    size={18}
-                                    className="flex items-center gap-2 text-sm text-red-500 hover:bg-red-50"
+                            {/* Reps */}
+                            {editMode ? (
+                                <input
+                                    type="number"
+                                    value={set.reps}
+                                    onChange={(e) => updateSet(set, set._id, "reps", Number(e.target.value))}
+                                    className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
                                 />
-                            </div>
-                        ) : (
-                            <div className="flex justify-center">
-                                <button
-                                    onClick={() => toggleDone(set._id)}
-                                    className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.completed ? "border-black bg-black text-white" : "border-neutral-300"
-                                        }`}
-                                >
-                                    {set.completed && <IconCheck size={14} />}
-                                </button>
-                            </div>
-                        )
-                        }
-                    </div>
-                ))):null}
+                            ) : (
+                                <span>{set?.reps}</span>
+                            )}
+
+                            {/* KG */}
+                            {editMode ? (
+                                <input
+                                    type="number"
+                                    value={set.weight}
+                                    onChange={(e) => updateSet(set, set._id, "weight", Number(e.target.value))}
+                                    className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
+                                />
+                            ) : (
+                                <span>{set?.weight}</span>
+                            )}
+
+                            {/* Rest */}
+                            {editMode ? (
+                                <input
+                                    value={set.rest}
+                                    onChange={(e) => updateSet(set, set._id, "rest", e.target.value)}
+                                    className="w-16 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
+                                />
+                            ) : (
+                                <span>{set.rest}</span>
+                            )}
+
+                            {editMode ? (
+                                <div onClick={() => handleDeleteSet(set._id)}>
+                                    <IconTrash
+                                        size={18}
+                                        className="flex items-center gap-2 text-sm text-red-500 hover:bg-red-50"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="flex justify-center">
+                                    <button
+                                        onClick={() => toggleDone(set._id)}
+                                        className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.completed ? "border-black bg-black text-white" : "border-neutral-300"
+                                            }`}
+                                    >
+                                        {set.completed && <IconCheck size={14} />}
+                                    </button>
+                                </div>
+                            )
+                            }
+                        </div>
+                    ))) : null}
             </div>
         </div>
     )
@@ -743,7 +748,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
             <div className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"} hidden lg:flex`}>
                 <div className={`h-screen flex-col overflow-auto bg-neutral-50 p-10 ${className} no-scrollbar w-full`}>
                     <div className="flex w-full flex-col">
-                        {exercises?.length ? 
+                        {exercises?.length ?
                             exercises?.map((exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
@@ -752,9 +757,9 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     key={exercise._id}
                                     completed={log?.completedAt ? true : false}
                                 />
-                            )):
+                            )) :
                             null
-                            }
+                        }
                         <div className="flex gap-3 justify-end">
                             {!log?.completedAt && (
                                 <Dialog open={addingExercise} onOpenChange={setAddingExercise}>
@@ -791,12 +796,12 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length  ? (
+                            {log?.exercises?.length ? (
                                 <Button variant="outline" disabled={log?.completedAt ? true : false} onClick={handleMarkLogCompleted}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {log?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
-                            ):null}
+                            ) : null}
                         </div>
                     </div>
                 </div>
@@ -811,7 +816,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                 <div className={`mt-0 h-screen overflow-auto ${className}`}>
                     <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased">{log?.logName}</h1>
                     <div className="my-10">
-                        {exercises?.length?
+                        {exercises?.length ?
                             exercises?.map((exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
@@ -820,7 +825,7 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     key={exercise._id}
                                     completed={log?.completedAt ? true : false}
                                 />
-                            )):null}
+                            )) : null}
 
                         <div className="flex gap-3 justify-end pr-3">
                             {!log?.completedAt && (
@@ -858,12 +863,12 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
                                     </DialogContent>
                                 </Dialog>
                             )}
-                            {log?.exercises?.length ?(
+                            {log?.exercises?.length ? (
                                 <Button variant="outline" disabled={log?.completedAt ? true : false}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {log?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
-                            ):null}
+                            ) : null}
                         </div>
                     </div>
                 </div>
@@ -872,22 +877,23 @@ const ShowLog = ({ logId, isActive, setActiveLog, ActiveLog, className = "" }: S
     )
 }
 
-async function fetchAllLogs() {
-    const res = await axios.get("/log/all-logs")
-    return res?.data?.data
-}
 
 const HomePageContent = () => {
     const [ActiveLog, setActiveLog] = useState<string | null>(null)
     const userId = useAuth((state) => state.user?._id)
-    const { data, status, isLoading } = useQuery({ queryKey: ['logs', userId], queryFn: fetchAllLogs })
+    const { data, status, isLoading } = useQuery(
+        {
+            queryKey: ['logs', userId],
+            queryFn: fetchAllLogs
+        })
+
     const setAllLogs = useLogStore((state) => state.setLogs)
 
     useEffect(() => {
         if (status === "success") {
             setAllLogs(data)
         }
-    }, [status])
+    }, [status, data])
 
     if (isLoading) return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
 
