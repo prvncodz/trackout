@@ -56,4 +56,21 @@ export function useEditLog(logId: string, userId: string | undefined) {
     })
 }
 
+async function handleCreateLog(name: string) {
+    const res = await axios.post(`/log/create`, { logName: name })
+    return res.data
+}
+
+
+export function useCreateLog(userId: string | undefined) {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: (name: string) => handleCreateLog(name),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["logs", userId] })
+        },
+    })
+
+}
 

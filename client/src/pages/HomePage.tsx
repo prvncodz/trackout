@@ -52,7 +52,7 @@ import useLogStore from "../stores/log.store"
 import type { Log } from "../types/Log.types"
 import type { Exercise } from "@/types/Exercise.types"
 import type { Set } from "@/types/Set.types"
-import { fetchAllLogs, useDeleteLog, useDuplicateLog, useEditLog } from "@/hooks/useLog"
+import { fetchAllLogs, useCreateLog, useDeleteLog, useDuplicateLog, useEditLog } from "@/hooks/useLog"
 
 interface PopupProps {
     log: Log;
@@ -66,7 +66,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
 
     const { mutateAsync: duplicateLog, isPending: isDuplicating } = useDuplicateLog(log?._id, userId)
     const { mutateAsync: deleteLog, isPending: isDeleting } = useDeleteLog(log?._id, userId)
-    const { mutateAsync: editLog, isPending: isEditing } = useEditLog(log?._id, userId)
+    const { mutate: editLog, isPending: isEditing } = useEditLog(log?._id, userId)
 
     if (isDuplicating || isDeleting || isEditing) {
         setIsOpen(false)
@@ -224,26 +224,13 @@ interface AllLogsProps {
 const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
     const [isCreating, setIsCreating] = useState(false)
     const logs = useLogStore((state) => state.logs)
-    const addLog = useLogStore((state) => state.addLog)
+    const userId = useAuth((state) => state.user?._id)
+    const { mutate: createLog, isSuccess: isCreated, isError } = useCreateLog(userId)
 
     useEffect(() => {
-    }, [logs])
+        if (isCreated || isError) setIsCreating(false)
+    }, [isCreated, isError])
 
-    async function handleCreateLog(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault()
-        const name = e.target.logName.value
-        try {
-            const res = await axios.post(`/log/create`, { logName: name })
-            if (res.status === 201) {
-                addLog(res.data?.data)
-                setIsCreating(false)
-                toast.success("Log created successfully")
-            }
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message
-            toast.error(message)
-        }
-    }
     return (
         <div className="border-line-color relative flex h-screen w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180">
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
@@ -260,7 +247,11 @@ const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
                         <DialogTitle>Create Log</DialogTitle>
                         <DialogDescription>Make a workout log. Click save when you&apos;re done.</DialogDescription>
                     </DialogHeader>
-                    <form onSubmit={(e) => handleCreateLog(e)}>
+                    <form onSubmit={(e) => {
+                        e.preventDefault()
+                        const name = e.target.logName.value
+                        createLog(name)
+                    }}>
                         <FieldGroup>
                             <Field>
                                 <Label htmlFor="logName">Name</Label>
@@ -287,7 +278,7 @@ const AllLogs = ({ ActiveLog, setActiveLog }: AllLogsProps) => {
                         />
                     )) : null}
             </div>
-        </div>
+        </div >
     )
 }
 
