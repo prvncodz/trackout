@@ -95,7 +95,7 @@ const Features = () => {
             </h2>
             <p className="text-center text-xs text-neutral-500">Everything you need,nothing you don't.</p>
 
-            <div className="relative mt-15 flex flex-col items-center gap-4 lg:block lg:h-200">
+            <div className="relative mt-15 flex flex-col items-center gap-4 px-5 lg:px-0 lg:block lg:h-200">
                 <FeaturesCard
                     Logo={<IconTreadmill size={30} />}
                     title={"Log Your Workout"}

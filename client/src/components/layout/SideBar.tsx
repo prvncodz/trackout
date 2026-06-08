@@ -59,6 +59,7 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
         try {
             await axios.post("/user/logout")
             setUser(null)
+            useAuth.persist.clearStorage()
             setIsOpen(false)
             setIsUserLogged(false)
             setActiveDates([])
