@@ -51,9 +51,10 @@ import useLogStore from "../stores/log.store"
 import type { Log } from "../types/Log.types"
 import type { Exercise } from "@/types/Exercise.types"
 import type { Set } from "@/types/Set.types"
-import { fetchAllLogs, useCreateLog, useDeleteLog, useDuplicateLog, useEditLog, useMarkLogCompleted } from "@/hooks/useLog"
+import { fetchAllLogs, useCreateLog, useDeleteLog, useDuplicateLog, useEditLog, useGetlogById, useMarkLogCompleted } from "@/hooks/useLog"
 import { useCreateExercise, useDeleteExercise, useUpdateExercise } from "@/hooks/useExercise"
 import { useCreateSet, useDeleteSet, useToggleSetDone, useUpdateSet } from "@/hooks/useSet"
+import { CreateSetInput } from "@/schemas/set.schema"
 
 interface PopupProps {
     log: Log;
@@ -298,16 +299,15 @@ const AllLogs = () => {
 
 
 interface ExerciseCardProps {
-    Curexercise: Exercise;
-    logId: string
-    className?: string
-    completed?: boolean
+    exercise: Exercise;
+    logId: string;
+    className?: string;
+    completed?: boolean;
 }
 
-const ExerciseCard = ({ Curexercise, logId, className = "", completed }: ExerciseCardProps) => {
+const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCardProps) => {
     const [editMode, setEditMode] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
-    const [exercise, setExercise] = useState(Curexercise)
     const [isCreating, setIsCreating] = useState(false)
     const [toBeUpdatedSets, setToBeUpdatedSets] = useState<Set[] | null>(null)
     const [isExerciseUpdated, setIsExerciseUpdated] = useState(false)
@@ -316,9 +316,18 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
     const { mutate: deleteExercise, isSuccess: isDeleted, isError: isNotDeleted } = useDeleteExercise(logId, activeLog)
     const { mutate: updateExercise, isSuccess: isUpdated, isError: isNotUpdated } = useUpdateExercise(logId, activeLog)
     const { mutate: updateSet, isSuccess: isSetUpdated, isError: isNotSetUpdated } = useUpdateSet(activeLog)
-    const { mutate: toggleSetMarked, isSuccess: isToggled, isError: isNotToggled } = useToggleSetDone(activeLog, Curexercise?._id)
-    const { mutate: createSet, isSuccess: isCreated, isError: isNotCreated } = useCreateSet(Curexercise?._id, activeLog)
-    const { mutate: deleteSet, isSuccess: isDeletedSet, isError: isNotDeletedSet } = useDeleteSet(Curexercise?._id, activeLog)
+    const { mutate: toggleSetMarked, isSuccess: isToggled, isError: isNotToggled } = useToggleSetDone(activeLog, exercise?._id)
+    const { mutate: createSet } = useCreateSet(exercise?._id, activeLog, {
+        onSuccess: () => {
+            setIsCreating(false)
+            setIsOpen(false)
+        },
+        onError: () => {
+            setIsCreating(false)
+            setIsOpen(false)
+        },
+    })
+    const { mutate: deleteSet, isSuccess: isDeletedSet, isError: isNotDeletedSet } = useDeleteSet(exercise?._id, activeLog)
 
     // function updateSet(set: Set, id: string, field: string, value: number | string) {
     //     setExercise((prev) => ({
@@ -346,7 +355,7 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
                         <input
                             value={exercise?.name}
                             onChange={(e) => {
-                                setExercise({ ...exercise, name: e.target.value })
+                                // setExercise({ ...exercise, name: e.target.value })
                                 setIsExerciseUpdated(true)
                             }}
                             className="border-b border-neutral-300 text-lg font-semibold outline-none"
@@ -361,7 +370,7 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
                             <input
                                 value={exercise?.note}
                                 onChange={(e) => {
-                                    setExercise({ ...exercise, note: e.target.value })
+                                    // setExercise({ ...exercise, note: e.target.value })
                                     setIsExerciseUpdated(true)
                                 }}
                                 className="mt-1 border-b border-neutral-300 text-sm text-neutral-500 outline-none"
@@ -375,7 +384,7 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {editMode && <MyButton onClick={handleUpdateExercise}>save</MyButton>}
+                    {/* {editMode && <MyButton onClick={handleUpdateExercise}>save</MyButton>} */}
                     {/* Menu */}
                     <div className="dropdown dropdown-end relative">
                         {!completed && (
@@ -418,7 +427,6 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
                                     <DialogTrigger asChild>
                                         <button
                                             className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
-                                            onClick={() => setIsCreating(true)}
                                         >
                                             <IconPlaylistAdd size={18} />
                                             Create set
@@ -431,7 +439,13 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
                                                 Create new set. Click save when you&apos;re done.
                                             </DialogDescription>
                                         </DialogHeader>
-                                        <form onSubmit={(e) => handleCreateSet(e)}>
+                                        <form onSubmit={(e) => {
+                                            e.preventDefault()
+                                            const data = Object.fromEntries(new FormData(e.target)) as any
+                                            const setNo = exercise?.sets?.length + 1
+                                            data.setNo = setNo
+                                            createSet(data as CreateSetInput)
+                                        }}>
                                             <FieldGroup>
                                                 <Field>
                                                     <Label htmlFor="weight">Weight (kg)*</Label>
@@ -501,7 +515,7 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                                            <AlertDialogAction variant="destructive" onClick={() => deleteExercise(Curexercise._id)}>
+                                            <AlertDialogAction variant="destructive" onClick={() => deleteExercise(exercise._id)}>
                                                 Delete
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
@@ -530,7 +544,7 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
 
                 {/* Rows */}
                 {exercise?.sets?.length ? (
-                    exercise?.sets?.map((set) => (
+                    exercise?.sets?.map((set: Set) => (
                         <div
                             key={set?._id}
                             className="grid grid-cols-5 items-center border-b border-neutral-100 px-4 py-4 last:border-none"
@@ -597,11 +611,7 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
         </div>
     )
 }
-async function getlogById(id: string | null) {
-    if (!id) return
-    const res = await axios.get(`/log/${id}`)
-    return res?.data?.data
-}
+
 
 interface ShowLogProps {
     logId: string,
@@ -613,7 +623,7 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
     const activeLog = useLogStore((state) => state.activeLog)
     const setActiveLog = useLogStore((state) => state.setActiveLog)
     const [addingExercise, setAddingExercise] = useState(false)
-    const { data, status, error } = useQuery({ queryKey: ['log', activeLog], queryFn: () => getlogById(activeLog) })
+    const { data, status, error } = useQuery({ queryKey: ['log', activeLog], queryFn: () => useGetlogById(activeLog) })
     const { mutate: createExercise } = useCreateExercise(logId, activeLog, {
         onSuccess: () => setAddingExercise(false),
         onError: () => {
@@ -636,7 +646,7 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                         {data?.exercises?.length ?
                             data?.exercises?.map((exercise: Exercise) => (
                                 <ExerciseCard
-                                    Curexercise={exercise}
+                                    exercise={exercise}
                                     logId={logId}
                                     key={exercise._id}
                                     completed={data?.completedAt ? true : false}
@@ -708,7 +718,7 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                         {data?.exercises?.length ?
                             data?.exercises?.map((exercise: Exercise) => (
                                 <ExerciseCard
-                                    Curexercise={exercise}
+                                    exercise={exercise}
                                     logId={logId}
                                     key={exercise._id}
                                     completed={data?.completedAt ? true : false}

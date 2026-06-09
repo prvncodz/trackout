@@ -5,7 +5,7 @@ import { toast } from "sonner"
 
 async function handleCreateExercise(logId: string, muscleGroup: string, name: string) {
     const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
-    return res.data
+    return res.data.data
 }
 
 export function useCreateExercise(logId: string, ActiveLog: string | null, options?: { onSuccess?: () => void, onError?: () => void }) {

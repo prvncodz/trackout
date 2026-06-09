@@ -3,6 +3,7 @@ import CreateSetSchema from "@/schemas/set.schema"
 import type { CreateSetInput } from "@/schemas/set.schema"
 import type { ExpandedLog } from "@/types/Log.types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 async function handleUpdateSet(id: string, reps: number, weight: number, rest?: string) {
     const res = await axios.patch(`/set/update/${id}`, {
@@ -47,36 +48,42 @@ export function useToggleSetDone(ActiveLog: string | null, exerciseId: string) {
     })
 }
 
-// e.preventDefault()
-// const data = Object.fromEntries(new FormData(e.target)) as Record<string, string | number>
-// const setNo = Curexercise?.sets?.length + 1
-// data.setNo = setNo
+
 
 async function handleCreateSet(exerciseId: string, data: CreateSetInput) {
     try {
         CreateSetSchema.parse(data)
         const res = await axios.post(`/set/create/${exerciseId}`, data)
-        return res.data
-        // setIsCreating(false)
-        // setIsOpen(false)
+        return res.data.data
     } catch (err: any) {
         throw err
     }
 }
 
-export function useCreateSet(exerciseId: string, ActiveLog: string | null) {
+export function useCreateSet(exerciseId: string, ActiveLog: string | null, options?: { onSuccess?: () => void, onError?: () => void }) {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (newSet: CreateSetInput) => handleCreateSet(exerciseId, newSet),
         onSuccess: (data) => {
-            queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog) => {
-                return oldData.exercises.map((exercise) => (
-                    exercise._id === exerciseId ?
-                        exercise.sets = [...exercise.sets, data]
-                        : exercise
-                ))
-
+            queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog | undefined) => {
+                if (!oldData) return oldData
+                return {
+                    ...oldData,
+                    exercises: oldData.exercises.map((exercise) => (
+                        exercise._id === exerciseId ?
+                            {
+                                ...exercise,
+                                sets: [...exercise.sets, data]
+                            }
+                            : exercise
+                    ))
+                }
             })
+            options?.onSuccess?.()
+        },
+        onError: (err) => {
+            toast.error(err.message)
+            options?.onError?.()
         }
     })
 

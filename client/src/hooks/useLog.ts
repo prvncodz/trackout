@@ -8,6 +8,12 @@ export async function fetchAllLogs() {
     return res?.data?.data
 }
 
+export async function useGetlogById(id: string | null) {
+    if (!id) return
+    const res = await axios.get(`/log/${id}`)
+    return res?.data?.data
+}
+
 async function handleDuplicateLog(id: string): Promise<Log> {
     const res = await axios.post(`/log/duplicate/${id}`)
     return res.data
