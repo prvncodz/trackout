@@ -42,22 +42,27 @@ export function useDeleteExercise(logId: string, ActiveLog: string | null, optio
     })
 }
 
-async function handleUpdateExercise(note = "", name: string, id: string) {
+async function handleUpdateExercise(id: string, note = "", name?: string) {
     await axios.patch(`/exercise/update/${id}`, {
         note,
         name,
     })
 }
 
-export function useUpdateExercise(ActiveLog: string, exerciseId: string, options?: { onSuccess?: () => void, onError?: () => void }) {
+export function useUpdateExercise(ActiveLog: string | null, exerciseId: string, options?: { onSuccess?: () => void, onError?: () => void }) {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: ({ note, name }: { note?: string, name: string }) => handleUpdateExercise(note, name, exerciseId),
+        mutationFn: ({ note, name }: { note?: string, name?: string }) => handleUpdateExercise(exerciseId,note, name),
         onSuccess: (data, variables) => {
             queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog) => {
-                return oldData.exercises.map((exercise) => (
-                    exercise._id === exerciseId ? { ...exercise, name: variables.name, note: variables.note } : exercise
-                ))
+                if (!oldData) return oldData
+
+                return {
+                    ...oldData,
+                    exercises: oldData.exercises.map((exercise) => (
+                        exercise._id === exerciseId ? { ...exercise, name: variables.name, note: variables.note } : exercise
+                    ))
+                }
             })
         },
         onError: (err) => {

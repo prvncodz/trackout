@@ -311,10 +311,12 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
     const [isCreating, setIsCreating] = useState(false)
     const [toBeUpdatedSets, setToBeUpdatedSets] = useState<Set[] | null>(null)
     const [isExerciseUpdated, setIsExerciseUpdated] = useState(false)
+    const [exerciseInfo, setExerciseInfo] = useState<{ note?: string, name: string }>({ note: exercise.note, name: exercise.name })
     const activeLog = useLogStore((state) => state.activeLog)
 
-    const { mutate: deleteExercise, isSuccess: isDeleted, isError: isNotDeleted } = useDeleteExercise(logId, activeLog)
-    const { mutate: updateExercise, isSuccess: isUpdated, isError: isNotUpdated } = useUpdateExercise(logId, activeLog)
+
+    const { mutateAsync: deleteExercise } = useDeleteExercise(logId, activeLog)
+    const { mutate: updateExercise } = useUpdateExercise(activeLog, exercise._id)
     const { mutate: updateSet, isSuccess: isSetUpdated, isError: isNotSetUpdated } = useUpdateSet(activeLog)
     const { mutate: toggleSetMarked } = useToggleSetDone(activeLog, exercise?._id)
     const { mutate: createSet } = useCreateSet(exercise?._id, activeLog, {
@@ -329,6 +331,12 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
     })
     const { mutate: deleteSet, isSuccess: isDeletedSet, isError: isNotDeletedSet } = useDeleteSet(exercise?._id, activeLog)
 
+    function handleUpdateExercise() {
+        if (isExerciseUpdated) {
+            updateExercise(exerciseInfo)
+        }
+        setEditMode(false)
+    }
     // function updateSet(set: Set, id: string, field: string, value: number | string) {
     //     setExercise((prev) => ({
     //         ...prev,
@@ -353,10 +361,10 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                 <div className="flex flex-col items-start">
                     {editMode ? (
                         <input
-                            value={exercise?.name}
+                            value={exerciseInfo.name}
                             onChange={(e) => {
-                                // setExercise({ ...exercise, name: e.target.value })
                                 setIsExerciseUpdated(true)
+                                setExerciseInfo({ ...exerciseInfo, name: e.target.value })
                             }}
                             className="border-b border-neutral-300 text-lg font-semibold outline-none"
                         />
@@ -368,10 +376,10 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                         <div className="flex items-center justify-center gap-2">
                             <IconClipboardText size={18} />
                             <input
-                                value={exercise?.note}
+                                value={exerciseInfo.note}
                                 onChange={(e) => {
-                                    // setExercise({ ...exercise, note: e.target.value })
                                     setIsExerciseUpdated(true)
+                                    setExerciseInfo({ ...exerciseInfo, note: e.target.value })
                                 }}
                                 className="mt-1 border-b border-neutral-300 text-sm text-neutral-500 outline-none"
                             />
@@ -384,7 +392,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {/* {editMode && <MyButton onClick={handleUpdateExercise}>save</MyButton>} */}
+                    {editMode && <MyButton onClick={handleUpdateExercise}>save</MyButton>}
                     {/* Menu */}
                     <div className="dropdown dropdown-end relative">
                         {!completed && (
@@ -515,7 +523,16 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                                            <AlertDialogAction variant="destructive" onClick={() => deleteExercise(exercise._id)}>
+                                            <AlertDialogAction variant="destructive" onClick={() => {
+                                                toast.promise(
+                                                    deleteExercise(exercise._id),
+                                                    {
+                                                        loading: "Deleting log...",
+                                                        success: () => `Log deleted successfully`,
+                                                        error: "Error while deleted log",
+                                                    }
+                                                )
+                                            }}>
                                                 Delete
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
