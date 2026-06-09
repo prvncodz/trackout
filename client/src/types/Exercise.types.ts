@@ -1,7 +1,7 @@
 import { Set } from "./Set.types";
 
 export interface Exercise {
-    _id:string;
+    _id: string;
     logId: string;
     name: string;
     muscleGroup: string;
@@ -10,3 +10,5 @@ export interface Exercise {
     createdAt: string;
     updatedAt: string;
 }
+
+

@@ -53,6 +53,8 @@ import type { Log } from "../types/Log.types"
 import type { Exercise } from "@/types/Exercise.types"
 import type { Set } from "@/types/Set.types"
 import { fetchAllLogs, useCreateExercise, useCreateLog, useDeleteLog, useDuplicateLog, useEditLog, useMarkLogCompleted } from "@/hooks/useLog"
+import { useDeleteExercise, useUpdateExercise } from "@/hooks/useExercise"
+import { useUpdateSet } from "@/hooks/useSet"
 
 interface PopupProps {
     log: Log;
@@ -192,18 +194,19 @@ interface LogProps {
 }
 const Log = ({ log }: LogProps) => {
     const [isOpen, setIsOpen] = useState(false)
-    const logStore = useLogStore()
+    const activeLog = useLogStore((state) => state.activeLog)
+    const setActiveLog = useLogStore((state) => state.setActiveLog)
     return (
         <div
-            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 ${logStore.activeLog === log?._id ? " bg-neutral-100" : ""}`}
+            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 ${activeLog === log?._id ? " bg-neutral-100" : ""}`}
         >
             <IconLogs
                 className="text-neutral-500"
-                onClick={() => logStore.setActiveLog(logStore.activeLog == null ? log._id : logStore.activeLog == log?._id ? null : log._id)}
+                onClick={() => setActiveLog(activeLog === null ? log._id : activeLog == log?._id ? null : log?._id)}
             />
             <h3
                 className="ml-5 w-full truncate text-left text-base text-neutral-700"
-                onClick={() => logStore.setActiveLog(logStore.activeLog == null ? log._id : logStore.activeLog == log?._id ? null : log._id)}
+                onClick={() => setActiveLog(activeLog === null ? log._id : activeLog == log?._id ? null : log?._id)}
             >
                 {log?.logName || "Log title"} {" "}
             </h3>
@@ -218,8 +221,7 @@ const Log = ({ log }: LogProps) => {
 
 const AllLogs = () => {
     const [isCreating, setIsCreating] = useState(false)
-    const logStore = useLogStore()
-    const logs = logStore.logs
+    const logs = useLogStore((state) => state.logs)
     const userId = useAuth((state) => state.user?._id)
     const { mutate: createLog, isSuccess: isCreated, isError } = useCreateLog(userId)
 
@@ -293,7 +295,11 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
     const [isCreating, setIsCreating] = useState(false)
     const [toBeUpdatedSets, setToBeUpdatedSets] = useState<Set[] | null>(null)
     const [isExerciseUpdated, setIsExerciseUpdated] = useState(false)
-    const { mutate: deleteExercise, isSuccess: isDeleted, isError: isNotDeleted } = useDeleteExercise(logId)
+    const activeLog = useLogStore((state) => state.activeLog)
+
+    const { mutate: deleteExercise, isSuccess: isDeleted, isError: isNotDeleted } = useDeleteExercise(logId, activeLog)
+    const { mutate: updateExercise, isSuccess: isUpdated, isError: isNotUpdated } = useUpdateExercise(logId, activeLog)
+    const { mutate: updateSet, isSuccess: isSetUpdated, isError: isNotSetUpdated } = useUpdateSet(activeLog)
 
     async function toggleDone(id: string) {
         setExercise((prev) => ({
@@ -302,52 +308,24 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
         }))
         try {
             const res = await axios.patch(`/set/toggle-set-completed/${id}`, { isPr: false })
-            toast.success(`Set ${res.data?.data?.completed ? "marked" : "unmarked"} as completed successfully`)
         } catch (err: any) {
-            const message = err.response?.data.message || err.message
-            toast.error(message)
         }
     }
 
 
-    function updateSet(set: Set, id: string, field: string, value: number | string) {
-        setExercise((prev) => ({
-            ...prev,
-            sets: prev.sets.map((set) => (set._id === id ? { ...set, [field]: value } : set)),
-        }))
-        const listed = toBeUpdatedSets?.some((obj: Set) => obj._id === id)
-        if (!listed) {
-            setToBeUpdatedSets((prev) => [...prev ?? [], { ...set, [field]: value }])
-        } else {
-            setToBeUpdatedSets((prev) => prev?.map((obj) => (obj._id === id ? { ...set ?? [], [field]: value } : obj)) ?? prev)
-        }
-    }
+    // function updateSet(set: Set, id: string, field: string, value: number | string) {
+    //     setExercise((prev) => ({
+    //         ...prev,
+    //         sets: prev.sets.map((set) => (set._id === id ? { ...set, [field]: value } : set)),
+    //     }))
+    //     const listed = toBeUpdatedSets?.some((obj: Set) => obj._id === id)
+    //     if (!listed) {
+    //         setToBeUpdatedSets((prev) => [...prev ?? [], { ...set, [field]: value }])
+    //     } else {
+    //         setToBeUpdatedSets((prev) => prev?.map((obj) => (obj._id === id ? { ...set ?? [], [field]: value } : obj)) ?? prev)
+    //     }
+    // }
 
-    async function handleUpdateExercise() {
-        try {
-            toBeUpdatedSets?.map(async (set: Set) => {
-                await axios.patch(`/set/update/${set?._id}`, {
-                    reps: set?.reps,
-                    weight: set?.weight,
-                    rest: set?.rest,
-                })
-            })
-            if (isExerciseUpdated) {
-                await axios.patch(`/exercise/update/${Curexercise?._id}`, {
-                    note: exercise?.note,
-                    name: exercise?.name,
-                })
-            }
-            toast.success(exercise?.name + " updated successfully")
-            setIsExerciseUpdated(false)
-            setToBeUpdatedSets([])
-            setEditMode(false)
-            setIsOpen(false)
-        } catch (err: any) {
-            const message = err.response?.data.message || err.message
-            toast.error(message)
-        }
-    }
 
     async function handleCreateSet(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
@@ -552,7 +530,7 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                                            <AlertDialogAction variant="destructive" onClick={handleDeleteExercise}>
+                                            <AlertDialogAction variant="destructive" onClick={() => deleteExercise(Curexercise._id)}>
                                                 Delete
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
@@ -661,12 +639,13 @@ interface ShowLogProps {
 }
 
 const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
-    const logStore = useLogStore()
+    const activeLog = useLogStore((state) => state.activeLog)
+    const setActiveLog = useLogStore((state) => state.setActiveLog)
     const [exercises, setExercises] = useState<Exercise[] | null>(null)
     const [addingExercise, setAddingExercise] = useState(false)
-    const { data, status, error } = useQuery({ queryKey: ['log', logStore.activeLog], queryFn: () => getlogById(logStore.activeLog) })
-    const { mutate: createExercise, isSuccess: createdExercise, isError: exerciseCreationErr } = useCreateExercise(logId, logStore.activeLog)
-    const { mutate: markLogCompleted, isSuccess: isMarked, isError: isMarkedError } = useMarkLogCompleted(logId, logStore.activeLog)
+    const { data, status, error } = useQuery({ queryKey: ['log', activeLog], queryFn: () => getlogById(activeLog) })
+    const { mutate: createExercise, isSuccess: createdExercise, isError: exerciseCreationErr } = useCreateExercise(logId, activeLog)
+    const { mutate: markLogCompleted, isSuccess: isMarked, isError: isMarkedError } = useMarkLogCompleted(logId, activeLog)
 
     useEffect(() => {
         if (status === "success") {
@@ -681,9 +660,7 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
             toast.error("Failed to create exercise")
         }
 
-    }, [status, logStore.activeLog, createdExercise, exerciseCreationErr, createExercise])
-
-
+    }, [status, activeLog, createdExercise, exerciseCreationErr, createExercise])
 
 
     if (status === "pending") return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
@@ -757,9 +734,9 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
             </div>
             {/* show logs in mobile as a bottom sheet*/}
             <BottomSheet
-                onClose={() => logStore.setActiveLog(null)}
+                onClose={() => setActiveLog(null)}
                 className="lg:hidden"
-                setOpen={logStore.setActiveLog}
+                setOpen={setActiveLog}
                 open={isActive}
             >
                 <div className={`mt-0 h-dvh pb-5 overflow-auto ${className}`}>
@@ -834,7 +811,7 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
 
 
 const HomePageContent = () => {
-    const logStore = useLogStore()
+    const activeLog = useLogStore((state) => state.activeLog)
     const userId = useAuth((state) => state.user?._id)
     const { data, status, isLoading } = useQuery(
         {
@@ -842,7 +819,7 @@ const HomePageContent = () => {
             queryFn: fetchAllLogs
         })
 
-    const setAllLogs = logStore.setLogs
+    const setAllLogs = useLogStore((state) => state.setLogs)
 
     useEffect(() => {
         if (status === "success") {
@@ -855,11 +832,11 @@ const HomePageContent = () => {
     return (
         <div className="flex h-screen w-full flex-col items-start justify-start lg:flex-row">
             <AllLogs />
-            {logStore.activeLog && (
+            {activeLog && (
                 <>
                     <ShowLog
-                        logId={logStore.activeLog}
-                        isActive={logStore.activeLog !== null}
+                        logId={activeLog}
+                        isActive={activeLog !== null}
                     />
                 </>
             )}

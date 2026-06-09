@@ -103,18 +103,4 @@ export function useMarkLogCompleted(logId: string, ActiveLog: string | null) {
     })
 }
 
-async function handleDeleteExercise(logId: string, id: string) {
-    const res = await axios.delete(`/exercise/delete/${logId}/${id}`)
-    return res.data
-}
-
-export function useDeleteExercise(logId: string, ActiveLog: string | null) {
-    const queryClient = useQueryClient()
-    return useMutation({
-        mutationFn: (exerciseId: string) => handleDeleteExercise(logId, exerciseId),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
-        },
-    })
-}
 

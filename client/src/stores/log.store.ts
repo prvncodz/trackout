@@ -5,7 +5,7 @@ import { create } from "zustand"
 export interface LogStore {
     logs: Log[];
     activeLog: string | null;
-    setActiveLog: (logId: string) => void,
+    setActiveLog: (logId: string | null) => void,
     setLogs(logs: Log[]): void;
 }
 
