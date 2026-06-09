@@ -1,4 +1,5 @@
 import axios from "@/lib/axios"
+import CreateSetSchema, { CreateSetInput } from "@/schemas/set.schema"
 import { ExpandedLog } from "@/types/Log.types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
@@ -44,3 +45,62 @@ export function useToggleSetDone(ActiveLog: string | null, exerciseId: string) {
         }
     })
 }
+
+// e.preventDefault()
+// const data = Object.fromEntries(new FormData(e.target)) as Record<string, string | number>
+// const setNo = Curexercise?.sets?.length + 1
+// data.setNo = setNo
+
+async function handleCreateSet(exerciseId: string, data: CreateSetInput) {
+    try {
+        CreateSetSchema.parse(data)
+        const res = await axios.post(`/set/create/${exerciseId}`, data)
+        return res.data
+        // setIsCreating(false)
+        // setIsOpen(false)
+    } catch (err: any) {
+        throw err
+    }
+}
+
+export function useCreateSet(exerciseId: string, ActiveLog: string | null) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (newSet: CreateSetInput) => handleCreateSet(exerciseId, newSet),
+        onSuccess: (data) => {
+            queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog) => {
+                return oldData.exercises.map((exercise) => (
+                    exercise._id === exerciseId ?
+                        exercise.sets = [...exercise.sets, data]
+                        : exercise
+                ))
+
+            })
+        }
+    })
+
+}
+
+async function handleDeleteSet(setId: string, exerciseId: string) {
+    const res = await axios.delete(`/set/delete/${setId}/${exerciseId}`)
+    return res.data
+}
+
+export function useDeleteSet(exerciseId: string, ActiveLog: string | null) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (setId: string) => handleDeleteSet(setId, exerciseId),
+        onSuccess: (data, setId) => {
+            queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog) => {
+                return oldData.exercises.map((exercise) => (
+                    exercise._id === exerciseId ?
+                        exercise.sets.filter(set => set._id !== setId)
+                        : exercise
+                ))
+
+            })
+        }
+    })
+}
+
+

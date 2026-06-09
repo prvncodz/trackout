@@ -300,18 +300,9 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
     const { mutate: deleteExercise, isSuccess: isDeleted, isError: isNotDeleted } = useDeleteExercise(logId, activeLog)
     const { mutate: updateExercise, isSuccess: isUpdated, isError: isNotUpdated } = useUpdateExercise(logId, activeLog)
     const { mutate: updateSet, isSuccess: isSetUpdated, isError: isNotSetUpdated } = useUpdateSet(activeLog)
-
-    async function toggleDone(id: string) {
-        setExercise((prev) => ({
-            ...prev,
-            sets: prev.sets.map((set) => (set._id === id ? { ...set, completed: !set.completed } : set)),
-        }))
-        try {
-            const res = await axios.patch(`/set/toggle-set-completed/${id}`, { isPr: false })
-        } catch (err: any) {
-        }
-    }
-
+    const { mutate: toggleSetMarked, isSuccess: isToggled, isError: isNotToggled } = useToggleSetMarked(activeLog, Curexercise?._id)
+    const { mutate: createSet, isSuccess: isCreated, isError: isNotCreated } = useCreateSet(Curexercise?._id, activeLog)
+    const { mutate: deleteSet, isSuccess: isDeletedSet, isError: isNotDeletedSet } = useDeleteSet(Curexercise?._id, activeLog)
 
     // function updateSet(set: Set, id: string, field: string, value: number | string) {
     //     setExercise((prev) => ({
@@ -327,43 +318,7 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
     // }
 
 
-    async function handleCreateSet(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault()
-        const data = Object.fromEntries(new FormData(e.target)) as Record<string, string | number>
-        const setNo = Curexercise?.sets?.length + 1
-        data.setNo = setNo
 
-        try {
-            CreateSetSchema.parse(data)
-            const res = await axios.post(`/set/create/${Curexercise?._id}`, data)
-            if (res.status === 201) {
-                setExercise((prev) => ({
-                    ...prev,
-                    sets: [...prev.sets, res.data?.data],
-                }))
-                toast.success("Set created successfully")
-                setIsCreating(false)
-                setIsOpen(false)
-            }
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message
-            toast.error(message)
-        }
-    }
-
-    async function handleDeleteSet(id: string) {
-        try {
-            await axios.delete(`/set/delete/${id}/${Curexercise?._id}`)
-            setExercise((prev) => ({
-                ...prev,
-                sets: prev.sets.filter((set) => set._id !== id),
-            }))
-            toast.success("Set deleted successfully")
-        } catch (err: any) {
-            const message = err.response?.data.message || err.message
-            toast.error(message)
-        }
-    }
 
 
     return (

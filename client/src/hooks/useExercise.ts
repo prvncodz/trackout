@@ -1,6 +1,5 @@
 import axios from "@/lib/axios"
 import { ExpandedLog } from "@/types/Log.types"
-import { Set } from "@/types/Set.types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 async function handleDeleteExercise(logId: string, id: string) {
@@ -28,7 +27,7 @@ async function handleUpdateExercise(note = "", name: string, id: string) {
 export function useUpdateExercise(ActiveLog: string, exerciseId: string) {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: ({ note, name }: { note?: string, name: string}) => handleUpdateExercise(note, name, exerciseId),
+        mutationFn: ({ note, name }: { note?: string, name: string }) => handleUpdateExercise(note, name, exerciseId),
         onSuccess: (data, variables) => {
             queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog) => {
                 return oldData.exercises.map((exercise) => (
