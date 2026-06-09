@@ -14,12 +14,28 @@ async function handleUpdateSet(id: string, reps: number, weight: number, rest?: 
     return res.data
 }
 
-export function useUpdateSet(ActiveLog: string | null) {
+export function useUpdateSet(ActiveLog: string | null, exerciseId: string) {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: ({ setId, reps, weight, rest }: { setId: string, reps: number, weight: number, rest?: string }) => handleUpdateSet(setId, reps, weight, rest),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
+        onSuccess: (data, { setId, reps, weight, rest }) => {
+            queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog | undefined) => {
+                if (!oldData) return oldData
+                return {
+                    ...oldData,
+                    exercises: oldData.exercises.map((exercise) => (
+                        exercise._id === exerciseId ?
+                            {
+                                ...exercise,
+                                sets: exercise.sets.map(set => (
+                                    set._id === setId ? { ...set, reps, weight, rest } : set
+                                ))
+                            }
+                            : exercise
+                    ))
+                }
+            })
+
         },
     })
 
@@ -102,16 +118,23 @@ async function handleDeleteSet(setId: string, exerciseId: string) {
 
 export function useDeleteSet(exerciseId: string, ActiveLog: string | null) {
     const queryClient = useQueryClient()
+
     return useMutation({
         mutationFn: (setId: string) => handleDeleteSet(setId, exerciseId),
         onSuccess: (data, setId) => {
-            queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog) => {
-                return oldData.exercises.map((exercise) => (
-                    exercise._id === exerciseId ?
-                        exercise.sets.filter(set => set._id !== setId)
-                        : exercise
-                ))
-
+            queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog | undefined) => {
+                if (!oldData) return oldData
+                return {
+                    ...oldData,
+                    exercises: oldData.exercises.map((exercise) => (
+                        exercise._id === exerciseId ?
+                            {
+                                ...exercise,
+                                sets: exercise.sets.filter(set => set._id !== setId)
+                            }
+                            : exercise
+                    ))
+                }
             })
         }
     })

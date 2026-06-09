@@ -317,7 +317,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
 
     const { mutateAsync: deleteExercise } = useDeleteExercise(logId, activeLog)
     const { mutate: updateExercise } = useUpdateExercise(activeLog, exercise._id)
-    const { mutate: updateSet, isSuccess: isSetUpdated, isError: isNotSetUpdated } = useUpdateSet(activeLog)
+    const { mutate: updateSet } = useUpdateSet(activeLog, exercise._id)
     const { mutate: toggleSetMarked } = useToggleSetDone(activeLog, exercise?._id)
     const { mutate: createSet } = useCreateSet(exercise?._id, activeLog, {
         onSuccess: () => {
@@ -329,30 +329,28 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
             setIsOpen(false)
         },
     })
-    const { mutate: deleteSet, isSuccess: isDeletedSet, isError: isNotDeletedSet } = useDeleteSet(exercise?._id, activeLog)
+    const { mutate: deleteSet } = useDeleteSet(exercise?._id, activeLog)
 
     function handleUpdateExercise() {
         if (isExerciseUpdated) {
             updateExercise(exerciseInfo)
         }
+        if (toBeUpdatedSets?.length) {
+            toBeUpdatedSets?.map(set => {
+                updateSet({ setId: set._id, reps: set.reps, weight: set.weight, rest: set.rest })
+            })
+        }
         setEditMode(false)
     }
-    // function updateSet(set: Set, id: string, field: string, value: number | string) {
-    //     setExercise((prev) => ({
-    //         ...prev,
-    //         sets: prev.sets.map((set) => (set._id === id ? { ...set, [field]: value } : set)),
-    //     }))
-    //     const listed = toBeUpdatedSets?.some((obj: Set) => obj._id === id)
-    //     if (!listed) {
-    //         setToBeUpdatedSets((prev) => [...prev ?? [], { ...set, [field]: value }])
-    //     } else {
-    //         setToBeUpdatedSets((prev) => prev?.map((obj) => (obj._id === id ? { ...set ?? [], [field]: value } : obj)) ?? prev)
-    //     }
-    // }
 
-
-
-
+    function handleAddSetToBeChanged(set: Set, id: string, field: string, value: number | string) {
+        const listed = toBeUpdatedSets?.some((obj: Set) => obj._id === id)
+        if (!listed) {
+            setToBeUpdatedSets((prev) => [...prev ?? [], { ...set, [field]: value }])
+        } else {
+            setToBeUpdatedSets((prev) => prev?.map((obj) => (obj._id === id ? { ...set ?? [], [field]: value } : obj)) ?? prev)
+        }
+    }
 
     return (
         <div className={`w-full max-w-3xl bg-neutral-50 p-5 ${className}`}>
@@ -572,8 +570,8 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                             {editMode ? (
                                 <input
                                     type="number"
-                                    value={set.reps}
-                                    onChange={(e) => updateSet(set, set._id, "reps", Number(e.target.value))}
+                                    defaultValue={set.reps}
+                                    onChange={(e) => handleAddSetToBeChanged(set, set._id, "reps", Number(e.target.value))}
                                     className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
                                 />
                             ) : (
@@ -584,8 +582,8 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                             {editMode ? (
                                 <input
                                     type="number"
-                                    value={set.weight}
-                                    onChange={(e) => updateSet(set, set._id, "weight", Number(e.target.value))}
+                                    defaultValue={set.weight}
+                                    onChange={(e) => handleAddSetToBeChanged(set, set._id, "weight", Number(e.target.value))}
                                     className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
                                 />
                             ) : (
@@ -595,8 +593,8 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                             {/* Rest */}
                             {editMode ? (
                                 <input
-                                    value={set.rest}
-                                    onChange={(e) => updateSet(set, set._id, "rest", e.target.value)}
+                                    defaultValue={set.rest}
+                                    onChange={(e) => handleAddSetToBeChanged(set, set._id, "rest", e.target.value)}
                                     className="w-16 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
                                 />
                             ) : (
@@ -604,7 +602,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                             )}
 
                             {editMode ? (
-                                <div onClick={() => handleDeleteSet(set._id)}>
+                                <div onClick={() => deleteSet(set._id)}>
                                     <IconTrash
                                         size={18}
                                         className="flex items-center gap-2 text-sm text-red-500 hover:bg-red-50"
