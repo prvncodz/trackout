@@ -177,7 +177,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                                 {
                                     loading: "Deleting log...",
                                     success: () => `Log deleted successfully`,
-                                    error: "Error while deleted log",
+                                    error: "Error while deleting log",
                                 }
                             )
                         }}>
@@ -525,9 +525,9 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                                 toast.promise(
                                                     deleteExercise(exercise._id),
                                                     {
-                                                        loading: "Deleting log...",
-                                                        success: () => `Log deleted successfully`,
-                                                        error: "Error while deleted log",
+                                                        loading: "Deleting exercise...",
+                                                        success: () => `exercise deleted successfully`,
+                                                        error: "Error while deleting exercise",
                                                     }
                                                 )
                                             }}>
@@ -645,7 +645,7 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
             setAddingExercise(false)
         }
     })
-    const { mutate: markLogCompleted, isSuccess: isMarked, isError: isMarkedError } = useMarkLogCompleted(logId, activeLog)
+    const { mutateAsync: markLogCompleted } = useMarkLogCompleted(logId, activeLog)
 
     useEffect(() => {
     }, [data, activeLog])
@@ -711,7 +711,16 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                                 </Dialog>
                             )}
                             {data?.exercises?.length ? (
-                                <Button variant="outline" disabled={data?.completedAt ? true : false} onClick={() => markLogCompleted()}>
+                                <Button variant="outline" disabled={data?.completedAt ? true : false} onClick={() => {
+                                    toast.promise(
+                                        markLogCompleted(),
+                                        {
+                                            loading: "Marking log as completed...",
+                                            success: () => `Log marked as completed`,
+                                            error: "Error while marking log completed",
+                                        }
+                                    )
+                                }}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {data?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
@@ -783,7 +792,17 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                                 </Dialog>
                             )}
                             {data?.exercises?.length ? (
-                                <Button variant="outline" disabled={data?.completedAt ? true : false}>
+                                <Button variant="outline" disabled={data?.completedAt ? true : false} onClick={() => {
+                                    toast.promise(
+                                        markLogCompleted(),
+                                        {
+                                            loading: "Marking log as completed...",
+                                            success: () => `Log marked as completed`,
+                                            error: "Error while marking log completed",
+                                        }
+                                    )
+
+                                }}>
                                     <IconCircleDashedCheck size={18} />{" "}
                                     {data?.completedAt ? "Completed" : "Mark as Completed"}
                                 </Button>
