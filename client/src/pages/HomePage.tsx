@@ -44,7 +44,6 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { motion } from "motion/react"
 import axios from "../lib/axios"
-import CreateSetSchema from "../schemas/set.schema"
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../stores/user.store"
@@ -52,8 +51,8 @@ import useLogStore from "../stores/log.store"
 import type { Log } from "../types/Log.types"
 import type { Exercise } from "@/types/Exercise.types"
 import type { Set } from "@/types/Set.types"
-import { fetchAllLogs, useCreateExercise, useCreateLog, useDeleteLog, useDuplicateLog, useEditLog, useMarkLogCompleted } from "@/hooks/useLog"
-import { useDeleteExercise, useUpdateExercise } from "@/hooks/useExercise"
+import { fetchAllLogs, useCreateLog, useDeleteLog, useDuplicateLog, useEditLog, useMarkLogCompleted } from "@/hooks/useLog"
+import { useCreateExercise, useDeleteExercise, useUpdateExercise } from "@/hooks/useExercise"
 import { useCreateSet, useDeleteSet, useToggleSetDone, useUpdateSet } from "@/hooks/useSet"
 
 interface PopupProps {
@@ -226,14 +225,11 @@ const AllLogs = () => {
     const [logName, setLogName] = useState("")
     const logs = useLogStore((state) => state.logs)
     const userId = useAuth((state) => state.user?._id)
-    const { mutate: createLog, isSuccess: isCreated, isError } = useCreateLog(userId, {
+    const { mutate: createLog } = useCreateLog(userId, {
         onSuccess: () => setIsCreating(false),
         onError: () => setIsCreating(false),
     })
 
-    useEffect(() => {
-        if (isCreated || isError) setIsCreating(false)
-    }, [isCreated, isError])
 
     const { data, status, isLoading } = useQuery(
         {
@@ -304,7 +300,6 @@ const AllLogs = () => {
 interface ExerciseCardProps {
     Curexercise: Exercise;
     logId: string
-    setExercises: Dispatch<SetStateAction<Exercise[] | null>>
     className?: string
     completed?: boolean
 }
@@ -617,26 +612,18 @@ interface ShowLogProps {
 const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
     const activeLog = useLogStore((state) => state.activeLog)
     const setActiveLog = useLogStore((state) => state.setActiveLog)
-    const [exercises, setExercises] = useState<Exercise[] | null>(null)
     const [addingExercise, setAddingExercise] = useState(false)
     const { data, status, error } = useQuery({ queryKey: ['log', activeLog], queryFn: () => getlogById(activeLog) })
-    const { mutate: createExercise, isSuccess: createdExercise, isError: exerciseCreationErr } = useCreateExercise(logId, activeLog)
+    const { mutate: createExercise } = useCreateExercise(logId, activeLog, {
+        onSuccess: () => setAddingExercise(false),
+        onError: () => {
+            setAddingExercise(false)
+        }
+    })
     const { mutate: markLogCompleted, isSuccess: isMarked, isError: isMarkedError } = useMarkLogCompleted(logId, activeLog)
 
     useEffect(() => {
-        if (status === "success") {
-            setExercises(data?.exercises)
-        } else if (error) {
-            toast.error(error?.message)
-        }
-
-        if (createdExercise) setAddingExercise(false)
-        if (exerciseCreationErr) {
-            setAddingExercise(false)
-            toast.error("Failed to create exercise")
-        }
-
-    }, [status, activeLog, createdExercise, exerciseCreationErr, createExercise])
+    }, [data, activeLog])
 
 
     if (status === "pending") return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
@@ -718,12 +705,11 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                 <div className={`mt-0 h-dvh pb-5 overflow-auto ${className}`}>
                     <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased">{data?.logName}</h1>
                     <div className="my-10">
-                        {exercises?.length ?
-                            exercises?.map((exercise) => (
+                        {data?.exercises?.length ?
+                            data?.exercises?.map((exercise: Exercise) => (
                                 <ExerciseCard
                                     Curexercise={exercise}
                                     logId={logId}
-                                    setExercises={setExercises}
                                     key={exercise._id}
                                     completed={data?.completedAt ? true : false}
                                 />

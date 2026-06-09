@@ -1,6 +1,7 @@
 import axios from "@/lib/axios"
-import CreateSetSchema, { CreateSetInput } from "@/schemas/set.schema"
-import { ExpandedLog } from "@/types/Log.types"
+import CreateSetSchema from "@/schemas/set.schema"
+import type { CreateSetInput } from "@/schemas/set.schema"
+import type { ExpandedLog } from "@/types/Log.types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 async function handleUpdateSet(id: string, reps: number, weight: number, rest?: string) {

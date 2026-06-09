@@ -1,19 +1,44 @@
 import axios from "@/lib/axios"
-import { ExpandedLog } from "@/types/Log.types"
+import type { ExpandedLog } from "@/types/Log.types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
+
+async function handleCreateExercise(logId: string, muscleGroup: string, name: string) {
+    const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
+    return res.data
+}
+
+export function useCreateExercise(logId: string, ActiveLog: string | null, options?: { onSuccess?: () => void, onError?: () => void }) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ name, muscleGroup }: { name: string, muscleGroup: string }) => handleCreateExercise(logId, muscleGroup, name),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
+            options?.onSuccess?.()
+        },
+        onError: (err) => {
+            toast.error(err.message)
+            options?.onError?.()
+        }
+    })
+}
+
 
 async function handleDeleteExercise(logId: string, id: string) {
     const res = await axios.delete(`/exercise/delete/${logId}/${id}`)
     return res.data
 }
 
-export function useDeleteExercise(logId: string, ActiveLog: string | null) {
+export function useDeleteExercise(logId: string, ActiveLog: string | null, options?: { onSuccess?: () => void, onError?: () => void }) {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (exerciseId: string) => handleDeleteExercise(logId, exerciseId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
         },
+        onError: (err) => {
+            toast.error(err.message)
+        }
     })
 }
 
@@ -24,7 +49,7 @@ async function handleUpdateExercise(note = "", name: string, id: string) {
     })
 }
 
-export function useUpdateExercise(ActiveLog: string, exerciseId: string) {
+export function useUpdateExercise(ActiveLog: string, exerciseId: string, options?: { onSuccess?: () => void, onError?: () => void }) {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: ({ note, name }: { note?: string, name: string }) => handleUpdateExercise(note, name, exerciseId),
@@ -34,6 +59,9 @@ export function useUpdateExercise(ActiveLog: string, exerciseId: string) {
                     exercise._id === exerciseId ? { ...exercise, name: variables.name, note: variables.note } : exercise
                 ))
             })
+        },
+        onError: (err) => {
+            toast.error(err.message)
         }
     })
 }

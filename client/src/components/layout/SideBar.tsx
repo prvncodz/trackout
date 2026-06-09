@@ -44,7 +44,6 @@ import { Dispatch, ForwardRefExoticComponent, RefAttributes, SetStateAction, use
 import { useAuth, useStats } from "../../stores/user.store"
 import axios from "../../lib/axios"
 import { toast } from "sonner"
-import useLogStore from "../../stores/log.store"
 import { useCreateLog } from "@/hooks/useLog"
 
 function Spinner() {

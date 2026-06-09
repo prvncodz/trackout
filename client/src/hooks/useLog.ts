@@ -88,23 +88,6 @@ export function useCreateLog(userId: string | undefined, options?: { onSuccess?:
     })
 }
 
-async function handleCreateExercise(logId: string, muscleGroup: string, name: string) {
-    const res = await axios.post(`/exercise/create/${logId}`, { name, muscleGroup })
-    return res.data
-}
-
-export function useCreateExercise(logId: string, ActiveLog: string | null) {
-    const queryClient = useQueryClient()
-    return useMutation({
-        mutationFn: ({ name, muscleGroup }: { name: string, muscleGroup: string }) => handleCreateExercise(logId, muscleGroup, name),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
-        },
-        onError: (err) => {
-            toast.error(err.message)
-        }
-    })
-}
 
 async function handleMarkLogCompleted(logId: string) {
     const res = await axios.patch(`/log/mark-completed/${logId}`)
