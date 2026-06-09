@@ -1,6 +1,7 @@
 import axios from "@/lib/axios"
 import { Log } from "@/types/Log.types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 export async function fetchAllLogs() {
     const res = await axios.get("/log/all-logs")
@@ -20,6 +21,9 @@ export function useDuplicateLog(lodId: string, userId: string | undefined) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["logs", userId] })
         },
+        onError: (err) => {
+            toast.error(err.message)
+        }
     })
 }
 
@@ -36,6 +40,9 @@ export function useDeleteLog(logId: string, userId: string | undefined) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["logs", userId] })
         },
+        onError: (err) => {
+            toast.error(err.message)
+        }
     })
 
 }
@@ -53,6 +60,9 @@ export function useEditLog(logId: string, userId: string | undefined) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["logs", userId] })
         },
+        onError: (err) => {
+            toast.error(err.message)
+        }
     })
 }
 
@@ -62,14 +72,19 @@ async function handleCreateLog(name: string) {
 }
 
 
-export function useCreateLog(userId: string | undefined) {
+export function useCreateLog(userId: string | undefined, options?: { onSuccess?: () => void, onError?: () => void }) {
     const queryClient = useQueryClient()
 
     return useMutation({
         mutationFn: (name: string) => handleCreateLog(name),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["logs", userId] })
+            options?.onSuccess?.()
         },
+        onError: (err) => {
+            toast.error(err.message)
+            options?.onError?.()
+        }
     })
 }
 
@@ -85,6 +100,9 @@ export function useCreateExercise(logId: string, ActiveLog: string | null) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
         },
+        onError: (err) => {
+            toast.error(err.message)
+        }
     })
 }
 
@@ -100,6 +118,9 @@ export function useMarkLogCompleted(logId: string, ActiveLog: string | null) {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["log", ActiveLog] })
         },
+        onError: (err) => {
+            toast.error(err.message)
+        }
     })
 }
 

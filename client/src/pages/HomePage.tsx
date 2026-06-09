@@ -54,7 +54,7 @@ import type { Exercise } from "@/types/Exercise.types"
 import type { Set } from "@/types/Set.types"
 import { fetchAllLogs, useCreateExercise, useCreateLog, useDeleteLog, useDuplicateLog, useEditLog, useMarkLogCompleted } from "@/hooks/useLog"
 import { useDeleteExercise, useUpdateExercise } from "@/hooks/useExercise"
-import { useUpdateSet } from "@/hooks/useSet"
+import { useCreateSet, useDeleteSet, useToggleSetDone, useUpdateSet } from "@/hooks/useSet"
 
 interface PopupProps {
     log: Log;
@@ -70,12 +70,13 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
     const { mutateAsync: deleteLog, isPending: isDeleting } = useDeleteLog(log?._id, userId)
     const { mutate: editLog, isPending: isEditing } = useEditLog(log?._id, userId)
 
-    if (isDuplicating || isDeleting || isEditing) {
-        setIsOpen(false)
-        setEditing(false)
-        setShowDeleteAlert(false)
-    }
-
+    useEffect(() => {
+        if (isDuplicating || isDeleting || isEditing) {
+            setIsOpen(false)
+            setEditing(false)
+            setShowDeleteAlert(false)
+        }
+    }, [isDuplicating, isDeleting, isEditing])
 
 
     return (
@@ -196,6 +197,7 @@ const Log = ({ log }: LogProps) => {
     const [isOpen, setIsOpen] = useState(false)
     const activeLog = useLogStore((state) => state.activeLog)
     const setActiveLog = useLogStore((state) => state.setActiveLog)
+
     return (
         <div
             className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 ${activeLog === log?._id ? " bg-neutral-100" : ""}`}
@@ -221,13 +223,33 @@ const Log = ({ log }: LogProps) => {
 
 const AllLogs = () => {
     const [isCreating, setIsCreating] = useState(false)
+    const [logName, setLogName] = useState("")
     const logs = useLogStore((state) => state.logs)
     const userId = useAuth((state) => state.user?._id)
-    const { mutate: createLog, isSuccess: isCreated, isError } = useCreateLog(userId)
+    const { mutate: createLog, isSuccess: isCreated, isError } = useCreateLog(userId, {
+        onSuccess: () => setIsCreating(false),
+        onError: () => setIsCreating(false),
+    })
 
     useEffect(() => {
         if (isCreated || isError) setIsCreating(false)
     }, [isCreated, isError])
+
+    const { data, status, isLoading } = useQuery(
+        {
+            queryKey: ['logs', userId],
+            queryFn: fetchAllLogs
+        })
+
+    const setAllLogs = useLogStore((state) => state.setLogs)
+
+    useEffect(() => {
+        if (status === "success") {
+            setAllLogs(data)
+        }
+    }, [status, data])
+
+    if (isLoading) return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
 
     return (
         <div className="border-line-color relative flex h-screen w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180">
@@ -246,14 +268,13 @@ const AllLogs = () => {
                         <DialogDescription>Make a workout log. Click save when you&apos;re done.</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={(e) => {
-                        e.preventDefault()
-                        const name = e.target.logName.value
-                        createLog(name)
+                        e.preventDefault();
+                        createLog(logName);
                     }}>
                         <FieldGroup>
                             <Field>
                                 <Label htmlFor="logName">Name</Label>
-                                <Input id="logName" name="logName" defaultValue="" />
+                                <Input id="logName" value={logName} onChange={(e) => setLogName(e.target.value)} />
                             </Field>
                         </FieldGroup>
                         <DialogFooter className="mt-7">
@@ -300,7 +321,7 @@ const ExerciseCard = ({ Curexercise, logId, className = "", completed }: Exercis
     const { mutate: deleteExercise, isSuccess: isDeleted, isError: isNotDeleted } = useDeleteExercise(logId, activeLog)
     const { mutate: updateExercise, isSuccess: isUpdated, isError: isNotUpdated } = useUpdateExercise(logId, activeLog)
     const { mutate: updateSet, isSuccess: isSetUpdated, isError: isNotSetUpdated } = useUpdateSet(activeLog)
-    const { mutate: toggleSetMarked, isSuccess: isToggled, isError: isNotToggled } = useToggleSetMarked(activeLog, Curexercise?._id)
+    const { mutate: toggleSetMarked, isSuccess: isToggled, isError: isNotToggled } = useToggleSetDone(activeLog, Curexercise?._id)
     const { mutate: createSet, isSuccess: isCreated, isError: isNotCreated } = useCreateSet(Curexercise?._id, activeLog)
     const { mutate: deleteSet, isSuccess: isDeletedSet, isError: isNotDeletedSet } = useDeleteSet(Curexercise?._id, activeLog)
 
@@ -767,23 +788,6 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
 
 const HomePageContent = () => {
     const activeLog = useLogStore((state) => state.activeLog)
-    const userId = useAuth((state) => state.user?._id)
-    const { data, status, isLoading } = useQuery(
-        {
-            queryKey: ['logs', userId],
-            queryFn: fetchAllLogs
-        })
-
-    const setAllLogs = useLogStore((state) => state.setLogs)
-
-    useEffect(() => {
-        if (status === "success") {
-            setAllLogs(data)
-        }
-    }, [status, data])
-
-    if (isLoading) return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
-
     return (
         <div className="flex h-screen w-full flex-col items-start justify-start lg:flex-row">
             <AllLogs />
