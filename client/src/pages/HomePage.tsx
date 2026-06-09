@@ -316,7 +316,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
     const { mutate: deleteExercise, isSuccess: isDeleted, isError: isNotDeleted } = useDeleteExercise(logId, activeLog)
     const { mutate: updateExercise, isSuccess: isUpdated, isError: isNotUpdated } = useUpdateExercise(logId, activeLog)
     const { mutate: updateSet, isSuccess: isSetUpdated, isError: isNotSetUpdated } = useUpdateSet(activeLog)
-    const { mutate: toggleSetMarked, isSuccess: isToggled, isError: isNotToggled } = useToggleSetDone(activeLog, exercise?._id)
+    const { mutate: toggleSetMarked } = useToggleSetDone(activeLog, exercise?._id)
     const { mutate: createSet } = useCreateSet(exercise?._id, activeLog, {
         onSuccess: () => {
             setIsCreating(false)
@@ -596,7 +596,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                             ) : (
                                 <div className="flex justify-center">
                                     <button
-                                        onClick={() => toggleDone(set._id)}
+                                        onClick={() => toggleSetMarked(set._id)}
                                         className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.completed ? "border-black bg-black text-white" : "border-neutral-300"
                                             }`}
                                     >

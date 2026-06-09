@@ -34,15 +34,21 @@ export function useToggleSetDone(ActiveLog: string | null, exerciseId: string) {
     return useMutation({
         mutationFn: (setId: string) => toggleDone(setId),
         onSuccess: (data, setId) => {
-            queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog) => {
-                return oldData.exercises.map((exercise) => (
-                    exercise._id === exerciseId ?
-                        exercise.sets.map(set => (
-                            set._id === setId ? { ...set, completed: !set.completed } : set
-                        ))
-                        : exercise
-                ))
-
+            queryClient.setQueryData(["log", ActiveLog], (oldData: ExpandedLog | undefined) => {
+                if (!oldData) return oldData
+                return {
+                    ...oldData,
+                    exercises: oldData.exercises.map((exercise) => (
+                        exercise._id === exerciseId ?
+                            {
+                                ...exercise,
+                                sets: exercise.sets.map(set => (
+                                    set._id === setId ? { ...set, completed: !set.completed } : set
+                                ))
+                            }
+                            : exercise
+                    ))
+                }
             })
         }
     })
