@@ -40,11 +40,12 @@ import { Button } from "../ui/button"
 import HamburgerButton from "../ui/HamburgerButton"
 import { motion } from "motion/react"
 import { Dumbbell, LucideProps } from "lucide-react"
-import { Dispatch, ForwardRefExoticComponent, RefAttributes, SetStateAction, useState } from "react"
+import { Dispatch, ForwardRefExoticComponent, RefAttributes, SetStateAction, useEffect, useState } from "react"
 import { useAuth, useStats } from "../../stores/user.store"
 import axios from "../../lib/axios"
 import { toast } from "sonner"
 import useLogStore from "../../stores/log.store"
+import { useCreateLog } from "@/hooks/useLog"
 
 function Spinner() {
     return (
@@ -305,24 +306,20 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }: SidebarProps) => {
 
 const NavbarForMobile = ({ className = "" }) => {
     const curPage = useAppStore((state) => state.curPage)
+    const userId = useAuth((state) => state.user?._id)
     const [isCreating, setIsCreating] = useState(false)
-    const addLog = useLogStore((state) => state.addLog)
+    const [logName, setLogName] = useState("")
 
-    async function handleCreateLog(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault()
-        const name = e.target.name
-        try {
-            const res = await axios.post(`/log/create`, { logName: name })
-            if (res.status === 201) {
-                addLog(res.data?.data)
-                setIsCreating(false)
-                toast.success("Log created successfully")
-            }
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message
-            toast.error(message)
-        }
-    }
+    const { mutate: createLog, isSuccess: isCreated, isError } = useCreateLog(userId, {
+        onSuccess: () => setIsCreating(false),
+        onError: () => setIsCreating(false),
+    })
+
+    useEffect(() => {
+        if (isCreated || isError) setIsCreating(false)
+    }, [isCreated, isError])
+
+
 
     return (
         <Navbar className={`${className} relative w-full`}>
@@ -345,11 +342,14 @@ const NavbarForMobile = ({ className = "" }) => {
                                     Make a workout log. Click save when you&apos;re done.
                                 </DialogDescription>
                             </DialogHeader>
-                            <form onSubmit={(e) => handleCreateLog(e)}>
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                createLog(logName);
+                            }}>
                                 <FieldGroup>
                                     <Field>
                                         <Label htmlFor="name">Name</Label>
-                                        <Input id="name" name="name" defaultValue="" />
+                                        <Input id="name" value={logName} onChange={(e) => setLogName(e.target.value)} />
                                     </Field>
                                 </FieldGroup>
                                 <DialogFooter className="mt-7">
