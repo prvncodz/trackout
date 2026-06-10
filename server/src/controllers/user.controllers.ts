@@ -156,13 +156,6 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req: Request, res: Resp
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
         (decodedToken as JwtPayloadWithId)?._id,
     );
-    const loggedUser = await User.findById((decodedToken as JwtPayloadWithId)?._id)
-        .lean()
-        .select("-password -refreshToken");
-
-    if (!loggedUser) {
-        throw new ApiError(401, "user not found");
-    }
     const AtOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -177,7 +170,7 @@ const UpdateAccessAndRefreshTokens = asyncHandler(async (req: Request, res: Resp
         .status(200)
         .cookie("accessToken", accessToken, AtOptions)
         .cookie("refreshToken", refreshToken, RtOptions)
-        .json(new ApiResponse(200, loggedUser, "tokens updated successfully"));
+        .json(new ApiResponse(200, {}, "tokens updated successfully"));
 });
 
 const UpdateUserAvatar = asyncHandler(async (req: Request, res: Response) => {
@@ -244,7 +237,7 @@ const UpdateAccountInfo = asyncHandler(async (req: Request, res: Response) => {
 
     if (
         !UpdatedFields ||
-        Object.keys(UpdatedFields).length === 0 
+        Object.keys(UpdatedFields).length === 0
     ) {
         throw new ApiError(400, "nothing to update");
     }
@@ -266,7 +259,7 @@ const UpdateAccountInfo = asyncHandler(async (req: Request, res: Response) => {
         .json(new ApiResponse(200, user, "information updated successfully"));
 });
 
-const UserActiveDates = asyncHandler(async (req:Request, res:Response) => {
+const UserActiveDates = asyncHandler(async (req: Request, res: Response) => {
     const user = req.user;
     if (!user) {
         throw new ApiError(400, "user is undefined");
@@ -322,7 +315,7 @@ const UserActiveDates = asyncHandler(async (req:Request, res:Response) => {
         );
 });
 
-const DeleteUser = asyncHandler(async (req:Request, res:Response) => {
+const DeleteUser = asyncHandler(async (req: Request, res: Response) => {
     const user = req.user;
     if (!user) {
         throw new ApiError(400, "user is undefined");
