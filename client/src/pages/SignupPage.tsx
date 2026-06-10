@@ -208,6 +208,7 @@ const Backbtn = () => {
     const navigate = useNavigate()
     return (
         <motion.button
+            type="button"
             className="border-line-color absolute top-5 left-5 cursor-pointer rounded-full border bg-gray-50 p-4 text-gray-700"
             initial={{
                 opacity: 0,

@@ -1,4 +1,5 @@
 import axios from "@/lib/axios"
+import { useAuth } from "@/stores/user.store"
 import { useMutation } from "@tanstack/react-query"
 
 
@@ -37,5 +38,17 @@ export function useUpdateUserinfo() {
         mutationFn: ({ fullname, email, height, weight }: handleUpdateUserInfoProps) => handleUpdateUserInfo({ fullname, email, height, weight })
     })
 
+}
+
+export async function refreshTokens() {
+    await axios.get("/user/refresh-tokens")
+}
+
+export async function useGetUser() {
+    const response = await axios.get("/user/current-user")
+    if (response.status === 200) {
+        useAuth.getState().setUser(response?.data?.data)
+        useAuth.getState().setIsUserLogged(true)
+    }
 }
 

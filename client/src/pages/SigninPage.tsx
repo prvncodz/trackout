@@ -52,7 +52,7 @@ const SignInPage = () => {
                 }, 500)
             }
         } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message || "Something went wrong. Please try again."
+            const message =err?.message || "Something went wrong. Please try again."
             toast.error(message)
         } finally {
             setLoading(false)
@@ -177,6 +177,7 @@ const Backbtn = () => {
     const navigate = useNavigate()
     return (
         <motion.button
+            type="button"
             className="border-line-color absolute top-5 left-5 cursor-pointer rounded-full border bg-gray-50 p-4 text-gray-700 hover:bg-neutral-50 hover:text-gray-800"
             onClick={() => navigate("/")}
             initial={{

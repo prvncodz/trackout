@@ -12,40 +12,16 @@ import axios from "./lib/axios"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { useGetUser } from "./hooks/useUser"
 
 function App() {
-    const setIsUserLogged = useAuth((state) => state.setIsUserLogged)
-    const setUser = useAuth((state) => state.setUser)
     const isUserLogged = useAuth((state) => state.isUserLogged)
     const setActiveDates = useAuth((state) => state.setActiveDates)
     const setDashboardStats = useStats((state) => state.setStats)
-    const [isTokenReceived, setIsTokenReceived] = useState(false)
 
     useEffect(() => {
-        async function loginUser() {
-            try {
-                const response = await axios.get("/user/current-user")
-                if (response.status === 200) {
-                    setUser(response?.data?.data)
-                    setIsUserLogged(true)
-                }
-            } catch (error: any) {
-                setUser(null)
-                setIsUserLogged(false)
-                try {
-                    if (error.status === 500) {
-                        const res = await axios.get("/user/refresh-tokens")
-                        if (res.status === 200) {
-                            setIsTokenReceived(true)
-                        }
-                    }
-                } catch (error: any) {
-                    console.log(error)
-                }
-            }
-        }
-        loginUser()
-    }, [isTokenReceived])
+        useGetUser()
+    }, [isUserLogged])
 
 
     useEffect(() => {
