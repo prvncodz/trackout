@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 const api = axios.create({
     withCredentials: true,
-    baseURL: "http://localhost:8000/api/v1",
+    baseURL: "/api/v1",
 })
 
 api.interceptors.response.use(
