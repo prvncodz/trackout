@@ -5,9 +5,9 @@ const asyncHandler = (fnc: Function) => async (req: Request, res: Response, next
     try {
         return await fnc(req, res, next);
     } catch (err:any) {
-        res.status(500).json({
+        res.status(err.statusCode || 500).json({
             success: false,
-            message: err.message,
+            message: err.message ?? "Something went wrong",
         });
     }
 };

@@ -16,49 +16,42 @@ import MyButton from "@/components/ui/MyButton"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/stores/user.store"
 import { useState } from "react"
-import axios from "../../lib/axios"
 import { toast } from "sonner"
+import { useUpdateAvatar, useUpdateUserinfo } from "@/hooks/useUser"
 
 export default function ProfileCard() {
     const user = useAuth((s) => s.user)
     const [isOpen, setIsOpen] = useState(false)
     const [isInfoChanged, setIsInfoChanged] = useState(false)
+
     const stats = [
         { label: "Height", value: user?.height ? `${user?.height}cm` : "—" },
         { label: "Weight", value: user?.weight ? `${user?.weight}kg` : "—" },
     ]
+    const { mutate: updateAvatar } = useUpdateAvatar()
+    const { mutate: updateUserInfo } = useUpdateUserinfo()
 
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
         const form = new FormData(e.target)
         const avatar = form.get("avatar")
-        const hasNewfile = avatar 
-
+        const hasNewfile = avatar
+        const info = {
+            fullname: form.get("fullname"),
+            email: form.get("email"),
+            height: form.get("height"),
+            weight: form.get("weight"),
+        }
         try {
             if (hasNewfile) {
-                await axios.put(
-                    "/user/update-avatar",
-                    { avatar },
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    },
-                )
+                updateAvatar(avatar)
             }
             if (isInfoChanged) {
-                await axios.patch("/user/update-info", {
-                    fullname: form.get("fullname"),
-                    email: form.get("email"),
-                    height: form.get("height"),
-                    weight: form.get("weight"),
-                })
+                updateUserInfo(info)
             }
             toast.success("Profile updated successfully")
-            // const res = await axios.patch(`/user/update-user-avatar`, avatar)
-        } catch (error:any) {
-            const message =
-                error?.response?.data?.message || error?.message || "Something went wrong. Please try again."
+        } catch (error: any) {
+            const message = error?.message || "Something went wrong. Please try again."
             toast.error(message)
         }
         e.target.reset()
@@ -78,7 +71,7 @@ export default function ProfileCard() {
                 <p className="cursor-default text-center text-base text-neutral-500 lg:text-left">
                     {user?.email ?? "example@abc.com"}
                 </p>
-                <div className="no-scrollbar mt-8 flex w-screen gap-3 overflow-auto scroll-smooth px-4 py-2 lg:w-auto lg:px-0">
+                <div className="no-scrollbar mt-8 flex w-screen gap-3 overflow-auto scroll-smooth px-4 py-2 md:w-full md:justify-center lg:w-auto lg:px-0">
                     {stats.map((stat, index) => (
                         <div
                             key={index}
@@ -99,7 +92,7 @@ export default function ProfileCard() {
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                     <MyButton
-                        className="relative w-full lg:absolute lg:top-0 lg:right-25 lg:w-auto"
+                        className="relative w-full md:w-100 lg:absolute lg:top-0 lg:right-25 lg:w-auto"
                         onClick={() => setIsOpen(true)}
                     >
                         Edit Profile

@@ -11,7 +11,7 @@ export type JwtPayloadWithId = JwtPayload & { _id: Types.ObjectId };
 const auth = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const token = req?.cookies?.accessToken;
     if (!token) {
-        throw new ApiError(400, "invalid token");
+        throw new ApiError(401, "unauthorized request");
     }
     const decodedToken = jwt.verify(
         token,
@@ -26,7 +26,7 @@ const auth = asyncHandler(async (req: Request, res: Response, next: NextFunction
         .select("-password -refreshToken");
 
     if (!user) {
-        throw new ApiError(404, "user not found");
+        throw new ApiError(404, "user has been deleted");
     }
 
     req.user = user;

@@ -40,12 +40,20 @@ import { Button } from "../ui/button"
 import HamburgerButton from "../ui/HamburgerButton"
 import { motion } from "motion/react"
 import { Dumbbell, LucideProps } from "lucide-react"
-import { Dispatch, ForwardRefExoticComponent, RefAttributes, SetStateAction, useState } from "react"
+import { Dispatch, ForwardRefExoticComponent, RefAttributes, SetStateAction, useEffect, useState } from "react"
 import { useAuth, useStats } from "../../stores/user.store"
 import axios from "../../lib/axios"
 import { toast } from "sonner"
-import useLogStore from "../../stores/log.store"
+import { useCreateLog } from "@/hooks/useLog"
 
+function Spinner() {
+    return (
+        <svg className="h-10 w-10 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+    )
+}
 const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) => {
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
     const [showLogoutDailogue, setShowLogoutDailogue] = useState(false)
@@ -54,17 +62,25 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
     const setActiveDates = useAuth((state) => state.setActiveDates)
     const setCurPage = useAppStore((state) => state.setCurPage)
     const setStats = useStats((state) => state.setStats)
+    const setLoading = useAppStore((state) => state.setLoading);
+    const navigate = useNavigate()
 
     async function handleLogout() {
         try {
             await axios.post("/user/logout")
             setUser(null)
+            useAuth.persist.clearStorage()
             setIsOpen(false)
             setIsUserLogged(false)
             setActiveDates([])
-            setCurPage("home")
             toast.success("Logged out successfully")
             setStats(null)
+            setLoading(true)
+            setTimeout(() => {
+                setCurPage("home")
+                navigate("/")
+                setLoading(false)
+            }, 200)
         } catch (err: any) {
             const message = err.response?.data.message || err.message || "Something went wrong. Please try again."
             toast.error(message)
@@ -78,14 +94,22 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
             setIsOpen(false)
             setIsUserLogged(false)
             setActiveDates([])
+            useAuth.persist.clearStorage()
             setCurPage("home")
             setStats(null)
             toast.success("User deleted successfully")
+            setLoading(true)
+            setTimeout(() => {
+                setCurPage("home")
+                navigate("/")
+                setLoading(false)
+            }, 200)
         } catch (err: any) {
             const message = err.response?.data.message || err.message || "Something went wrong. Please try again."
             toast.error(message)
         }
     }
+
 
     return (
         <motion.ul
@@ -281,24 +305,20 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }: SidebarProps) => {
 
 const NavbarForMobile = ({ className = "" }) => {
     const curPage = useAppStore((state) => state.curPage)
+    const userId = useAuth((state) => state.user?._id)
     const [isCreating, setIsCreating] = useState(false)
-    const addLog = useLogStore((state) => state.addLog)
+    const [logName, setLogName] = useState("")
 
-    async function handleCreateLog(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault()
-        const name = e.target.name
-        try {
-            const res = await axios.post(`/log/create`, { logName: name })
-            if (res.status === 201) {
-                addLog(res.data?.data)
-                setIsCreating(false)
-                toast.success("Log created successfully")
-            }
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message
-            toast.error(message)
-        }
-    }
+    const { mutate: createLog, isSuccess: isCreated, isError } = useCreateLog(userId, {
+        onSuccess: () => setIsCreating(false),
+        onError: () => setIsCreating(false),
+    })
+
+    useEffect(() => {
+        if (isCreated || isError) setIsCreating(false)
+    }, [isCreated, isError])
+
+
 
     return (
         <Navbar className={`${className} relative w-full`}>
@@ -321,11 +341,14 @@ const NavbarForMobile = ({ className = "" }) => {
                                     Make a workout log. Click save when you&apos;re done.
                                 </DialogDescription>
                             </DialogHeader>
-                            <form onSubmit={(e) => handleCreateLog(e)}>
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                createLog(logName);
+                            }}>
                                 <FieldGroup>
                                     <Field>
                                         <Label htmlFor="name">Name</Label>
-                                        <Input id="name" name="name" defaultValue="" />
+                                        <Input id="name" value={logName} onChange={(e) => setLogName(e.target.value)} />
                                     </Field>
                                 </FieldGroup>
                                 <DialogFooter className="mt-7">
@@ -345,7 +368,12 @@ const NavbarForMobile = ({ className = "" }) => {
 }
 
 const SideBarLayout = ({ children }: { children: React.ReactNode }) => {
-    const user = useAuth((s) => s.user)
+    const user = useAuth((state) => state.user)
+    const loading = useAppStore((state) => state.loading)
+
+    if (loading) return <div className="h-dvh w-dvw flex items-center justify-center">
+        <Spinner />
+    </div>
 
     return (
         <motion.div

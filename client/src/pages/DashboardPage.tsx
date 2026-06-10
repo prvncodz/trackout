@@ -57,7 +57,7 @@ const Cards = () => {
     ]
 
     return (
-        <div className="no-scrollbar grid h-auto w-full cursor-default grid-cols-2 items-center justify-center gap-3 overflow-hidden py-4 lg:w-auto lg:grid-cols-4 lg:px-0">
+        <div className="no-scrollbar grid h-auto w-full cursor-default grid-cols-2 items-center justify-center gap-3 overflow-hidden py-4 md:w-auto md:grid-cols-4 md:px-0">
             {stats.map((stat, index) => {
                 let Icon = stat.icon
                 return (
@@ -145,18 +145,18 @@ const PreviousWorkout = () => {
 const DashboardPage = () => {
     return (
         <SideBarLayout>
-            <div className="no-scrollbar transition-scroll flex h-screen flex-col overflow-auto scroll-smooth duration-300 ease-in-out">
+            <div className="no-scrollbar transition-scroll flex h-screen flex-col overflow-auto scroll-smooth duration-300 ease-in-out ">
                 <Greetings />
                 <div className="flex flex-col gap-3 lg:flex-row">
-                    <div className="no-scrollbar flex h-240 flex-col gap-6 overflow-hidden px-5 pb-10 lg:h-screen lg:pl-10">
+                    <div className="no-scrollbar flex h-240 flex-col gap-6 overflow-hidden px-5 pb-10 md:h-[80vh] lg:h-screen lg:pl-10">
                         <Cards />
-                        <div className="h-100 w-full rounded-2xl bg-neutral-500 ">
+                        <div className="h-auto w-full rounded-2xl bg-neutral-500 md:h-80">
                             <ChartAreaInteractive />
                         </div>
                     </div>
-                    <div className="flex h-screen flex-col gap-10 px-5 lg:px-0">
-                        <div className="shadow-standard h-auto w-full rounded-2xl bg-white p-5 shrink-0 overflow-hidden px-2">
-                            <Calendar size={"md"} className="bg-white" />
+                    <div className="flex h-screen flex-col gap-10 px-5 md:items-start md:flex-row lg:flex-col lg:px-0">
+                        <div className="shadow-standard w-full rounded-2xl bg-white shrink-0 p-5 overflow-hidden md:w-80 lg:w-120">
+                            <Calendar size="md" className="bg-white w-full md:w-auto lg:w-full" />
                         </div>
                         <div className="shadow-standard h-auto w-full rounded-2xl bg-white">
                             <PreviousWorkout />

@@ -1,6 +1,7 @@
 import { User } from "@/types/User.types";
 import { create } from "zustand"
 import { CompletedWorkout } from "@/types/CompletedWorkout.types";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 
 interface AuthStore {
@@ -14,15 +15,24 @@ interface AuthStore {
 }
 
 
-const useAuth = create<AuthStore>((set) => ({
-    isUserLogged: false,
-    user: null,
-    isLoading: false,
-    activeDates: [],
-    setIsUserLogged: (bool) => set({ isUserLogged: bool }),
-    setUser: (user) => set({ user: user }),
-    setActiveDates: (dates) => set({ activeDates: dates }),
-}))
+const useAuth = create<AuthStore>()(
+    persist(
+        (set) => ({
+            isUserLogged: false,
+            user: null,
+            isLoading: false,
+            activeDates: [],
+            setIsUserLogged: (bool) => set({ isUserLogged: bool }),
+            setUser: (user) => set({ user: user }),
+            setActiveDates: (dates) => set({ activeDates: dates }),
+        }),
+        {
+            name: "user-storage",
+            storage: createJSONStorage(() => localStorage),
+        },
+
+    )
+)
 
 interface Stats {
     recentWorkouts: (CompletedWorkout & { timeAgo: string })[];

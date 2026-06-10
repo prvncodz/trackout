@@ -1,3 +1,5 @@
+import { Exercise } from "./Exercise.types";
+
 export interface Log {
     _id: string;
     owner: string;
@@ -8,3 +10,6 @@ export interface Log {
     updatedAt: string;
 }
 
+export interface ExpandedLog extends Omit<Log, "exercises"> {
+    exercises: Exercise[];
+}
