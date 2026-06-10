@@ -14,14 +14,15 @@ api.interceptors.response.use(
     error => {
         const status = error.response ? error.response.status : null;
         const message = error.response ? error.response.data.message : null;
+        const originalReq = error.config;
 
-        if (status === 401) {
-            refreshTokens()
+        if (status === 401 && useAuth.getState().isUserLogged) {
+            return refreshTokens(originalReq)
         } else if (status === 400) {
             if (message && message.includes("refresh token")) {
                 useAuth.persist.clearStorage()
                 useAppStore.persist.clearStorage()
-                // window.location.href = "/signin"
+                window.location.href = "/signin"
             }
             else toast.error("invalid input")
         } else {

@@ -20,7 +20,9 @@ function App() {
     const setDashboardStats = useStats((state) => state.setStats)
 
     useEffect(() => {
-        useGetUser()
+        if (isUserLogged) {
+            useGetUser()
+        }
     }, [isUserLogged])
 
 

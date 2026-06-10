@@ -40,8 +40,9 @@ export function useUpdateUserinfo() {
 
 }
 
-export async function refreshTokens() {
+export async function refreshTokens(originalReq: any) {
     await axios.get("/user/refresh-tokens")
+    return axios(originalReq)
 }
 
 export async function useGetUser() {

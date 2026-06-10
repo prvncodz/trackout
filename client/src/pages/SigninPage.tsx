@@ -52,7 +52,7 @@ const SignInPage = () => {
                 }, 500)
             }
         } catch (err: any) {
-            const message =err?.message || "Something went wrong. Please try again."
+            const message = err?.response?.data?.message || err?.message || "Something went wrong. Please try again."
             toast.error(message)
         } finally {
             setLoading(false)
