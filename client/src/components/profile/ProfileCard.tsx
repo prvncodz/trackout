@@ -51,8 +51,7 @@ export default function ProfileCard() {
             }
             toast.success("Profile updated successfully")
         } catch (error: any) {
-            const message =
-                error?.response?.data?.message || error?.message || "Something went wrong. Please try again."
+            const message = error?.message || "Something went wrong. Please try again."
             toast.error(message)
         }
         e.target.reset()
