@@ -34,7 +34,7 @@ function App() {
                     setActiveDates(res?.data?.data?.activeDates?.map((date: string) => new Date(date)))
                 }
             } catch (err: any) {
-                toast.error(err?.response?.data?.message || err?.message)
+                toast.error(err?.message)
             }
         }
         async function getDashBoardStats() {
@@ -44,7 +44,7 @@ function App() {
                     setDashboardStats(res?.data?.data)
                 }
             } catch (err: any) {
-                toast.error(err?.response?.data?.message || err?.message)
+                toast.error(err?.message)
             }
         }
         if (isUserLogged) {

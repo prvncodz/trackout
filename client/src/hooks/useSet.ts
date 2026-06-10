@@ -78,6 +78,7 @@ async function handleCreateSet(exerciseId: string, data: CreateSetInput) {
         const res = await axios.post(`/set/create/${exerciseId}`, data)
         return res.data.data
     } catch (err: any) {
+        toast.error(err?.issues[0]?.message || err.message || "Something went wrong. Please try again.")
         throw err
     }
 }

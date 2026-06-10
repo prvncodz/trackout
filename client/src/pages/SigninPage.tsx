@@ -34,7 +34,7 @@ const SignInPage = () => {
 
         try {
             //validate
-            userSignInSchema.parseAsync(form)
+            await userSignInSchema.parseAsync(form)
 
             const res = await axios.post("/user/signin", {
                 email: form.email,
@@ -52,7 +52,7 @@ const SignInPage = () => {
                 }, 500)
             }
         } catch (err: any) {
-            const message = err?.message || "Something went wrong. Please try again."
+            const message = err.issues[0].message || err?.message || "Something went wrong. Please try again."
             toast.error(message)
         } finally {
             setLoading(false)

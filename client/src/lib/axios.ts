@@ -1,4 +1,4 @@
-import { refreshTokens, useGetUser } from "@/hooks/useUser";
+import { refreshTokens } from "@/hooks/useUser";
 import { useAppStore } from "@/stores/app.store";
 import { useAuth } from "@/stores/user.store";
 import axios from "axios"
@@ -24,7 +24,7 @@ api.interceptors.response.use(
                 useAppStore.persist.clearStorage()
                 window.location.href = "/signin"
             }
-            else toast.error("invalid input")
+            else toast.error("invalid input credentials")
         } else {
             toast.error(message)
         }

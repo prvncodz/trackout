@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 const userSignUpSchema = z.object({
-    fullname: z.string(),
+    fullname: z.string("fullname is required").min(3, "fullname must be at least 3 characters").max(50, "fullname must be less than 50 characters"),
     email: z.email("invalid email format"),
     height: z.coerce
         .number()
@@ -11,12 +11,12 @@ const userSignUpSchema = z.object({
         .number()
         .min(20, "weight must be at least 20 kg")
         .max(300, "weight must be less than 300kg"),
-    password: z.string().min(3).max(20),
+    password: z.string().min(3, "password must be at least 3 characters").max(20, "password must be less than 20 characters"),
 });
 
 const userSignInSchema = z.object({
     email: z.email("invalid email format"),
-    password: z.string().min(3).max(20),
+    password: z.string("password is required").min(3, "password must be at least 3 characters").max(20, "password must be less than 20 characters"),
 });
 
 export type UserSignUpInput = z.infer<typeof userSignUpSchema>;
