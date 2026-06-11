@@ -145,7 +145,7 @@ const PreviousWorkout = () => {
 const DashboardPage = () => {
     return (
         <SideBarLayout>
-            <div className="no-scrollbar transition-scroll flex h-screen flex-col overflow-auto scroll-smooth duration-300 ease-in-out ">
+            <div className="no-scrollbar transition-scroll flex h-dvh flex-col overflow-auto scroll-smooth duration-300 ease-in-out ">
                 <Greetings />
                 <div className="flex flex-col gap-3 lg:flex-row">
                     <div className="no-scrollbar flex h-240 flex-col gap-6 overflow-hidden px-5 pb-10 md:h-[80vh] lg:h-screen lg:pl-10">

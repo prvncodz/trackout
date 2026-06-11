@@ -1,6 +1,8 @@
 import axios from "@/lib/axios"
+import { useAppStore } from "@/stores/app.store"
 import { useAuth } from "@/stores/user.store"
 import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 
 async function handleAvatarUpload(avatar: FormDataEntryValue) {
@@ -41,15 +43,19 @@ export function useUpdateUserinfo() {
 }
 
 export async function refreshTokens(originalReq: any) {
-    await axios.get("/user/refresh-tokens")
-    return axios(originalReq)
+    try {
+        await axios.get("/user/refresh-tokens")
+        return axios(originalReq)
+    } catch (err) {
+        useAuth.persist.clearStorage()
+        useAppStore.persist.clearStorage()
+        window.location.href = "/signin"
+    }
 }
 
 export async function useGetUser() {
     const response = await axios.get("/user/current-user")
-    if (response.status === 200) {
-        useAuth.getState().setUser(response?.data?.data)
-        useAuth.getState().setIsUserLogged(true)
-    }
+    useAuth.getState().setUser(response?.data?.data)
+    useAuth.getState().setIsUserLogged(true)
 }
 
