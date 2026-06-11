@@ -49,9 +49,17 @@ interface StatsStore {
     setStats: (stats: Stats | null) => void;
 }
 
-const useStats = create<StatsStore>((set) => ({
-    stats: null,
-    setStats: (stats) => set({ stats: stats }),
-}))
+const useStats = create<StatsStore>()(
+    persist(
+        (set) => ({
+            stats: null,
+            setStats: (stats) => set({ stats: stats }),
+        }),
+        {
+            name: "user-storage",
+            storage: createJSONStorage(() => sessionStorage),
+        }
+    )
+)
 
 export { useAuth, useStats }

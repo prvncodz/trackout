@@ -35,7 +35,6 @@ export default function ProfileCard() {
         e.preventDefault()
         const form = new FormData(e.target)
         const avatar = form.get("avatar")
-        const hasNewfile = avatar
         const info = {
             fullname: form.get("fullname"),
             email: form.get("email"),
@@ -43,7 +42,9 @@ export default function ProfileCard() {
             weight: form.get("weight"),
         }
         try {
-            if (hasNewfile) {
+            if (avatar && avatar instanceof File && avatar?.size > 0) {
+                console.log(typeof avatar)
+                console.log(avatar)
                 updateAvatar(avatar)
             }
             if (isInfoChanged) {
