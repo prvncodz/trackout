@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 const api = axios.create({
     withCredentials: true,
-    baseURL: "/api/v1",
+    baseURL: "http://localhost:8000/api/v1",
 })
 
 api.interceptors.response.use(
@@ -17,7 +17,7 @@ api.interceptors.response.use(
         const originalReq = error.config;
 
         if (status === 401 && useAuth.getState().isUserLogged) {
-            return refreshTokens(originalReq)
+            refreshTokens(originalReq)
         } else if (status === 400) {
             if (message && message.includes("refresh token")) {
                 useAuth.persist.clearStorage()
