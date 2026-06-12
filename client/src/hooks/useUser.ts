@@ -2,7 +2,6 @@ import axios from "@/lib/axios"
 import { useAppStore } from "@/stores/app.store"
 import { useAuth } from "@/stores/user.store"
 import { useMutation } from "@tanstack/react-query"
-import { toast } from "sonner"
 
 
 async function handleAvatarUpload(avatar: FormDataEntryValue) {
@@ -55,6 +54,7 @@ export async function refreshTokens(originalReq: any) {
 
 export async function useGetUser() {
     const response = await axios.get("/user/current-user")
+    if(response.status !== 200) return
     useAuth.getState().setUser(response?.data?.data)
     useAuth.getState().setIsUserLogged(true)
 }
