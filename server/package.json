@@ -8,7 +8,8 @@
     "scripts": {
         "dev": "ts-node-dev --respawn --transpile-only -r dotenv/config src/index.ts",
         "format": "prettier --write src/*/*",
-        "start": "node -r dotenv/config src/index.ts"
+        "build":"tsc",
+        "start": "node -r dotenv/config dist/index.js"
     },
     "dependencies": {
         "@types/multer": "^2.1.0",
