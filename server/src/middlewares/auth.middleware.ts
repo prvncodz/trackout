@@ -33,6 +33,7 @@ const auth = asyncHandler(async (req: Request, res: Response, next: NextFunction
         req.user = user;
         next();
     } catch (err: unknown) {
+        console.error("GLOBAL ERROR:", err)
         if (err instanceof ApiError) {
             throw err
         } else if (err instanceof JsonWebTokenError) {
