@@ -11,7 +11,7 @@ export interface IUser extends Document {
     email: string;
     height: number;
     weight: number;
-    password: string;
+    password?: string;
     refreshToken?: string;
     createdAt: Date;
     updatedAt: Date;
@@ -65,8 +65,6 @@ const UserSchema = new Schema<IUser, Model<IUser, {}, IUserMethods>>(
         },
         password: {
             type: String,
-            required: [true, "Password is required"],
-            minlength: [3, "Password must be at least 3 characters long!"],
         },
         refreshToken: {
             type: String,
@@ -77,7 +75,7 @@ const UserSchema = new Schema<IUser, Model<IUser, {}, IUserMethods>>(
 
 UserSchema.pre("save", async function () {
     if (this.isModified("password")) {
-        this.password = await bcrypt.hash(this.password, 10);
+        this.password = await bcrypt.hash((this.password as string), 10);
     }
 });
 
@@ -113,7 +111,7 @@ UserSchema.methods.isPasswordCorrect = async function (this: IUserDocument, pass
     if (!password) {
         return false;
     }
-    return await bcrypt.compare(password, this.password);
+    return await bcrypt.compare(password, (this.password as string));
 };
 
 const User = mongoose.model<IUser, Model<IUser, {}, IUserMethods>>("User", UserSchema);
