@@ -1,7 +1,7 @@
 export function GoogleLoginButton() {
     return (
 
-        <a href="http://localhost:8000/api/v1/user/google">
+        <a href="/api/v1/user/google">
             <button className="flex w-full items-center justify-center gap-3 rounded-lg border border-neutral-200 py-3 mt-3" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px">
                     <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.5 30.2 0 24 0 14.6 0 6.6 5.5 2.7 13.5l7.9 6.1C12.5 13.1 17.8 9.5 24 9.5z" />
