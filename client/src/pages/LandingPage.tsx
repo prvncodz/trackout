@@ -215,7 +215,7 @@ const LandingPage = () => {
     })
     return (
         <motion.div
-            className="selection:bg-near-black selection:text-btn-text relative flex w-full h-dvh flex-col items-center justify-center bg-neutral-50"
+            className="selection:bg-near-black selection:text-btn-text relative flex min-h-dvh w-full flex-col items-center justify-start overflow-x-hidden bg-neutral-50"
             initial={{
                 opacity: 0,
             }}
