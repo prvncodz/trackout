@@ -1,13 +1,11 @@
-import { IconChartLine, IconHome2, IconMenu2, IconUser } from "@tabler/icons-react"
+import { IconChartLine, IconHome2, IconLogout2, IconMenu2, IconTrash, IconUser } from "@tabler/icons-react"
 import { useState } from "react"
 import { useAppStore } from "../../stores/app.store"
-import { useAuth } from "../../stores/user.store"
 import { useNavigate } from "react-router-dom"
 import { motion } from "motion/react"
 
 const HamburgerButton = ({ className = "", ...props }) => {
     const setCurPage = useAppStore((s) => s.setCurPage)
-    const userId = useAuth((s) => s.userId)
     const navigate = useNavigate()
 
     //Nav items
@@ -27,7 +25,7 @@ const HamburgerButton = ({ className = "", ...props }) => {
         },
     ]
 
-    const handleNav = (item) => {
+    const handleNav = (item: any) => {
         setCurPage(item.page)
         navigate(item.path)
     }

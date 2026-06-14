@@ -18,7 +18,7 @@ const LabelChip = () => {
 const HeroText = () => {
     return (
         <div className="flex flex-col items-center justify-center gap-6">
-            <h1 className="text-near-black text-center text-5xl leading-12.5 font-extrabold tracking-tight md:text-7xl md:leading-17.5">
+            <h1 className="text-near-black text-center text-[2.85rem] leading-12.5 font-extrabold tracking-tight md:text-7xl md:leading-17.5">
                 Log every rep. <br /> Track every gain.
             </h1>
             <p className="mt-2 max-w-[80vw] text-center text-sm font-normal text-neutral-500 md:max-w-160 md:text-xl">
@@ -205,7 +205,7 @@ const LandingPage = () => {
     const navigate = useNavigate()
     return (
         <motion.div
-            className="selection:bg-near-black selection:text-btn-text relative flex w-full flex-col items-center justify-center bg-neutral-50"
+            className="selection:bg-near-black selection:text-btn-text relative flex w-full h-dvh flex-col items-center justify-center bg-neutral-50"
             initial={{
                 opacity: 0,
             }}

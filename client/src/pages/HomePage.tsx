@@ -249,7 +249,7 @@ const AllLogs = () => {
     if (isLoading) return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
 
     return (
-        <div className="border-line-color relative flex h-screen w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180">
+        <div className="border-line-color relative flex h-dvh w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180">
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
                 <DialogTrigger asChild>
                     <MyButton className="hidden lg:flex">
