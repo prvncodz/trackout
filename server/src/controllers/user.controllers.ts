@@ -371,7 +371,7 @@ const DeleteUser = asyncHandler(async (req: Request, res: Response) => {
 const RedirectToGoogle = asyncHandler(async (req: Request, res: Response) => {
     const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     url.searchParams.set('client_id', process.env.GOOGLE_CLIENT_ID!);
-    url.searchParams.set('redirect_uri', `http://localhost:${process.env.PORT}/api/v1/user/google/callback`);
+    url.searchParams.set('redirect_uri', `https://trackouts.vercel.app/api/v1/user/google/callback`);
     url.searchParams.set('response_type', 'code');
     url.searchParams.set('scope', 'email profile');
     return res.redirect(url.toString());
@@ -384,7 +384,7 @@ const GoogleCallback = asyncHandler(async (req: Request, res: Response) => {
         code,
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: 'http://localhost:8000/api/v1/user/google/callback',
+        redirect_uri: 'https://trackouts.vercel.app/api/v1/user/google/callback',
         grant_type: 'authorization_code',
     });
 
@@ -425,7 +425,7 @@ const GoogleCallback = asyncHandler(async (req: Request, res: Response) => {
             .status(200)
             .cookie("accessToken", accessToken, atoptions)
             .cookie("refreshToken", refreshToken, rtoptions)
-            .redirect("http://localhost:5173?user=google");
+            .redirect("http://trackouts.vercel.app?user=google");
     }
 
     const avatar = await UploadGooglePfp(picture);
@@ -468,7 +468,7 @@ const GoogleCallback = asyncHandler(async (req: Request, res: Response) => {
         .status(200)
         .cookie("accessToken", accessToken, atoptions)
         .cookie("refreshToken", refreshToken, rtoptions)
-        .redirect("http://localhost:5173?user=google");
+        .redirect("http://trackouts.vercel.app?user=google");
 
 })
 
