@@ -110,34 +110,39 @@ const PreviousWorkout = () => {
 
             {/* List */}
             <div className="divide-line-color flex flex-col gap-0.5 divide-y">
-                {workouts.map((w) => (
-                    <div key={w._id}>
-                        <div className="group flex cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2.5 transition-colors hover:bg-[#f7f7f6]">
-                            {/* Icon */}
-                            <div
-                                className={`flex size-8.5 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-[15px]`}
-                            >
-                                <IconCircleDotted className="h-4 w-4" />
-                            </div>
-
-                            {/* Info */}
-                            <div className="min-w-0 flex-1">
-                                <p className="text-mockup-text truncate text-[13px] font-medium tracking-wide">
-                                    {w.name}
-                                </p>
-                                <div className="mt-0.5 flex items-center gap-1.5">
-                                    <span className="font-mono text-[11px] text-gray-400">{w.noOfSets} sets</span>
-                                    <span className="h-0.5 w-0.5 shrink-0 rounded-full bg-gray-300" />
+                {workouts?.length ?
+                    workouts.map((w) => (
+                        <div key={w._id}>
+                            <div className="group flex cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2.5 transition-colors hover:bg-[#f7f7f6]">
+                                {/* Icon */}
+                                <div
+                                    className={`flex size-8.5 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-[15px]`}
+                                >
+                                    <IconCircleDotted className="h-4 w-4" />
                                 </div>
-                            </div>
 
-                            {/* Time */}
-                            <span className="shrink-0 text-[11px] whitespace-nowrap text-gray-300">
-                                {w?.timeAgo + " ago"}
-                            </span>
+                                {/* Info */}
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-mockup-text truncate text-[13px] font-medium tracking-wide">
+                                        {w.name}
+                                    </p>
+                                    <div className="mt-0.5 flex items-center gap-1.5">
+                                        <span className="font-mono text-[11px] text-gray-400">{w.noOfSets} sets</span>
+                                        <span className="h-0.5 w-0.5 shrink-0 rounded-full bg-gray-300" />
+                                    </div>
+                                </div>
+
+                                {/* Time */}
+                                <span className="shrink-0 text-[11px] whitespace-nowrap text-gray-300">
+                                    {w?.timeAgo + " ago"}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    )) : (
+                        <div className="antialiased text-center text-sm text-gray-500 my-5">
+                            No recents workouts
+                        </div>
+                    )}
             </div>
         </div>
     )

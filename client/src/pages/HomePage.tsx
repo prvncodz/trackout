@@ -290,7 +290,11 @@ const AllLogs = () => {
                             key={log._id}
                             log={log}
                         />
-                    )) : null}
+                    )) : (
+                    <div className="antialiased text-gray-600">
+                    No logs yet created by user. Create your first log using the create button.
+                    </div>
+                    )}
             </div>
         </div >
     )
