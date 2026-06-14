@@ -8,11 +8,12 @@ import { userSignUpSchema, userSignInSchema, UserSignInInput, UserSignUpInput } 
 import ApiError from "../utils/ApiError";
 import ApiResponse from "../utils/ApiResponse";
 import asyncHandler from "../utils/asyncHandler";
-import { DeleteFromCloud, UploadToCloud } from "../utils/cloudinary";
-import jwt from "jsonwebtoken";
+import { DeleteFromCloud, UploadGooglePfp, UploadToCloud } from "../utils/cloudinary";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import mongoose, { Types } from "mongoose";
 import { Request, Response } from "express";
 import { JwtPayloadWithId } from "../middlewares/auth.middleware";
+import axios from "axios";
 
 
 const generateAccessAndRefreshTokens = async (userId: Types.ObjectId) => {
@@ -367,6 +368,110 @@ const DeleteUser = asyncHandler(async (req: Request, res: Response) => {
     }
 });
 
+const RedirectToGoogle = asyncHandler(async (req: Request, res: Response) => {
+    const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+    url.searchParams.set('client_id', process.env.GOOGLE_CLIENT_ID!);
+    url.searchParams.set('redirect_uri', `http://localhost:${process.env.PORT}/api/v1/user/google/callback`);
+    url.searchParams.set('response_type', 'code');
+    url.searchParams.set('scope', 'email profile');
+    return res.redirect(url.toString());
+});
+
+const GoogleCallback = asyncHandler(async (req: Request, res: Response) => {
+    const { code } = req.query;
+
+    const { data } = await axios.post('https://oauth2.googleapis.com/token', {
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: 'http://localhost:8000/api/v1/user/google/callback',
+        grant_type: 'authorization_code',
+    });
+
+
+    interface GooglePayload extends JwtPayload {
+        sub: string;
+        name: string;
+        email: string;
+        picture: string;
+        email_verified: boolean;
+    }
+
+    const decoded = jwt.decode(data.id_token) as GooglePayload;
+
+    if (!decoded) {
+        throw new ApiError(400, "email not verified");
+    }
+
+    const { name, picture, email } = decoded;
+
+    const atoptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 1000, //cookie's max age is 1 hour
+    };
+    const rtoptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 3 * 24 * 60 * 60 * 1000, //cookie's max age is 3 days
+    };
+
+    const user = await User.findOne({ email });
+
+    if (user) {
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+        return res
+            .status(200)
+            .cookie("accessToken", accessToken, atoptions)
+            .cookie("refreshToken", refreshToken, rtoptions)
+            .redirect("http://localhost:5173?user=google");
+    }
+
+    const avatar = await UploadGooglePfp(picture);
+    if (!avatar) {
+        throw new ApiError(401, "cloudinary upload of avatar failed");
+    }
+
+
+    const newUser = await User.create({
+        fullname: name,
+        email: email,
+    })
+    if (!newUser) {
+        throw new ApiError(500, "user creation failed");
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+        newUser?._id,
+        {
+            $set: {
+                avatar: {
+                    public_id: avatar?.public_id,
+                    url: avatar?.secure_url,
+                },
+            },
+        },
+        { returnDocument: "after" },
+    )
+        .lean()
+        .select("-password -refreshToken");
+
+    if (!updatedUser) {
+        throw new ApiError(500, "user update failed");
+    }
+
+    const accessToken = newUser?.generateAccessToken();
+    const refreshToken = newUser?.generateRefreshToken();
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, atoptions)
+        .cookie("refreshToken", refreshToken, rtoptions)
+        .redirect("http://localhost:5173?user=google");
+
+})
+
 export {
     SignUpUser,
     SignInUser,
@@ -377,4 +482,6 @@ export {
     UpdateAccountInfo,
     UserActiveDates,
     DeleteUser,
+    RedirectToGoogle,
+    GoogleCallback,
 };

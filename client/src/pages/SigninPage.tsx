@@ -9,6 +9,8 @@ import { useAuth } from "../stores/user.store"
 import { userSignInSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
 import gymImage from "../assets/gym-hero.jpg"
+import { IconBrandGoogle } from "@tabler/icons-react"
+import { GoogleLoginButton } from "@/components/ui/gooleLogin"
 
 const SignInPage = () => {
     const [form, setForm] = useState({ email: "", password: "" })
@@ -150,7 +152,12 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }: FormInp
                     "Sign In"
                 )}
             </MyButton>
-
+            <div className="flex items-center gap-3 my-4">
+                <div className="flex-1 h-px bg-neutral-200" />
+                <span className="text-sm text-neutral-400">or</span>
+                <div className="flex-1 h-px bg-neutral-200" />
+            </div>
+            <GoogleLoginButton />
             <p className="mt-5 text-center text-sm text-gray-500">
                 Don't have an account?{" "}
                 <span

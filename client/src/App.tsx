@@ -7,7 +7,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom"
 import SigninPage from "./pages/SigninPage"
 import SignupPage from "./pages/SignupPage"
 import { useAuth, useStats } from "./stores/user.store"
-import { useEffect} from "react"
+import { useEffect } from "react"
 import axios from "./lib/axios"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
@@ -18,6 +18,7 @@ function App() {
     const isUserLogged = useAuth((state) => state.isUserLogged)
     const setActiveDates = useAuth((state) => state.setActiveDates)
     const setDashboardStats = useStats((state) => state.setStats)
+
 
     useEffect(() => {
         if (isUserLogged) {

@@ -2,9 +2,11 @@ import { Activity, Calendar, TrendingUp } from "lucide-react"
 import Navbar from "../components/layout/Navbar"
 import MyButton from "../components/ui/MyButton"
 import { IconTreadmill } from "@tabler/icons-react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { Link } from "react-scroll"
 import { motion } from "motion/react"
+import { useEffect } from "react"
+import { useGetUser } from "@/hooks/useUser"
 
 const LabelChip = () => {
     return (
@@ -203,6 +205,14 @@ const Footer = () => {
 
 const LandingPage = () => {
     const navigate = useNavigate()
+    const [searchQueryParams] = useSearchParams()
+    const userQuery = searchQueryParams.get("user")
+
+    useEffect(() => {
+        if (userQuery && userQuery === "google") {
+            useGetUser()
+        }
+    })
     return (
         <motion.div
             className="selection:bg-near-black selection:text-btn-text relative flex w-full h-dvh flex-col items-center justify-center bg-neutral-50"

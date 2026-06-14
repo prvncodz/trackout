@@ -43,8 +43,6 @@ export default function ProfileCard() {
         }
         try {
             if (avatar && avatar instanceof File && avatar?.size > 0) {
-                console.log(typeof avatar)
-                console.log(avatar)
                 updateAvatar(avatar)
             }
             if (isInfoChanged) {
@@ -63,7 +61,7 @@ export default function ProfileCard() {
     return (
         <div className="relative flex h-auto w-full flex-col items-center justify-start gap-10 lg:mt-10 lg:flex-row">
             <div className="shadow-standard size-60 shrink-0 overflow-hidden rounded-2xl bg-gray-100">
-                <img src={user?.avatar?.url} className="cursor-default" />
+                <img src={user?.avatar?.url} className="cursor-default h-full w-full" />
             </div>
             <div>
                 <h2 className="cursor-default text-center text-xl font-semibold text-neutral-700 lg:text-left">

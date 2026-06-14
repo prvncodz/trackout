@@ -7,6 +7,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+
 const UploadToCloud = async (filepath: string) => {
     try {
         if (!filepath) {
@@ -50,4 +51,25 @@ const DeleteFromCloud = async (public_id: string) => {
     }
 };
 
-export { UploadToCloud, DeleteFromCloud };
+const UploadGooglePfp = async (url: string) => {
+    try {
+        if (!url) {
+            return null;
+        }
+        console.log("uploading file to the cloud...");
+
+        const res = await cloudinary.uploader.upload(url, {
+            resource_type: "auto",
+        });
+
+        if (res) {
+            console.log("file has been uploaded successfully");
+        }
+        return res;
+    } catch (error: any) {
+        console.error(error.message);
+        return null;
+    }
+};
+
+export { UploadToCloud, DeleteFromCloud, UploadGooglePfp };

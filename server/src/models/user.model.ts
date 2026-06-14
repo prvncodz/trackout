@@ -9,8 +9,8 @@ export interface IUser extends Document {
     },
     fullname: string;
     email: string;
-    height: number;
-    weight: number;
+    height?: number;
+    weight?: number;
     password?: string;
     refreshToken?: string;
     createdAt: Date;
@@ -35,7 +35,6 @@ const UserSchema = new Schema<IUser, Model<IUser, {}, IUserMethods>>(
         fullname: {
             type: String,
             required: [true, "Fullname is required"],
-            unique: [true, "Fullname already taken"],
             trim: true,
             minlength: [3, "Name must be at least 3 characters long!"],
             maxlength: [20, "Name cannot exceed 50 characters!"],
@@ -53,13 +52,13 @@ const UserSchema = new Schema<IUser, Model<IUser, {}, IUserMethods>>(
         },
         height: {
             type: Number,
-            required: [true, "Height is required"],
+            required: false,
             min: 50,
             max: 300
         },
         weight: {
             type: Number,
-            required: [true, "Weight is required"],
+            required: false,
             min: 20,
             max: 500
         },

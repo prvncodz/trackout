@@ -8,8 +8,10 @@ import {
     UpdateAccountInfo,
     DeleteUser,
     UserActiveDates,
+    RedirectToGoogle,
+    GoogleCallback,
 } from "../controllers/user.controllers";
-import  { Router } from "express";
+import { Router } from "express";
 import auth from "../middlewares/auth.middleware";
 import { upload } from "../middlewares/multer.middleware";
 
@@ -26,5 +28,7 @@ router.put("/update-avatar", auth, upload.single("avatar"), UpdateUserAvatar);
 router.patch("/update-info", auth, UpdateAccountInfo);
 router.get("/active-dates", auth, UserActiveDates);
 router.delete("/delete-user", auth, DeleteUser);
+router.get("/google", RedirectToGoogle);
+router.get("/google/callback", GoogleCallback);
 
 export default router;

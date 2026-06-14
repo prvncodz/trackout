@@ -8,6 +8,7 @@ import gymImage from "../assets/gym-hero.jpg"
 import MyButton from "../components/ui/MyButton"
 import { userSignUpSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
+import { GoogleLoginButton } from "@/components/ui/gooleLogin"
 
 const SignUpPage = () => {
     const [loading, setLoading] = useState(false)
@@ -182,6 +183,13 @@ const FormContent = ({ form, loading, fieldErrors, onChange, onSubmit }: FormInp
                     "Create Account"
                 )}
             </MyButton>
+            <div className="flex items-center gap-3 my-4">
+                <div className="flex-1 h-px bg-neutral-200" />
+                <span className="text-sm text-neutral-400">or</span>
+                <div className="flex-1 h-px bg-neutral-200" />
+            </div>
+            <GoogleLoginButton />
+
 
             <p className="mt-5 text-center text-sm text-gray-500">
                 Already have an account?{" "}
