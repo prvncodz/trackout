@@ -50,7 +50,7 @@ const InputField = ({
                     value={value}
                     onChange={onChange}
                     disabled={disabled}
-                    className={`w-full rounded-lg border bg-gray-50 px-4 py-4 text-base text-gray-800 transition-all duration-200 outline-none placeholder:text-gray-400 focus:border-gray-800 focus:bg-white focus:ring-2 focus:ring-gray-800/10 disabled:cursor-not-allowed disabled:opacity-50 ${error ? "border-red-400 focus:border-red-400 focus:ring-red-400/10" : "border-gray-200"} ${isPassword ? "pr-11" : ""} `}
+                    className={`w-full rounded-lg border bg-gray-50 px-4 py-4 text-base text-gray-800 transition-all duration-200 outline-none placeholder:text-gray-400 focus:border-gray-800 focus:bg-white focus:ring-2 focus:ring-gray-800/10 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-near-black dark:text-gray-100 dark:border-gray-600 dark:placeholder:text-gray-500 dark:focus:border-gray-200 dark:focus:bg-black dark:focus:ring-gray-300/10 ${error ? "border-red-400 focus:border-red-400 focus:ring-red-400/10" : "border-gray-200"} ${isPassword ? "pr-11" : ""} `}
                 />
                 {isPassword && (
                     <button

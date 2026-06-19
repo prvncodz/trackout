@@ -10,7 +10,7 @@ import { userSignInSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
 import gymImage from "../assets/gym-hero.jpg"
 import { GoogleLoginButton } from "@/components/ui/gooleLogin"
-import { IconArrowRight } from "@tabler/icons-react"
+import { IconArrowRight, IconLogin } from "@tabler/icons-react"
 
 const SignInPage = () => {
     const [form, setForm] = useState({ email: "", password: "" })
@@ -147,16 +147,15 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }: FormInp
                 />
             </div>
 
-            <MyButton disabled={loading} className="mt-14 h-14 w-full text-lg">
+            <MyButton disabled={loading} className="mt-12 h-14 w-full text-lg">
                 {loading ? (
                     <span className="flex items-center justify-center gap-2">
                         <Spinner />
                         Signing in...
                     </span>
                 ) : (
-                    <span className="flex items-center justify-center gap-2">
+                    <span className="flex items-center justify-center gap-3">
                         Sign in
-                        <IconArrowRight size={18}/>
                     </span>
 
                 )}
@@ -167,11 +166,11 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }: FormInp
                 <div className="flex-1 h-px bg-neutral-200" />
             </div>
             <GoogleLoginButton />
-            <p className="mt-5 text-center text-sm text-gray-500">
+            <p className="mt-5 text-center text-sm text-gray-500 dark:text-gray-400">
                 Don't have an account?{" "}
                 <span
                     onClick={() => navigate("/signup")}
-                    className="cursor-pointer font-semibold text-gray-900 underline-offset-2 hover:underline"
+                    className="cursor-pointer font-semibold text-gray-900 underline-offset-2 hover:underline dark:text-gray-300"
                 >
                     Sign Up
                 </span>
