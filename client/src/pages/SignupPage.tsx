@@ -58,7 +58,7 @@ const SignUpPage = () => {
 
     return (
         <>
-            <div className="hidden h-dvh min-h-130 w-full overflow-hidden rounded-2xl bg-white shadow-sm md:flex">
+            <div className="hidden h-dvh min-h-130 w-full overflow-hidden rounded-2xl bg-white shadow-sm md:flex dark:bg-near-black">
                 <div className="flex w-full flex-1 flex-col items-start justify-center px-12 py-14">
                     <FormContent
                         form={form}
@@ -75,7 +75,7 @@ const SignUpPage = () => {
             </div>
 
             {/* ── Mobile Layout ──────────────────────────────────────────────── */}
-            <div className="flex h-screen w-full items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm md:hidden">
+            <div className="flex h-screen w-full items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm md:hidden dark:bg-near-black">
                 <div className="px-8 py-10">
                     <FormContent
                         form={form}
@@ -111,7 +111,7 @@ const FormContent = ({ form, loading, fieldErrors, onChange, onSubmit }: FormInp
         <form onSubmit={(e: React.SubmitEvent<HTMLFormElement>) => onSubmit(e)} className="mx-auto w-full max-w-lg tracking-normal dark:bg-near-black">
             <Backbtn />
             <div className="mb-8">
-                <h1 className="text-center text-3xl font-bold text-gray-900 md:text-left">Create Your Account</h1>
+                <h1 className="text-center text-3xl font-bold text-gray-900 md:text-left dark:text-line-color">Create Your Account</h1>
                 <p className="mt-3 text-center text-xs text-gray-500 md:text-left">
                     Enter your details to get started with your fitness journey
                 </p>
@@ -195,7 +195,7 @@ const FormContent = ({ form, loading, fieldErrors, onChange, onSubmit }: FormInp
                 Already have an account?{" "}
                 <span
                     onClick={() => navigate("/signin")}
-                    className="cursor-pointer font-semibold text-gray-900 underline-offset-2 hover:underline"
+                    className="cursor-pointer font-semibold text-gray-900 underline-offset-2 hover:underline dark:text-gray-300"
                 >
                     Sign In
                 </span>
@@ -217,11 +217,12 @@ const Backbtn = () => {
     return (
         <motion.button
             type="button"
-            className="border-line-color absolute top-5 left-5 cursor-pointer rounded-full border bg-gray-50 p-4 text-gray-700"
+            className="border-line-color absolute top-5 left-5 cursor-pointer rounded-full border bg-gray-50 p-4 text-gray-700 dark:bg-near-black  dark:text-gray-300 dark:border-gray-600"
             initial={{
                 opacity: 0,
                 scale: 0.9,
-            }}
+            }
+            }
             animate={{
                 opacity: 1,
             }}
@@ -234,7 +235,7 @@ const Backbtn = () => {
             onClick={() => navigate("/")}
         >
             <ArrowLeft />
-        </motion.button>
+        </motion.button >
     )
 }
 

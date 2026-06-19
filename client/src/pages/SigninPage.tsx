@@ -10,7 +10,6 @@ import { userSignInSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
 import gymImage from "../assets/gym-hero.jpg"
 import { GoogleLoginButton } from "@/components/ui/gooleLogin"
-import { IconArrowRight, IconLogin } from "@tabler/icons-react"
 
 const SignInPage = () => {
     const [form, setForm] = useState({ email: "", password: "" })
