@@ -10,6 +10,7 @@ import { userSignInSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
 import gymImage from "../assets/gym-hero.jpg"
 import { GoogleLoginButton } from "@/components/ui/gooleLogin"
+import { IconArrowRight } from "@tabler/icons-react"
 
 const SignInPage = () => {
     const [form, setForm] = useState({ email: "", password: "" })
@@ -153,7 +154,11 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }: FormInp
                         Signing in...
                     </span>
                 ) : (
-                    "Sign In"
+                    <span className="flex items-center justify-center gap-2">
+                        Sign in
+                        <IconArrowRight size={18}/>
+                    </span>
+
                 )}
             </MyButton>
             <div className="flex items-center gap-3 my-4">

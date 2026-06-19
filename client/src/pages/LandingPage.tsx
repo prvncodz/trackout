@@ -44,17 +44,17 @@ const HeroSection = () => {
                 <MyButton onClick={() => navigate("/signup")} className="text-sm md:text-base">
                     Get started for free
                 </MyButton>
-                <motion.div whileHover={{ y: -3 }}>
+                <div >
                     <Link
                         to="features"
-                        className="text-near-black flex h-10 w-auto cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-2 px-8 text-sm font-semibold transition-all hover:bg-gray-50 hover:text-gray-900 active:scale-98 md:text-base"
+                        className="text-near-black flex h-10 w-auto cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-2 px-8 text-sm font-semibold transition-all hover:bg-gray-50 hover:text-gray-900 active:scale-98 md:text-base dark:bg-near-black dark:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-neutral-100"
                         smooth={true}
                         offset={-140}
                         duration={300}
                     >
                         How it works?
                     </Link>
-                </motion.div>
+                </div>
             </div>
         </section>
     )
@@ -278,7 +278,7 @@ const LandingPage = () => {
                         }
                     </button>
                     <button
-                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-200 hover:text-gray-800 md:font-normal md:text-neutral-500"
+                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-200 hover:text-gray-800 md:font-normal md:text-neutral-500 dark:hover:text-gray-300"
                         onClick={() => navigate("/signin")}
                     >
                         Log in{" "}

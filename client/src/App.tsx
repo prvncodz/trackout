@@ -28,8 +28,13 @@ function App() {
     }, [isUserLogged])
 
     useEffect(() => {
-        document.documentElement.classList.toggle("light");
-        document.documentElement.classList.toggle("dark");
+        if (theme === "dark") {
+            document.documentElement.classList.remove("light");
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.add("light");
+            document.documentElement.classList.remove("dark");
+        }
     }, [theme])
 
     useEffect(() => {
