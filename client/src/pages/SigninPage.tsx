@@ -9,7 +9,6 @@ import { useAuth } from "../stores/user.store"
 import { userSignInSchema } from "../schemas/user.schemas"
 import { toast } from "sonner"
 import gymImage from "../assets/gym-hero.jpg"
-import { IconBrandGoogle } from "@tabler/icons-react"
 import { GoogleLoginButton } from "@/components/ui/gooleLogin"
 
 const SignInPage = () => {
@@ -55,6 +54,11 @@ const SignInPage = () => {
             }
         } catch (err: any) {
             const message = err.issues[0].message || err?.message || "Something went wrong. Please try again."
+            if (message?.includes("email")) {
+                setFieldErrors({ ...fieldErrors, email: message })
+            } else if (message?.includes("password")) {
+                setFieldErrors({ ...fieldErrors, password: message })
+            }
             toast.error(message)
         } finally {
             setLoading(false)
@@ -64,7 +68,7 @@ const SignInPage = () => {
     return (
         <>
             <div className="hidden h-screen min-h-130 w-full overflow-hidden rounded-2xl bg-white shadow-sm md:flex">
-                <div className="flex w-full flex-1 flex-col items-start justify-center px-12 py-14">
+                <div className="flex w-full flex-1 flex-col items-start justify-center px-12 py-14 dark:bg-near-black">
                     <FormContent
                         form={form}
                         fieldErrors={fieldErrors}
@@ -112,13 +116,13 @@ const FormContent = ({ form, fieldErrors, loading, onChange, onSubmit }: FormInp
         <form onSubmit={(e: React.SubmitEvent<HTMLFormElement>) => onSubmit(e)} className="mx-auto w-full max-w-lg tracking-normal">
             <Backbtn />
             <div className="mb-8">
-                <h1 className="text-center text-3xl font-bold text-gray-900 md:text-left">Welcome Back</h1>
-                <p className="mt-3 text-center text-xs text-gray-500 md:text-left">
+                <h1 className="text-center text-3xl font-bold text-gray-900 md:text-left dark:text-line-color">Welcome Back</h1>
+                <p className="mt-3 text-center text-xs text-gray-500 md:text-left dark:text-gray-400">
                     Enter your credentials to access your account
                 </p>
             </div>
 
-            <div className="mt-2 space-y-6">
+            <div className="mt-2 space-y-6 h-auto">
                 <InputField
                     id="email"
                     name="email"
@@ -185,7 +189,7 @@ const Backbtn = () => {
     return (
         <motion.button
             type="button"
-            className="border-line-color absolute top-5 left-5 cursor-pointer rounded-full border bg-gray-50 p-4 text-gray-700 hover:bg-neutral-50 hover:text-gray-800"
+            className="border-line-color absolute top-5 left-5 cursor-pointer rounded-full border bg-gray-50 p-4 text-gray-700 hover:bg-neutral-50 hover:text-gray-800 dark:bg-near-black dark:text-gray-300 dark:border-gray-600"
             onClick={() => navigate("/")}
             initial={{
                 opacity: 0,

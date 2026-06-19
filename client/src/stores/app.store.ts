@@ -23,4 +23,21 @@ const useAppStore = create<AppStore>()(
     ),
 )
 
-export { useAppStore }
+interface Theme{
+    theme:string;
+    setTheme:(theme:string) => void;
+}
+const useThemeStore = create<Theme>()(
+    persist(
+        (set) => ({
+            theme: "light",
+            setTheme: (theme) => set({ theme: theme })
+        }),
+        {
+            name: "theme",
+            storage: createJSONStorage(() => localStorage),
+        },
+    ),
+)
+
+export { useAppStore ,useThemeStore}

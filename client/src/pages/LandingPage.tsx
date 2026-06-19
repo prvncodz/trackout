@@ -1,18 +1,19 @@
 import { Activity, Calendar, TrendingUp } from "lucide-react"
 import Navbar from "../components/layout/Navbar"
 import MyButton from "../components/ui/MyButton"
-import { IconTreadmill } from "@tabler/icons-react"
+import { IconMoon, IconSun, IconTreadmill } from "@tabler/icons-react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { Link } from "react-scroll"
 import { motion } from "motion/react"
 import { useEffect } from "react"
 import { useGetUser } from "@/hooks/useUser"
+import { useThemeStore } from "@/stores/app.store"
 
 const LabelChip = () => {
     return (
-        <div className="flex h-7 w-auto items-center justify-center rounded-full border border-gray-400 bg-gray-100 pr-3 pl-2 text-xs font-medium text-gray-600">
+        <div className="flex h-7 w-auto items-center justify-center rounded-full border border-gray-400 bg-gray-100 pr-3 pl-3  text-xs font-medium text-gray-600 dark:bg-neutral-900 dark:text-gray-500">
             <Activity size={14} strokeWidth={2} />
-            <h3 className="ml-2 text-xs text-gray-600 md:text-sm">Engineered for performance</h3>
+            <h3 className="ml-2 text-xs  md:text-sm">Engineered for performance</h3>
         </div>
     )
 }
@@ -20,7 +21,7 @@ const LabelChip = () => {
 const HeroText = () => {
     return (
         <div className="flex flex-col items-center justify-center gap-6">
-            <h1 className="text-near-black text-center text-[2.85rem] leading-12.5 font-extrabold tracking-tight md:text-7xl md:leading-17.5">
+            <h1 className="text-near-black text-center text-[2.85rem] leading-12.5 font-extrabold tracking-tight md:text-7xl md:leading-17.5 dark:text-neutral-50">
                 Log every rep. <br /> Track every gain.
             </h1>
             <p className="mt-2 max-w-[80vw] text-center text-sm font-normal text-neutral-500 md:max-w-160 md:text-xl">
@@ -92,7 +93,7 @@ const Features = () => {
             id="features"
             className="selection:bg-near-black selection:text-btn-color my-15 w-full lg:my-35 lg:h-200"
         >
-            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl">
+            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl dark:text-neutral-50 ">
                 Train Smarter. Stay Consistent.
             </h2>
             <p className="text-center text-xs text-neutral-500">Everything you need,nothing you don't.</p>
@@ -136,10 +137,10 @@ interface FeatureCardProps {
 const FeaturesCard = ({ Logo, title, description, className }: FeatureCardProps) => {
     return (
         <div
-            className={`border-line-color flex flex-col items-start gap-4 rounded-xl border bg-gray-50 p-10 pr-13 pb-13 shadow-md ${className}`}
+            className={`border-line-color flex flex-col items-start gap-4 rounded-xl border bg-gray-50 p-10 pr-13 pb-13 shadow-md dark:bg-neutral-900 dark:border-gray-800 ${className}`}
         >
             {Logo}
-            <h2 className="text-near-black mt-5 text-lg font-bold">{title}</h2>
+            <h2 className="text-near-black mt-5 text-lg font-bold dark:text-neutral-50">{title}</h2>
             <p className="text-neutral-500">{description}</p>
         </div>
     )
@@ -147,7 +148,7 @@ const FeaturesCard = ({ Logo, title, description, className }: FeatureCardProps)
 const Workflow = () => {
     return (
         <section id="how-it-works" className="my-20 md:my-30">
-            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl">Application Workflow</h2>
+            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl dark:text-neutral-50 ">Application Workflow</h2>
             <div className="relative my-15 flex w-full flex-col justify-between md:flex-row">
                 <WorkflowCard
                     no={1}
@@ -182,16 +183,16 @@ const WorkflowCard = ({ no, title, description }: WorkflowCardProps) => {
                 {no}
             </div>
             <div className="ml-5 flex flex-col">
-                <h2 className="text-near-black mt-5 text-left text-lg font-bold md:text-center">{title}</h2>
-                <p className="mt-1 w-full max-w-80 text-left text-sm text-neutral-600 md:text-center">{description}</p>
+                <h2 className="text-near-black mt-5 text-left text-lg font-bold md:text-center dark:text-neutral-50">{title}</h2>
+                <p className="mt-1 w-full max-w-80 text-left text-sm text-neutral-600 md:text-center dark:text-neutral-500">{description}</p>
             </div>
         </div>
     )
 }
 const Footer = () => {
     return (
-        <footer className="border-line-color mt-40 flex w-full flex-col items-center justify-center border-t py-5 md:mt-70">
-            <h2 className="w-full max-w-[95%] text-center font-serif text-base text-gray-700 md:max-w-[80%] md:text-xl">
+        <footer className="border-line-color mt-40 flex w-full flex-col  items-center justify-center border-t py-5 md:mt-70 dark:border-neutral-200">
+            <h2 className="w-full max-w-[95%] text-center font-serif text-base text-gray-700 md:max-w-[80%] md:text-xl dark:text-neutral-400">
                 "It removes emotion from the process. You are left only with the architecture of your own discipline and
                 the numbers that prove it."
             </h2>
@@ -207,15 +208,18 @@ const LandingPage = () => {
     const navigate = useNavigate()
     const [searchQueryParams] = useSearchParams()
     const userQuery = searchQueryParams.get("user")
+    const theme = useThemeStore((state) => state.theme)
+    const setTheme = useThemeStore((state) => state.setTheme)
 
     useEffect(() => {
         if (userQuery && userQuery === "google") {
             useGetUser()
         }
     })
+
     return (
         <motion.div
-            className="selection:bg-near-black selection:text-btn-text relative flex min-h-dvh w-full flex-col items-center justify-start overflow-x-hidden bg-neutral-50"
+            className="selection:bg-near-black selection:text-btn-text relative flex min-h-dvh w-full flex-col items-center justify-start overflow-x-hidden bg-neutral-50 dark:bg-near-black dark:text-neutral-50"
             initial={{
                 opacity: 0,
             }}
@@ -232,7 +236,7 @@ const LandingPage = () => {
             <Navbar>
                 <ul className="hidden items-center gap-10 md:flex">
                     <Link
-                        className="cursor-pointer text-base text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900"
+                        className="cursor-pointer text-base text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
                         to="home"
                         smooth={true}
                         offset={-240}
@@ -243,7 +247,7 @@ const LandingPage = () => {
                         Home
                     </Link>
                     <Link
-                        className="cursor-pointer text-base text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900"
+                        className="cursor-pointer text-base text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
                         to="features"
                         smooth={true}
                         offset={-140}
@@ -254,7 +258,7 @@ const LandingPage = () => {
                         Features
                     </Link>
                     <Link
-                        className="ext-gray-600 cursor-pointer text-base text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900"
+                        className="ext-gray-600 cursor-pointer text-base text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
                         to="how-it-works"
                         smooth={true}
                         offset={-70}
@@ -266,8 +270,15 @@ const LandingPage = () => {
                     </Link>
                 </ul>
                 <div className="flex items-center justify-center gap-2 md:gap-6">
+                    <button className="flex justify-center items-center">
+                        {theme === "light" ?
+                            <IconMoon className="cursor-pointer text-sm text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("dark")} size={20} />
+                            :
+                            <IconSun className="cursor-pointer text-sm text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("light")} size={20} />
+                        }
+                    </button>
                     <button
-                        className="bg-near-black flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-200 hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-neutral-500"
+                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-200 hover:text-gray-800 md:font-normal md:text-neutral-500"
                         onClick={() => navigate("/signin")}
                     >
                         Log in{" "}

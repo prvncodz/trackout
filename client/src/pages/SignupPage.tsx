@@ -108,7 +108,7 @@ const FormContent = ({ form, loading, fieldErrors, onChange, onSubmit }: FormInp
     const navigate = useNavigate()
 
     return (
-        <form onSubmit={(e: React.SubmitEvent<HTMLFormElement>) => onSubmit(e)} className="mx-auto w-full max-w-lg tracking-normal">
+        <form onSubmit={(e: React.SubmitEvent<HTMLFormElement>) => onSubmit(e)} className="mx-auto w-full max-w-lg tracking-normal dark:bg-near-black">
             <Backbtn />
             <div className="mb-8">
                 <h1 className="text-center text-3xl font-bold text-gray-900 md:text-left">Create Your Account</h1>

@@ -7,7 +7,7 @@ const Logo = ({ className = "" }) => {
                 <Activity size={21} />
             </div>
             <h3
-                className={`text-near-black ml-2 cursor-default text-center text-xl font-black subpixel-antialiased md:ml-3 ${className}`}
+                className={`text-near-black ml-2 cursor-default text-center text-xl font-black subpixel-antialiased md:ml-3 dark:text-neutral-200 ${className}`}
             >
                 Trackout
             </h3>

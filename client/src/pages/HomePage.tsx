@@ -114,7 +114,8 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                     </DialogHeader>
                     <form onSubmit={(e) => {
                         e.preventDefault()
-                        const name: string = e.target.logName.value;
+                        if (isEditing) return
+                        const name: string = e.currentTarget.logName.value;
                         editLog(name);
                     }}>
                         <FieldGroup>
@@ -127,7 +128,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit">Save Changes</Button>
+                            <Button type="submit" disabled={isEditing}>Save Changes</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>
@@ -135,6 +136,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
             <button
                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
                 onClick={() => {
+                    if (isDuplicating) return
                     toast.promise(
                         () =>
                             duplicateLog(),
@@ -145,6 +147,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                         }
                     )
                 }}
+                disabled={isDuplicating}
             >
                 <IconCopy size={18} />
                 Duplicate log
@@ -170,7 +173,8 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                        <AlertDialogAction variant="destructive" onClick={() => {
+                        <AlertDialogAction variant="destructive" disabled={isDeleting} onClick={() => {
+                            if (isDeleting) return
                             toast.promise(
                                 () =>
                                     deleteLog(),
@@ -226,7 +230,7 @@ const AllLogs = () => {
     const [logName, setLogName] = useState("")
     const logs = useLogStore((state) => state.logs)
     const userId = useAuth((state) => state.user?._id)
-    const { mutate: createLog } = useCreateLog(userId, {
+    const { mutate: createLog, isPending: isCreatingLog } = useCreateLog(userId, {
         onSuccess: () => setIsCreating(false),
         onError: () => setIsCreating(false),
     })
@@ -266,6 +270,7 @@ const AllLogs = () => {
                     </DialogHeader>
                     <form onSubmit={(e) => {
                         e.preventDefault();
+                        if (isCreatingLog) return
                         createLog(logName);
                     }}>
                         <FieldGroup>
@@ -278,7 +283,7 @@ const AllLogs = () => {
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit">Confirm</Button>
+                            <Button type="submit" disabled={isCreatingLog}>Confirm</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>
@@ -319,11 +324,11 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
     const activeLog = useLogStore((state) => state.activeLog)
 
 
-    const { mutateAsync: deleteExercise } = useDeleteExercise(logId, activeLog)
-    const { mutate: updateExercise } = useUpdateExercise(activeLog, exercise._id)
-    const { mutate: updateSet } = useUpdateSet(activeLog, exercise._id)
-    const { mutate: toggleSetMarked } = useToggleSetDone(activeLog, exercise?._id)
-    const { mutate: createSet } = useCreateSet(exercise?._id, activeLog, {
+    const { mutateAsync: deleteExercise, isPending: isDeletingExercise } = useDeleteExercise(logId, activeLog)
+    const { mutate: updateExercise, isPending: isUpdatingExercise } = useUpdateExercise(activeLog, exercise._id)
+    const { mutate: updateSet, isPending: isUpdatingSet } = useUpdateSet(activeLog, exercise._id)
+    const { mutate: toggleSetMarked, isPending: isTogglingSet } = useToggleSetDone(activeLog, exercise?._id)
+    const { mutate: createSet, isPending: isCreatingSet } = useCreateSet(exercise?._id, activeLog, {
         onSuccess: () => {
             setIsCreating(false)
             setIsOpen(false)
@@ -333,9 +338,10 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
             setIsOpen(false)
         },
     })
-    const { mutate: deleteSet } = useDeleteSet(exercise?._id, activeLog)
+    const { mutate: deleteSet, isPending: isDeletingSet } = useDeleteSet(exercise?._id, activeLog)
 
     function handleUpdateExercise() {
+        if (isUpdatingExercise || isUpdatingSet) return
         if (isExerciseUpdated) {
             updateExercise(exerciseInfo)
         }
@@ -394,7 +400,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {editMode && <MyButton onClick={handleUpdateExercise}>save</MyButton>}
+                    {editMode && <MyButton onClick={handleUpdateExercise} disabled={isUpdatingExercise || isUpdatingSet}>save</MyButton>}
                     {/* Menu */}
                     <div className="dropdown dropdown-end relative">
                         {!completed && (
@@ -451,7 +457,8 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                         </DialogHeader>
                                         <form onSubmit={(e) => {
                                             e.preventDefault()
-                                            const data = Object.fromEntries(new FormData(e.target)) as any
+                                            if (isCreatingSet) return
+                                            const data = Object.fromEntries(new FormData(e.currentTarget)) as any
                                             const setNo = exercise?.sets?.length + 1
                                             data.setNo = setNo
                                             createSet(data as CreateSetInput)
@@ -500,7 +507,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                                 <DialogClose asChild>
                                                     <Button variant="outline">Cancel</Button>
                                                 </DialogClose>
-                                                <Button type="submit">Confirm</Button>
+                                                <Button type="submit" disabled={isCreatingSet}>Confirm</Button>
                                             </DialogFooter>
                                         </form>
                                     </DialogContent>
@@ -525,7 +532,8 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                                            <AlertDialogAction variant="destructive" onClick={() => {
+                                            <AlertDialogAction variant="destructive" disabled={isDeletingExercise} onClick={() => {
+                                                if (isDeletingExercise) return
                                                 toast.promise(
                                                     deleteExercise(exercise._id),
                                                     {
@@ -606,7 +614,10 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                             )}
 
                             {editMode ? (
-                                <div onClick={() => deleteSet(set._id)}>
+                                <div onClick={() => {
+                                    if (isDeletingSet) return
+                                    deleteSet(set._id)
+                                }}>
                                     <IconTrash
                                         size={18}
                                         className="flex items-center gap-2 text-sm text-red-500 hover:bg-red-50"
@@ -615,7 +626,11 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                             ) : (
                                 <div className="flex justify-center">
                                     <button
-                                        onClick={() => toggleSetMarked(set._id)}
+                                        onClick={() => {
+                                            if (isTogglingSet) return
+                                            toggleSetMarked(set._id)
+                                        }}
+                                        disabled={isTogglingSet}
                                         className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.completed ? "border-black bg-black text-white" : "border-neutral-300"
                                             }`}
                                     >
@@ -643,13 +658,13 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
     const setActiveLog = useLogStore((state) => state.setActiveLog)
     const [addingExercise, setAddingExercise] = useState(false)
     const { data, status, error } = useQuery({ queryKey: ['log', activeLog], queryFn: () => useGetlogById(activeLog) })
-    const { mutate: createExercise } = useCreateExercise(logId, activeLog, {
+    const { mutate: createExercise, isPending: isCreatingExercise } = useCreateExercise(logId, activeLog, {
         onSuccess: () => setAddingExercise(false),
         onError: () => {
             setAddingExercise(false)
         }
     })
-    const { mutateAsync: markLogCompleted } = useMarkLogCompleted(logId, activeLog)
+    const { mutateAsync: markLogCompleted, isPending: isMarkingCompleted } = useMarkLogCompleted(logId, activeLog)
 
     useEffect(() => {
     }, [data, activeLog])
@@ -690,8 +705,9 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                                         </DialogHeader>
                                         <form onSubmit={(e) => {
                                             e.preventDefault()
-                                            const name = e.target.logName.value,
-                                                muscleGroup = e.target.muscleGroup.value;
+                                            if (isCreatingExercise) return
+                                            const name = e.currentTarget.logName.value,
+                                                muscleGroup = e.currentTarget.muscleGroup.value;
                                             createExercise({ name, muscleGroup })
                                         }}>
                                             <FieldGroup>
@@ -708,14 +724,15 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                                                 <DialogClose asChild>
                                                     <Button variant="outline">Cancel</Button>
                                                 </DialogClose>
-                                                <Button type="submit">Save Changes</Button>
+                                                <Button type="submit" disabled={isCreatingExercise}>Save Changes</Button>
                                             </DialogFooter>
                                         </form>
                                     </DialogContent>
                                 </Dialog>
                             )}
                             {data?.exercises?.length ? (
-                                <Button variant="outline" disabled={data?.completedAt ? true : false} onClick={() => {
+                                <Button variant="outline" disabled={data?.completedAt ? true : isMarkingCompleted} onClick={() => {
+                                    if (isMarkingCompleted) return
                                     toast.promise(
                                         markLogCompleted(),
                                         {
@@ -770,8 +787,9 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                                         </DialogHeader>
                                         <form onSubmit={(e) => {
                                             e.preventDefault()
-                                            const name = e.target.logName.value,
-                                                muscleGroup = e.target.muscleGroup.value;
+                                            if (isCreatingExercise) return
+                                            const name = e.currentTarget.logName.value,
+                                                muscleGroup = e.currentTarget.muscleGroup.value;
                                             createExercise({ name, muscleGroup })
                                         }}>
 
@@ -789,14 +807,15 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                                                 <DialogClose asChild>
                                                     <Button variant="outline">Cancel</Button>
                                                 </DialogClose>
-                                                <Button type="submit">Save Changes</Button>
+                                                <Button type="submit" disabled={isCreatingExercise}>Save Changes</Button>
                                             </DialogFooter>
                                         </form>
                                     </DialogContent>
                                 </Dialog>
                             )}
                             {data?.exercises?.length ? (
-                                <Button variant="outline" disabled={data?.completedAt ? true : false} onClick={() => {
+                                <Button variant="outline" disabled={data?.completedAt ? true : isMarkingCompleted} onClick={() => {
+                                    if (isMarkingCompleted) return
                                     toast.promise(
                                         markLogCompleted(),
                                         {

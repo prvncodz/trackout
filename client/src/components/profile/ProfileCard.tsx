@@ -28,12 +28,14 @@ export default function ProfileCard() {
         { label: "Height", value: user?.height ? `${user?.height}cm` : "—" },
         { label: "Weight", value: user?.weight ? `${user?.weight}kg` : "—" },
     ]
-    const { mutate: updateAvatar } = useUpdateAvatar()
-    const { mutate: updateUserInfo } = useUpdateUserinfo()
+    const { mutate: updateAvatar, isPending: isUpdatingAvatar } = useUpdateAvatar()
+    const { mutate: updateUserInfo, isPending: isUpdatingUserInfo } = useUpdateUserinfo()
+    const isUpdatingProfile = isUpdatingAvatar || isUpdatingUserInfo
 
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault()
-        const form = new FormData(e.target)
+        if (isUpdatingProfile) return
+        const form = new FormData(e.currentTarget)
         const avatar = form.get("avatar")
         const info = {
             fullname: form.get("fullname"),
@@ -151,7 +153,7 @@ export default function ProfileCard() {
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>
                             </DialogClose>
-                            <Button type="submit">Save changes</Button>
+                            <Button type="submit" disabled={isUpdatingProfile}>Save changes</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>

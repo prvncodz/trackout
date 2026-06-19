@@ -13,12 +13,13 @@ import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useGetUser } from "./hooks/useUser"
+import { useThemeStore } from "./stores/app.store"
 
 function App() {
     const isUserLogged = useAuth((state) => state.isUserLogged)
     const setActiveDates = useAuth((state) => state.setActiveDates)
     const setDashboardStats = useStats((state) => state.setStats)
-
+    const theme = useThemeStore((state) => state.theme)
 
     useEffect(() => {
         if (isUserLogged) {
@@ -26,6 +27,10 @@ function App() {
         }
     }, [isUserLogged])
 
+    useEffect(() => {
+        document.documentElement.classList.toggle("light");
+        document.documentElement.classList.toggle("dark");
+    }, [theme])
 
     useEffect(() => {
         async function getActiveDates() {

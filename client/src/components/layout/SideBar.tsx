@@ -57,6 +57,8 @@ function Spinner() {
 const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) => {
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
     const [showLogoutDailogue, setShowLogoutDailogue] = useState(false)
+    const [isLoggingOut, setIsLoggingOut] = useState(false)
+    const [isDeletingUser, setIsDeletingUser] = useState(false)
     const setUser = useAuth((state) => state.setUser)
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged)
     const setActiveDates = useAuth((state) => state.setActiveDates)
@@ -66,6 +68,8 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
     const navigate = useNavigate()
 
     async function handleLogout() {
+        if (isLoggingOut) return
+        setIsLoggingOut(true)
         try {
             await axios.post("/user/logout")
             setUser(null)
@@ -84,10 +88,13 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
         } catch (err: any) {
             const message = err.response?.data.message || err.message || "Something went wrong. Please try again."
             toast.error(message)
+            setIsLoggingOut(false)
         }
     }
 
     async function handleDeleteUser() {
+        if (isDeletingUser) return
+        setIsDeletingUser(true)
         try {
             await axios.delete("/user/delete-user")
             setUser(null)
@@ -107,6 +114,7 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
         } catch (err: any) {
             const message = err.response?.data.message || err.message || "Something went wrong. Please try again."
             toast.error(message)
+            setIsDeletingUser(false)
         }
     }
 
@@ -143,7 +151,7 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
-                        <Button type="button" onClick={handleLogout}>
+                        <Button type="button" onClick={handleLogout} disabled={isLoggingOut}>
                             Logout
                         </Button>
                     </DialogFooter>
@@ -169,7 +177,7 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
-                        <AlertDialogAction variant="destructive" onClick={handleDeleteUser}>
+                        <AlertDialogAction variant="destructive" onClick={handleDeleteUser} disabled={isDeletingUser}>
                             Delete
                         </AlertDialogAction>
                     </AlertDialogFooter>
@@ -309,7 +317,7 @@ const NavbarForMobile = ({ className = "" }) => {
     const [isCreating, setIsCreating] = useState(false)
     const [logName, setLogName] = useState("")
 
-    const { mutate: createLog, isSuccess: isCreated, isError } = useCreateLog(userId, {
+    const { mutate: createLog, isPending: isCreatingLog, isSuccess: isCreated, isError } = useCreateLog(userId, {
         onSuccess: () => setIsCreating(false),
         onError: () => setIsCreating(false),
     })
@@ -343,6 +351,7 @@ const NavbarForMobile = ({ className = "" }) => {
                             </DialogHeader>
                             <form onSubmit={(e) => {
                                 e.preventDefault();
+                                if (isCreatingLog) return
                                 createLog(logName);
                             }}>
                                 <FieldGroup>
@@ -355,7 +364,7 @@ const NavbarForMobile = ({ className = "" }) => {
                                     <DialogClose asChild>
                                         <Button variant="outline">Cancel</Button>
                                     </DialogClose>
-                                    <Button type="submit">Save changes</Button>
+                                    <Button type="submit" disabled={isCreatingLog}>Save changes</Button>
                                 </DialogFooter>
                             </form>
                         </DialogContent>
