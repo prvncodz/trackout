@@ -84,7 +84,7 @@ const SignInPage = () => {
             </div>
 
             {/* ── Mobile Layout ──────────────────────────────────────────────── */}
-            <div className="flex h-screen w-full items-center justify-center overflow-hidden bg-white shadow-sm md:hidden">
+            <div className="flex h-screen w-full items-center justify-center overflow-hidden bg-white shadow-sm md:hidden dark:bg-near-black">
                 <div className="w-full px-8 py-10">
                     <FormContent
                         form={form}

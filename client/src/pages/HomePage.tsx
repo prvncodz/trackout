@@ -297,7 +297,7 @@ const AllLogs = () => {
                         />
                     )) : (
                     <div className="antialiased text-gray-600">
-                    No logs yet created by user. Create your first log using the create button.
+                    No logs yet created by user.
                     </div>
                     )}
             </div>

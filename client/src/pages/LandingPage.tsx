@@ -269,7 +269,7 @@ const LandingPage = () => {
                         How it works
                     </Link>
                 </ul>
-                <div className="flex items-center justify-center gap-2 md:gap-6">
+                <div className="flex items-center justify-center gap-4 md:gap-6">
                     <button className="flex justify-center items-center">
                         {theme === "light" ?
                             <IconMoon className="cursor-pointer text-sm text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("dark")} size={20} />
@@ -278,10 +278,10 @@ const LandingPage = () => {
                         }
                     </button>
                     <button
-                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-200 hover:text-gray-800 md:font-normal md:text-neutral-500 dark:hover:text-gray-300"
+                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-200 bg-near-black  hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-neutral-500 dark:bg-gray-100 dark:text-near-black dark:md:text-neutral-500 dark:md:bg-near-black dark:hover:text-gray-300"
                         onClick={() => navigate("/signin")}
                     >
-                        Log in{" "}
+                        Log in
                     </button>
                     <MyButton onClick={() => navigate("/signup")} className="hidden md:block">
                         Get started

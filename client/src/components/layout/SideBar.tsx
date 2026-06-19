@@ -211,7 +211,7 @@ const UserInfo = ({ avatarUrl, fullName }: UserInfoProps) => {
                     </div>
                 )}
                 <motion.span
-                    className="truncate text-sm font-medium text-gray-700 antialiased"
+                    className="truncate text-sm font-medium text-gray-700 antialiased dark:text-line-color"
                     whileHover={{
                         x: 5,
                     }}
@@ -220,7 +220,7 @@ const UserInfo = ({ avatarUrl, fullName }: UserInfoProps) => {
                 </motion.span>
             </div>
             <div className="relative">
-                <IconSettings onClick={() => setIsOpen(!isOpen)} className="text-gray-600" />
+                <IconSettings onClick={() => setIsOpen(!isOpen)} className="text-gray-600 dark:text-line-color" />
                 {isOpen && <Popup setIsOpen={setIsOpen} />}
             </div>
         </div>
@@ -265,7 +265,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }: SidebarProps) => {
     }
 
     return (
-        <div className={`border-line-color flex h-screen w-90 shrink-0 flex-col border-r bg-white p-3 ${className}`}>
+        <div className={`border-line-color flex h-screen w-90 shrink-0 flex-col border-r bg-white p-3 dark:bg-near-black ${className}`}>
             <div className="flex-start mt-3 ml-0 flex w-full px-4">
                 <Logo className={"text-xl font-extrabold text-gray-800 antialiased"} />
             </div>
@@ -281,14 +281,14 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }: SidebarProps) => {
                             key={item.page}
                             onClick={() => handleNav(item)}
                             className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-3.5 text-left text-lg font-medium transition-all duration-200 ${isActive
-                                ? "border-line-color border bg-gray-50 text-gray-800"
-                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                                ? "border-line-color border bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-near-black dark:text-line-color"
+                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-800 dark:hover:bg-gray-900 dark:hover:text-line-color"
                                 } `}
                         >
                             <Icon
                                 size={23}
                                 strokeWidth={isActive ? 2 : 1}
-                                className={isActive ? "text-gray-700 antialiased" : "text-gray-400 antialiased"}
+                                className={isActive ? "text-gray-700 antialiased dark:text-line-color" : "text-gray-400 antialiased"}
                             />
                             <motion.div
                                 whileHover={{
