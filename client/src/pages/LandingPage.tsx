@@ -77,10 +77,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 }
 
 const DashboardMockup = () => {
+    const theme = useThemeStore((state) => state.theme)
     return (
         <div className="my-20 ml-15 flex h-150 w-300 cursor-default items-center justify-center overflow-hidden rounded-lg p-5 select-none lg:ml-0 lg:w-auto">
             <img
-                src="/mockup.png"
+                src={theme === "light"? "./mockup.png":"/mockup-dark.png"}
                 className="shadow-aesthetic h-full w-full cursor-default rounded-lg select-none"
             />
         </div>

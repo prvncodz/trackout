@@ -126,7 +126,7 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
 
     return (
         <motion.ul
-            className="menu dropdown-content absolute top-10 right-1 md:bottom-10 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg dark:border-gray-800 dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
+            className="menu dropdown-content absolute top-10 right-1 md:-top-35 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg dark:border-gray-800 dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
             initial={{
                 opacity: 0,
             }}
