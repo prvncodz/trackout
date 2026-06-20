@@ -31,6 +31,7 @@ img {
     --shadow-standard:
         0px 2px 3px -1px rgba(0, 0, 0, 0.1), 0px 1px 0px 0px rgba(25, 28, 33, 0.02),
         0px 0px 0px 1px rgba(25, 28, 33, 0.08);
+--shadow-aesthetic-dark: 0 6px 20px rgb(0 0 0 / 0.4);
     --shadow-aesthetic: 0 3px 10px rgb(0, 0, 0, 0.1);
     --shadow-euphonious: 0px 10px 1px rgba(221, 221, 221, 1), 0 10px 20px rgba(204, 204, 204, 1);
 }

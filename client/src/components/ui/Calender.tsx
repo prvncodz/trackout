@@ -17,7 +17,7 @@ const CalenderComponent = ({ size = "lg", className="", ...props }) => {
                 <Calendar
                     mode="single"
                     disabled={ActiveDates}
-                    className={`w-full bg-white shadow-none dark:bg-neutral-900 dark:text-line-color ${size === "lg" ? "[--cell-radius:--spacing(10)] md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(12)]" : " [--cell-radius:--spacing(9)] md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(12)]"}`}
+                    className={`w-full bg-white shadow-none dark:bg-neutral-900 dark:text-line-color ${size === "lg" ? "[--cell-radius:--spacing(10)] md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(13)]" : " [--cell-radius:--spacing(9)] md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(14)]"}`}
                     modifiers={{
                         active: ActiveDates,
                     }}

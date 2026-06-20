@@ -82,7 +82,7 @@ const DashboardMockup = () => {
         <div className="my-20 ml-15 flex h-150 w-300 cursor-default items-center justify-center overflow-hidden rounded-lg p-5 select-none lg:ml-0 lg:w-auto">
             <img
                 src={theme === "light"? "./mockup.png":"/mockup-dark.png"}
-                className="shadow-aesthetic h-full w-full cursor-default rounded-lg select-none"
+                className="shadow-aesthetic h-full w-full cursor-default rounded-lg select-none dark:shadow-aesthetic-dark"
             />
         </div>
     )
