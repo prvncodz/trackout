@@ -45,20 +45,20 @@ export default function ChartAreaInteractive({ className="" }) {
 
     return (
         <Card className={`pt-0 ${className}`}>
-            <CardHeader className="border-line-color flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+            <CardHeader className="border-line-color flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row dark:border-gray-800">
                 <div className="grid flex-1 gap-1">
-                    <CardTitle className={"text-mockup-text font-sans tracking-wide antialiased"}>
+                    <CardTitle className={"text-mockup-text font-sans tracking-wide antialiased dark:text-line-color"}>
                         Strength Chart - interactive
                     </CardTitle>
-                    <CardDescription className={"font-sans antialiased"}>
+                    <CardDescription className={"font-sans antialiased dark:text-gray-400"}>
                         Showing overall strength for the last 3 months
                     </CardDescription>
                 </div>
                 <Select value={timeRange} onValueChange={setTimeRange}>
-                    <SelectTrigger className="hidden w-40 rounded-lg sm:ml-auto sm:flex" aria-label="Select a value">
+                    <SelectTrigger className="hidden w-40 rounded-lg sm:ml-auto sm:flex dark:border-gray-700 dark:bg-near-black dark:text-line-color" aria-label="Select a value">
                         <SelectValue placeholder="Last 3 months" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl">
+                    <SelectContent className="rounded-xl dark:bg-near-black dark:text-line-color">
                         <SelectItem value="90d" className="rounded-lg">
                             Last 3 months
                         </SelectItem>
@@ -72,7 +72,7 @@ export default function ChartAreaInteractive({ className="" }) {
                 </Select>
             </CardHeader>
             <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-                <ChartContainer config={chartConfig} className="aspect-auto h-100 w-full">
+                <ChartContainer config={chartConfig} className="aspect-auto h-100 w-full dark:text-line-color">
                     <AreaChart data={filteredData}>
                         <defs>
                             <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">

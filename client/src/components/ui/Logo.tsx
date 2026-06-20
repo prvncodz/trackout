@@ -3,7 +3,7 @@ import { Activity } from "lucide-react"
 const Logo = ({ className = "" }) => {
     return (
         <div className="flex items-center justify-center">
-            <div className="bg-near-black flex items-center justify-center rounded-sm p-1 px-2 text-white antialiased">
+            <div className="bg-near-black flex items-center justify-center rounded-sm p-1 px-2 text-white antialiased border border-gray-800 ">
                 <Activity size={21} />
             </div>
             <h3

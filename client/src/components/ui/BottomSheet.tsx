@@ -12,7 +12,7 @@ const BottomSheet = ({ className = "", children, onClose, open, setOpen, ...prop
         <div className="relative flex flex-col lg:hidden">
             <div className="fixed inset-0 z-10 bg-black/10" onClick={onClose} />
             <motion.div
-                className="fixed bottom-0 left-0 z-20 h-dvh w-full rounded-t-3xl bg-neutral-50"
+                className="fixed bottom-0 left-0 z-20 h-dvh w-full rounded-t-3xl bg-neutral-50 dark:bg-near-black dark:text-line-color"
                 drag="y"
                 dragConstraints={{ top: 0, bottom: 600 }}
                 onDragEnd={(e, info) => {

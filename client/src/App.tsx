@@ -67,7 +67,7 @@ function App() {
     return (
         <>
             <Toaster />
-            <ReactQueryDevtools initialIsOpen={false} />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={isUserLogged ? <HomePage /> : <LandingPage />} />

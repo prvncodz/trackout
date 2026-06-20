@@ -27,7 +27,7 @@ import {
 import SideBarLayout from "../components/layout/SideBar"
 import MyButton from "../components/ui/MyButton"
 import { Button } from "../components/ui/button"
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import BottomSheet from "@/components/ui/BottomSheet"
 import {
     Dialog,
@@ -43,7 +43,6 @@ import { Field, FieldGroup } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { motion } from "motion/react"
-import axios from "../lib/axios"
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../stores/user.store"
@@ -81,7 +80,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
 
     return (
         <motion.ul
-            className="menu dropdown-content shadow-euphonious absolute top-10 right-1 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2"
+            className="menu dropdown-content shadow-euphonious absolute top-10 right-1 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 dark:border-gray-800 dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
             initial={{
                 opacity: 0,
             }}
@@ -98,7 +97,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
             <Dialog open={editing} onOpenChange={setEditing}>
                 <DialogTrigger asChild>
                     <button
-                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
+                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
                         onClick={() => setEditing(true)}
                     >
                         <IconPencil size={18} />
@@ -134,7 +133,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                 </DialogContent>
             </Dialog>
             <button
-                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 onClick={() => {
                     if (isDuplicating) return
                     toast.promise(
@@ -156,7 +155,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
             <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
                 <AlertDialogTrigger asChild>
                     <button
-                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50"
+                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30"
                         onClick={() => setShowDeleteAlert(true)}
                     >
                         <IconTrash size={18} />
@@ -204,14 +203,14 @@ const Log = ({ log }: LogProps) => {
 
     return (
         <div
-            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 ${activeLog === log?._id ? " bg-neutral-100" : ""}`}
+            className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 dark:border-gray-800 dark:bg-near-black dark:text-line-color ${activeLog === log?._id ? " bg-neutral-100 dark:bg-neutral-900" : ""}`}
         >
             <IconLogs
-                className="text-neutral-500"
+                className="text-neutral-500 dark:text-line-color"
                 onClick={() => setActiveLog(activeLog === null ? log._id : activeLog == log?._id ? null : log?._id)}
             />
             <h3
-                className="ml-5 w-full truncate text-left text-base text-neutral-700"
+                className="ml-5 w-full truncate text-left text-base text-neutral-700 dark:text-line-color"
                 onClick={() => setActiveLog(activeLog === null ? log._id : activeLog == log?._id ? null : log?._id)}
             >
                 {log?.logName || "Log title"} {" "}
@@ -250,13 +249,13 @@ const AllLogs = () => {
         }
     }, [status, data])
 
-    if (isLoading) return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
+    if (isLoading) return <div className="h-dvh w-dvw flex items-center justify-center dark:bg-near-black dark:text-line-color"><Spinner /></div>
 
     return (
-        <div className="border-line-color relative flex h-dvh w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180">
+        <div className="border-line-color relative flex h-dvh w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180 dark:bg-near-black dark:border-gray-800">
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
                 <DialogTrigger asChild>
-                    <MyButton className="hidden lg:flex">
+                    <MyButton className="hidden lg:flex dark:bg-line-color">
                         Create
                         <span>
                             <IconPencilPlus size={18} className="ml-2" />
@@ -296,9 +295,9 @@ const AllLogs = () => {
                             log={log}
                         />
                     )) : (
-                    <div className="antialiased text-gray-600">
-                    No logs yet created by user.
-                    </div>
+                        <div className="antialiased text-gray-600 dark:text-gray-400">
+                            No logs yet created by user.
+                        </div>
                     )}
             </div>
         </div >
@@ -363,7 +362,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
     }
 
     return (
-        <div className={`w-full max-w-3xl bg-neutral-50 p-5 ${className}`}>
+        <div className={`w-full max-w-3xl bg-neutral-50 p-5 dark:bg-near-black dark:text-line-color ${className}`}>
             {/* Header */}
             <div className="flex items-start justify-between">
                 <div className="flex flex-col items-start">
@@ -374,10 +373,10 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                 setIsExerciseUpdated(true)
                                 setExerciseInfo({ ...exerciseInfo, name: e.target.value })
                             }}
-                            className="border-b border-neutral-300 text-lg font-semibold outline-none"
+                            className="border-b border-neutral-300 text-lg font-semibold outline-none dark:border-gray-700 dark:bg-near-black dark:text-line-color"
                         />
                     ) : (
-                        <h2 className="text-lg font-semibold text-neutral-900">{exercise?.name}</h2>
+                        <h2 className="text-lg font-semibold text-neutral-900 dark:text-line-color">{exercise?.name}</h2>
                     )}
 
                     {editMode ? (
@@ -389,12 +388,15 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                     setIsExerciseUpdated(true)
                                     setExerciseInfo({ ...exerciseInfo, note: e.target.value })
                                 }}
-                                className="mt-1 border-b border-neutral-300 text-sm text-neutral-500 outline-none"
+                                className="mt-1 border-b border-neutral-300 text-sm text-neutral-500 outline-none dark:border-gray-700 dark:bg-near-black dark:text-line-color"
                             />
                         </div>
                     ) : (
-                        <p className="mt-1 flex items-center justify-center gap-2 text-sm text-neutral-500">
-                            <IconClipboardText size={18} /> {exercise?.note || ""}
+                        <p className="mt-1 flex items-center justify-center gap-2 text-sm text-neutral-500 dark:text-line-color">
+                            <IconClipboardText size={18} />
+                            <span>
+                                {exercise?.note || ""}
+                            </span>
                         </p>
                     )}
                 </div>
@@ -405,7 +407,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                     <div className="dropdown dropdown-end relative">
                         {!completed && (
                             <button
-                                className="relative flex size-10 cursor-pointer items-center justify-center rounded-xl bg-gray-50 p-2 transition"
+                                className="relative flex size-10 cursor-pointer items-center justify-center rounded-xl bg-gray-50 p-2 transition dark:bg-neutral-900 dark:text-line-color"
                                 onClick={() => setIsOpen(!isOpen)}
                             >
                                 <IconDots size={20} />
@@ -426,14 +428,14 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                     duration: 0.3,
                                 }}
                                 tabIndex={0}
-                                className="menu dropdown-content absolute top-10 right-1 z-10 mt-2 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl"
+                                className="menu dropdown-content absolute top-10 right-1 z-10 mt-2 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl dark:border-gray-800 dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
                             >
                                 <button
                                     onClick={() => {
                                         setEditMode(!editMode)
                                         setIsOpen(false)
                                     }}
-                                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
+                                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
                                 >
                                     <IconPencil size={18} />
                                     {editMode ? "Disable edit" : "Edit exercise"}
@@ -442,7 +444,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                 <Dialog open={isCreating} onOpenChange={setIsCreating}>
                                     <DialogTrigger asChild>
                                         <button
-                                            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100"
+                                            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
                                         >
                                             <IconPlaylistAdd size={18} />
                                             Create set
@@ -515,7 +517,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
 
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50">
+                                        <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30">
                                             <IconTrash size={18} />
                                             Delete exercise
                                         </button>
@@ -555,9 +557,9 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
             </div>
 
             {/* Table */}
-            <div className="mt-6 overflow-hidden rounded-2xl border border-neutral-100">
+            <div className="mt-6 overflow-hidden rounded-2xl border border-neutral-100 dark:border-gray-800">
                 {/* Header */}
-                <div className="grid grid-cols-5 border-b border-neutral-100 bg-neutral-50 px-4 py-3 text-sm font-medium text-neutral-500">
+                <div className="grid grid-cols-5 border-b border-neutral-100 bg-neutral-50 px-4 py-3 text-sm font-medium text-neutral-500 dark:border-gray-800 dark:bg-neutral-900 dark:text-gray-300">
                     <span>Sets</span>
                     <span>Reps</span>
                     <span>Kg</span>
@@ -574,9 +576,9 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                     exercise?.sets?.map((set: Set) => (
                         <div
                             key={set?._id}
-                            className="grid grid-cols-5 items-center border-b border-neutral-100 px-4 py-4 last:border-none"
+                            className="grid grid-cols-5 items-center border-b border-neutral-100 px-4 py-4 last:border-none dark:border-gray-800"
                         >
-                            <span className="font-medium text-neutral-700">{String(set?.setNo).padStart(2, "0")}</span>
+                            <span className="font-medium text-neutral-700 dark:text-line-color">{String(set?.setNo).padStart(2, "0")}</span>
 
                             {/* Reps */}
                             {editMode ? (
@@ -584,7 +586,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                     type="number"
                                     defaultValue={set.reps}
                                     onChange={(e) => handleAddSetToBeChanged(set, set._id, "reps", Number(e.target.value))}
-                                    className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
+                                    className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none dark:border-gray-700 dark:bg-neutral-900 dark:text-line-color"
                                 />
                             ) : (
                                 <span>{set?.reps}</span>
@@ -596,7 +598,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                     type="number"
                                     defaultValue={set.weight}
                                     onChange={(e) => handleAddSetToBeChanged(set, set._id, "weight", Number(e.target.value))}
-                                    className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
+                                    className="w-14 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none dark:border-gray-700 dark:bg-neutral-900 dark:text-line-color"
                                 />
                             ) : (
                                 <span>{set?.weight}</span>
@@ -607,7 +609,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                 <input
                                     defaultValue={set.rest}
                                     onChange={(e) => handleAddSetToBeChanged(set, set._id, "rest", e.target.value)}
-                                    className="w-16 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none"
+                                    className="w-16 rounded-lg border border-neutral-200 px-2 py-1 text-sm outline-none dark:border-gray-700 dark:bg-neutral-900 dark:text-line-color"
                                 />
                             ) : (
                                 <span>{set.rest}</span>
@@ -620,7 +622,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                 }}>
                                     <IconTrash
                                         size={18}
-                                        className="flex items-center gap-2 text-sm text-red-500 hover:bg-red-50"
+                                        className="flex items-center gap-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30"
                                     />
                                 </div>
                             ) : (
@@ -631,7 +633,7 @@ const ExerciseCard = ({ exercise, logId, className = "", completed }: ExerciseCa
                                             toggleSetMarked(set._id)
                                         }}
                                         disabled={isTogglingSet}
-                                        className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.completed ? "border-black bg-black text-white" : "border-neutral-300"
+                                        className={`flex h-5 w-5 items-center justify-center rounded-md border transition ${set.completed ? "border-black bg-black text-white dark:border-line-color dark:bg-line-color dark:text-near-black" : "border-neutral-300 dark:border-gray-600"
                                             }`}
                                     >
                                         {set.completed && <IconCheck size={14} />}
@@ -657,7 +659,7 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
     const activeLog = useLogStore((state) => state.activeLog)
     const setActiveLog = useLogStore((state) => state.setActiveLog)
     const [addingExercise, setAddingExercise] = useState(false)
-    const { data, status, error } = useQuery({ queryKey: ['log', activeLog], queryFn: () => useGetlogById(activeLog) })
+    const { data, status } = useQuery({ queryKey: ['log', activeLog], queryFn: () => useGetlogById(activeLog) })
     const { mutate: createExercise, isPending: isCreatingExercise } = useCreateExercise(logId, activeLog, {
         onSuccess: () => setAddingExercise(false),
         onError: () => {
@@ -670,12 +672,12 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
     }, [data, activeLog])
 
 
-    if (status === "pending") return <div className="h-dvh w-dvw flex items-center justify-center"><Spinner /></div>
+    if (status === "pending") return <div className="h-dvh w-dvw flex items-center justify-center dark:bg-near-black dark:text-line-color"><Spinner /></div>
 
     return (
-        <div className="w-full h-dvh ">
+        <div className="w-full h-dvh dark:bg-near-black">
             <div className={`h-screen w-full flex-1 overflow-auto ${isActive ? "flex" : "hidden"} hidden lg:flex`}>
-                <div className={`h-screen flex-col overflow-auto bg-neutral-50 p-10 ${className} no-scrollbar w-full`}>
+                <div className={`h-screen flex-col overflow-auto bg-neutral-50 p-10 ${className} no-scrollbar w-full dark:bg-near-black`}>
                     <div className="flex w-full flex-col">
                         {data?.exercises?.length ?
                             data?.exercises?.map((exercise: Exercise) => (
@@ -757,8 +759,8 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
                 setOpen={setActiveLog}
                 open={isActive}
             >
-                <div className={`mt-0 h-dvh pb-5 overflow-auto ${className}`}>
-                    <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased">{data?.logName}</h1>
+                <div className={`mt-0 h-dvh overflow-auto pb-5 dark:bg-near-black dark:text-line-color ${className}`}>
+                    <h1 className="mt-5 ml-5 text-left text-xl font-bold tracking-wide antialiased dark:text-line-color">{data?.logName}</h1>
                     <div className="my-10">
                         {data?.exercises?.length ?
                             data?.exercises?.map((exercise: Exercise) => (
@@ -842,7 +844,7 @@ const ShowLog = ({ logId, isActive, className = "" }: ShowLogProps) => {
 const HomePageContent = () => {
     const activeLog = useLogStore((state) => state.activeLog)
     return (
-        <div className="flex h-screen w-full flex-col items-start justify-start lg:flex-row">
+        <div className="flex h-screen w-full flex-col items-start justify-start lg:flex-row dark:bg-near-black">
             <AllLogs />
             {activeLog && (
                 <>

@@ -24,13 +24,15 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAppStore } from "../../stores/app.store"
+import { useAppStore, useThemeStore } from "../../stores/app.store"
 import Logo from "../ui/Logo"
 import {
     IconBrandTabler,
     IconLogout,
+    IconMoon,
     IconPencilPlus,
     IconSettings,
+    IconSun,
     IconTrash,
     IconUser,
 } from "@tabler/icons-react"
@@ -63,9 +65,12 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
     const setIsUserLogged = useAuth((state) => state.setIsUserLogged)
     const setActiveDates = useAuth((state) => state.setActiveDates)
     const setCurPage = useAppStore((state) => state.setCurPage)
+    const theme = useThemeStore((state) => state.theme)
+    const setTheme = useThemeStore((state) => state.setTheme)
     const setStats = useStats((state) => state.setStats)
     const setLoading = useAppStore((state) => state.setLoading);
     const navigate = useNavigate()
+    const nextTheme = theme === "dark" ? "light" : "dark"
 
     async function handleLogout() {
         if (isLoggingOut) return
@@ -121,7 +126,7 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
 
     return (
         <motion.ul
-            className="menu dropdown-content absolute right-1 bottom-10 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg"
+            className="menu dropdown-content absolute right-1 bottom-10 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg dark:border-gray-800 dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
             initial={{
                 opacity: 0,
             }}
@@ -135,10 +140,22 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
                 duration: 0.3
             }}
         >
+            <button
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100  dark:hover:bg-neutral-800 dark:text-line-color"
+                onClick={() => setTheme(nextTheme)}
+            >
+                {theme === "dark" ? (
+                    <IconSun size={18} className="text-gray-700 dark:text-line-color" />
+                ) : (
+                    <IconMoon size={18} className="text-gray-700 dark:text-line-color" />
+                )}
+                {theme === "dark" ? "Light theme" : "Dark theme"}
+            </button>
+
             <Dialog open={showLogoutDailogue} onOpenChange={setShowLogoutDailogue}>
                 <DialogTrigger asChild>
-                    <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100">
-                        <IconLogout size={18} className="text-gray-700" />
+                    <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100  dark:hover:bg-neutral-800 dark:text-line-color">
+                        <IconLogout size={18} className="text-gray-700 dark:text-line-color" />
                         Logout user
                     </button>
                 </DialogTrigger>
@@ -160,7 +177,7 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
 
             <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
                 <AlertDialogTrigger asChild>
-                    <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50">
+                    <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30">
                         <IconTrash size={18} />
                         Delete user
                     </button>
@@ -197,7 +214,7 @@ interface UserInfoProps {
 const UserInfo = ({ avatarUrl, fullName }: UserInfoProps) => {
     const [isOpen, setIsOpen] = useState(false)
     return (
-        <div className="flex items-center justify-between border-t border-gray-100 px-3 py-4">
+        <div className="flex items-center justify-between border-t border-gray-100 px-3 py-4 dark:border-gray-800">
             <div className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50">
                 {avatarUrl ? (
                     <img
@@ -265,7 +282,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }: SidebarProps) => {
     }
 
     return (
-        <div className={`border-line-color flex h-screen w-90 shrink-0 flex-col border-r bg-white p-3 dark:bg-near-black ${className}`}>
+        <div className={`border-line-color flex h-screen w-90 shrink-0 flex-col border-r bg-white p-3 dark:bg-near-black dark:border-gray-800 ${className}`}>
             <div className="flex-start mt-3 ml-0 flex w-full px-4">
                 <Logo className={"text-xl font-extrabold text-gray-800 antialiased"} />
             </div>
@@ -282,7 +299,7 @@ const Sidebar = ({ avatarUrl, fullName, className = "" }: SidebarProps) => {
                             onClick={() => handleNav(item)}
                             className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-3.5 text-left text-lg font-medium transition-all duration-200 ${isActive
                                 ? "border-line-color border bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-near-black dark:text-line-color"
-                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-800 dark:hover:bg-gray-900 dark:hover:text-line-color"
+                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-800 dark:hover:bg-neutral-800 dark:hover:text-line-color"
                                 } `}
                         >
                             <Icon
@@ -335,7 +352,7 @@ const NavbarForMobile = ({ className = "" }) => {
                 {curPage === "home" && (
                     <Dialog open={isCreating} onOpenChange={setIsCreating}>
                         <DialogTrigger asChild>
-                            <MyButton>
+                            <MyButton className="dark:bg-line-color">
                                 Create
                                 <span>
                                     <IconPencilPlus size={18} className="ml-2" />
@@ -370,7 +387,7 @@ const NavbarForMobile = ({ className = "" }) => {
                         </DialogContent>
                     </Dialog>
                 )}
-                <HamburgerButton className="text-gray-700" />
+                <HamburgerButton className="text-gray-700 dark:bg-line-color" />
             </div>
         </Navbar >
     )
@@ -386,7 +403,7 @@ const SideBarLayout = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <motion.div
-            className="flex h-screen w-full flex-col overflow-hidden bg-neutral-50 lg:flex-row"
+            className="flex h-screen w-full flex-col overflow-hidden bg-neutral-50 lg:flex-row dark:bg-near-black"
             exit={{
                 opacity: 0,
             }}
