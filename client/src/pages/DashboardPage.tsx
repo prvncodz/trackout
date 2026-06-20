@@ -63,7 +63,7 @@ const Cards = () => {
                 return (
                     <div
                         key={index}
-                        className="bg-card flex w-full min-w-43 max-w-48 flex-col gap-3 rounded-xl p-6 border border-line-color dark:bg-near-black dark:text-line-color dark:border-gray-800"
+                        className="bg-card flex w-full min-w-43 max-w-48 flex-col gap-3 rounded-xl p-6 border border-line-color dark:bg-neutral-900 dark:text-line-color dark:border-gray-800"
                     >
                         <div className="flex items-center justify-between gap-4">
                             <p className="text-mockup-text text-xs font-medium tracking-wide uppercase antialiased dark:text-line-color">
@@ -100,7 +100,7 @@ const PreviousWorkout = () => {
     const workouts = useStats((state) => state.stats?.recentWorkouts ?? [])
 
     return (
-        <div className="w-full rounded-xl bg-white p-5 dark:bg-near-black dark:text-line-color">
+        <div className="w-full rounded-xl bg-white p-5 dark:bg-neutral-900 dark:text-line-color">
             {/* Header */}
             <div className="mb-4 flex items-center justify-between">
                 <span className="text-mockup-text text-[11px] font-semibold tracking-widest uppercase dark:text-line-color">
@@ -113,7 +113,7 @@ const PreviousWorkout = () => {
                 {workouts?.length ?
                     workouts.map((w) => (
                         <div key={w._id}>
-                            <div className="group flex cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2.5 transition-colors hover:bg-[#f7f7f6] dark:hover:bg-neutral-900">
+                            <div className="group flex cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2.5 transition-colors hover:bg-[#f7f7f6] dark:hover:bg-neutral-800">
                                 {/* Icon */}
                                 <div
                                     className={`flex size-8.5 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-[15px] dark:bg-line-color dark:text-near-black`}
@@ -155,13 +155,13 @@ const DashboardPage = () => {
                 <div className="flex flex-col gap-3 lg:flex-row">
                     <div className="no-scrollbar flex h-240 flex-col gap-6 overflow-hidden px-5 pb-10 md:h-[80vh] lg:h-screen lg:pl-10">
                         <Cards />
-                        <div className="h-auto w-full rounded-2xl bg-neutral-500 md:h-80 dark:bg-near-black">
+                        <div className="h-auto w-full rounded-2xl bg-neutral-500 md:h-80 dark:bg-neutral-800">
                             <ChartAreaInteractive />
                         </div>
                     </div>
                     <div className="flex h-screen flex-col gap-10 px-5 md:flex-row md:items-start lg:flex-col lg:px-0">
-                        <div className="w-full shrink-0 overflow-hidden rounded-2xl border border-neutral-200 bg-white p-5 md:w-80 lg:w-120 dark:border-neutral-800 dark:bg-near-black dark:text-line-color">
-                            <Calendar size="md" className="w-full bg-white  rounded-2xl p-2 md:w-auto lg:w-full dark:bg-near-black dark:text-line-color "/>
+                        <div className="w-full shrink-0 overflow-hidden rounded-2xl border border-neutral-200 bg-white p-5 md:w-80 lg:w-120 dark:border-neutral-800 dark:bg-neutral-800 dark:text-line-color">
+                            <Calendar size="md" className="w-full bg-white  rounded-2xl p-2 md:w-auto lg:w-full dark:bg-neutral-800 dark:text-line-color "/>
                         </div>
                         <div className="h-auto w-full rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-near-black dark:">
                             <PreviousWorkout />

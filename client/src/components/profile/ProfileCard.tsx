@@ -62,24 +62,24 @@ export default function ProfileCard() {
 
     return (
         <div className="relative flex h-auto w-full flex-col items-center justify-start gap-10 lg:mt-10 lg:flex-row">
-            <div className="shadow-standard size-60 shrink-0 overflow-hidden rounded-2xl bg-gray-100">
+            <div className="shadow-standard size-60 shrink-0 overflow-hidden rounded-2xl bg-gray-100 dark:bg-neutral-800">
                 <img src={user?.avatar?.url} className="cursor-default h-full w-full" />
             </div>
             <div>
-                <h2 className="cursor-default text-center text-xl font-semibold text-neutral-700 lg:text-left">
+                <h2 className="cursor-default text-center text-xl font-semibold text-neutral-700 lg:text-left dark:text-line-color">
                     {user?.fullname ?? "User fullname"}
                 </h2>
-                <p className="cursor-default text-center text-base text-neutral-500 lg:text-left">
+                <p className="cursor-default text-center text-base text-neutral-500 lg:text-left dark:text-line-color/70">
                     {user?.email ?? "example@abc.com"}
                 </p>
                 <div className="no-scrollbar mt-8 flex w-screen gap-3 overflow-auto scroll-smooth px-4 py-2 md:w-full md:justify-center lg:w-auto lg:px-0">
                     {stats.map((stat, index) => (
                         <div
                             key={index}
-                            className="border-line-color/50 flex w-fit min-w-50 flex-col gap-3 rounded-xl border bg-gray-50 p-6"
+                            className="border-line-color/50 flex w-fit min-w-50 flex-col gap-3 rounded-xl border bg-gray-50 p-6 dark:border-neutral-800 dark:bg-neutral-900 dark:text-line-color"
                         >
                             <div className="flex items-center justify-between gap-4">
-                                <p className="text-muted-foreground cursor-default text-xs font-medium tracking-wider uppercase">
+                                <p className="text-muted-foreground cursor-default text-xs font-medium tracking-wider uppercase dark:text-line-color/70">
                                     {stat.label}
                                 </p>
                             </div>
