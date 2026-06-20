@@ -8,8 +8,8 @@ const CalenderComponent = ({ size = "lg", className="", ...props }) => {
     return (
         <div
             className={cn(
-                "flex w-full flex-col items-center justify-center overflow-hidden rounded-2xl border bg-white p-5 shadow-sm shadow-gray-800 md:w-auto dark:bg-neutral-900 dark:text-line-color dark:shadow-none",
-                className
+                className,
+                "flex w-full flex-col items-center justify-center overflow-hidden rounded-2xl bg-white md:w-auto dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
             )}
             {...props}
         >
@@ -17,7 +17,7 @@ const CalenderComponent = ({ size = "lg", className="", ...props }) => {
                 <Calendar
                     mode="single"
                     disabled={ActiveDates}
-                    className={`w-full bg-neutral-50 shadow-none dark:bg-neutral-900 dark:text-line-color ${size === "lg" ? "[--cell-radius:--spacing(10)] md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(12)]" : " [--cell-radius:--spacing(9)] md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(12)]"}`}
+                    className={`w-full bg-white shadow-none dark:bg-neutral-900 dark:text-line-color ${size === "lg" ? "[--cell-radius:--spacing(10)] md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(12)]" : " [--cell-radius:--spacing(9)] md:[--cell-size:--spacing(10)] lg:[--cell-size:--spacing(12)]"}`}
                     modifiers={{
                         active: ActiveDates,
                     }}

@@ -33,14 +33,14 @@ const HamburgerButton = ({ className = "", ...props }) => {
     const [isNavOpen, setIsNavOpen] = useState(false)
     return (
         <button
-            className={`relative isolate flex h-10 w-10 cursor-pointer items-center justify-center rounded-md bg-gray-100 p-2 font-semibold transition-all duration-10 hover:bg-neutral-100 active:scale-98 ${className}`}
+            className={`relative isolate flex h-10 w-10 cursor-pointer items-center justify-center rounded-md bg-gray-100 p-2 font-semibold transition-all duration-10 hover:bg-neutral-100 active:scale-98 dark:bg-neutral-900 dark:text-line-color ${className}`}
             {...props}
             onClick={() => setIsNavOpen(!isNavOpen)}
         >
             <IconMenu2 size={20} />
             {isNavOpen && (
                 <motion.nav
-                    className="space-y-0.8 absolute top-0 right-10 isolate z-10 mt-10 ml-1 w-65 flex-1 rounded-lg bg-gray-100 px-3 py-4 shadow-md transition-all"
+                    className="space-y-0.8 absolute top-0 right-10 isolate z-10 mt-10 ml-1 w-65 flex-1 rounded-lg bg-gray-100 px-3 py-4 shadow-md transition-all dark:bg-neutral-900 dark:text-line-color"
                     initial={{
                         opacity: 0,
                     }}
@@ -59,14 +59,14 @@ const HamburgerButton = ({ className = "", ...props }) => {
                                 key={item.page}
                                 onClick={() => handleNav(item)}
                                 className={`flex w-full items-center gap-3 rounded-lg px-3 py-4 text-left text-lg font-medium transition-all duration-150 ${isActive
-                                    ? "border-line-color border bg-gray-50 text-gray-800"
-                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                                    ? "border-line-color border bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-near-black dark:text-line-color"
+                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800 dark:hover:bg-neutral-800 dark:hover:text-line-color"
                                     } `}
                             >
                                 <Icon
                                     size={24}
                                     strokeWidth={isActive ? 2 : 1}
-                                    className={isActive ? "text-gray-700" : "text-gray-400"}
+                                    className={isActive ? "text-gray-700 antialiased dark:text-line-color" : "text-gray-400 antialiased"}
                                 />
                                 {item.label}
                             </li>

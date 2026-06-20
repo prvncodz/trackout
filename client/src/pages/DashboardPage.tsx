@@ -160,8 +160,8 @@ const DashboardPage = () => {
                         </div>
                     </div>
                     <div className="flex h-screen flex-col gap-10 px-5 md:flex-row md:items-start lg:flex-col lg:px-0">
-                        <div className="w-full shrink-0 overflow-hidden rounded-2xl border border-neutral-200 bg-white p-5 md:w-80 lg:w-120 dark:border-neutral-800 dark:bg-neutral-800 dark:text-line-color">
-                            <Calendar size="md" className="w-full bg-white  rounded-2xl p-2 md:w-auto lg:w-full dark:bg-neutral-800 dark:text-line-color "/>
+                        <div className="w-full shrink-0 overflow-hidden rounded-2xl border border-neutral-200 bg-white p-5 md:w-80 lg:w-110 dark:border-neutral-800 dark:bg-neutral-900 dark:text-line-color">
+                            <Calendar size="md" className="w-full bg-white  rounded-2xl md:w-auto lg:w-full dark:bg-neutral-900 dark:text-line-color " />
                         </div>
                         <div className="h-auto w-full rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-near-black dark:">
                             <PreviousWorkout />

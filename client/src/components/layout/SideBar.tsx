@@ -126,7 +126,7 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
 
     return (
         <motion.ul
-            className="menu dropdown-content absolute right-1 bottom-10 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg dark:border-gray-800 dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
+            className="menu dropdown-content absolute top-10 right-1 md:bottom-10 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg dark:border-gray-800 dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
             initial={{
                 opacity: 0,
             }}
@@ -333,6 +333,7 @@ const NavbarForMobile = ({ className = "" }) => {
     const userId = useAuth((state) => state.user?._id)
     const [isCreating, setIsCreating] = useState(false)
     const [logName, setLogName] = useState("")
+    const [isOpen,setIsOpen] = useState(true)
 
     const { mutate: createLog, isPending: isCreatingLog, isSuccess: isCreated, isError } = useCreateLog(userId, {
         onSuccess: () => setIsCreating(false),
@@ -387,6 +388,11 @@ const NavbarForMobile = ({ className = "" }) => {
                         </DialogContent>
                     </Dialog>
                 )}
+
+                <div className="relative">
+                    <IconSettings onClick={() => setIsOpen(!isOpen)} className="text-gray-600 dark:text-line-color" />
+                    {isOpen && <Popup setIsOpen={setIsOpen} />}
+                </div>
                 <HamburgerButton className="text-gray-700 dark:bg-line-color" />
             </div>
         </Navbar >
