@@ -252,7 +252,7 @@ const AllLogs = () => {
     if (isLoading) return <div className="h-dvh w-dvw flex items-center justify-center dark:bg-near-black dark:text-line-color"><Spinner /></div>
 
     return (
-        <div className="border-line-color relative flex h-dvh w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 py-10 lg:w-180 dark:bg-near-black dark:border-gray-800">
+        <div className="border-line-color relative flex h-screen w-full shrink-0 flex-col items-end justify-start gap-3 overflow-auto border-r bg-neutral-50 px-5 pt-10 pb-20 no-scrollbar lg:w-180 lg:pb-10 dark:bg-near-black dark:border-gray-800 ">
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
                 <DialogTrigger asChild>
                     <MyButton className="hidden lg:flex dark:bg-line-color">
@@ -287,7 +287,7 @@ const AllLogs = () => {
                     </form>
                 </DialogContent>
             </Dialog>
-            <div className="flex h-auto w-full flex-col items-center justify-center gap-2 lg:mt-15">
+            <div className="flex h-screen w-full flex-col items-center justify-center gap-2 lg:mt-15">
                 {logs.length ?
                     logs?.map((log) => (
                         <Log

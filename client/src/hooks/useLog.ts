@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 export async function fetchAllLogs() {
-    const res = await axios.get("/log/all-logs")
+    const res = await axios.get("/log/all-logs?limit=15")
     return res?.data?.data
 }
 
