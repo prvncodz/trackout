@@ -333,7 +333,7 @@ const NavbarForMobile = ({ className = "" }) => {
     const userId = useAuth((state) => state.user?._id)
     const [isCreating, setIsCreating] = useState(false)
     const [logName, setLogName] = useState("")
-    const [isOpen,setIsOpen] = useState(true)
+    const [isOpen,setIsOpen] = useState(false)
 
     const { mutate: createLog, isPending: isCreatingLog, isSuccess: isCreated, isError } = useCreateLog(userId, {
         onSuccess: () => setIsCreating(false),

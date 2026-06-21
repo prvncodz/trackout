@@ -21,10 +21,10 @@ const LabelChip = () => {
 const HeroText = () => {
     return (
         <div className="flex flex-col items-center justify-center gap-6">
-            <h1 className="text-near-black text-center text-[2.85rem] leading-12.5 font-extrabold tracking-tight md:text-7xl md:leading-17.5 dark:text-neutral-50">
+            <h1 className="text-near-black text-center text-[2.85rem] leading-12.5 font-extrabold tracking-tight md:text-7xl md:leading-17.5 dark:text-line-color">
                 Log every rep. <br /> Track every gain.
             </h1>
-            <p className="mt-2 max-w-[80vw] text-center text-sm font-normal text-neutral-500 md:max-w-160 md:text-xl">
+            <p className="mt-2 max-w-[80vw] text-center text-sm font-normal text-line-color0 md:max-w-160 md:text-xl">
                 A surgical-grade interface for serious training. No bloat, no friction—just pure data to drive your
                 physical evolution.
             </p>
@@ -81,7 +81,7 @@ const DashboardMockup = () => {
     return (
         <div className="my-20 ml-15 flex h-150 w-300 cursor-default items-center justify-center overflow-hidden rounded-lg p-5 select-none lg:ml-0 lg:w-auto">
             <img
-                src={theme === "light"? "./mockup.png":"/mockup-dark.png"}
+                src={theme === "light" ? "./mockup.png" : "/mockup-dark.png"}
                 className="shadow-aesthetic h-full w-full cursor-default rounded-lg select-none dark:shadow-aesthetic-dark"
             />
         </div>
@@ -94,10 +94,10 @@ const Features = () => {
             id="features"
             className="selection:bg-near-black selection:text-btn-color my-15 w-full lg:my-35 lg:h-200"
         >
-            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl dark:text-neutral-50 ">
+            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl dark:text-line-color ">
                 Train Smarter. Stay Consistent.
             </h2>
-            <p className="text-center text-xs text-neutral-500">Everything you need,nothing you don't.</p>
+            <p className="text-center text-xs text-line-color0">Everything you need,nothing you don't.</p>
 
             <div className="relative mt-15 flex flex-col items-center gap-4 px-5 lg:px-0 lg:block lg:h-200">
                 <FeaturesCard
@@ -141,15 +141,15 @@ const FeaturesCard = ({ Logo, title, description, className }: FeatureCardProps)
             className={`border-line-color flex flex-col items-start gap-4 rounded-xl border bg-gray-50 p-10 pr-13 pb-13 shadow-md dark:bg-neutral-900 dark:border-gray-800 ${className}`}
         >
             {Logo}
-            <h2 className="text-near-black mt-5 text-lg font-bold dark:text-neutral-50">{title}</h2>
-            <p className="text-neutral-500">{description}</p>
+            <h2 className="text-near-black mt-5 text-lg font-bold dark:text-line-color">{title}</h2>
+            <p className="text-line-color0">{description}</p>
         </div>
     )
 }
 const Workflow = () => {
     return (
         <section id="how-it-works" className="my-20 md:my-30">
-            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl dark:text-neutral-50 ">Application Workflow</h2>
+            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl dark:text-line-color ">Application Workflow</h2>
             <div className="relative my-15 flex w-full flex-col justify-between md:flex-row">
                 <WorkflowCard
                     no={1}
@@ -184,8 +184,8 @@ const WorkflowCard = ({ no, title, description }: WorkflowCardProps) => {
                 {no}
             </div>
             <div className="ml-5 flex flex-col">
-                <h2 className="text-near-black mt-5 text-left text-lg font-bold md:text-center dark:text-neutral-50">{title}</h2>
-                <p className="mt-1 w-full max-w-80 text-left text-sm text-neutral-600 md:text-center dark:text-neutral-500">{description}</p>
+                <h2 className="text-near-black mt-5 text-left text-lg font-bold md:text-center dark:text-line-color">{title}</h2>
+                <p className="mt-1 w-full max-w-80 text-left text-sm text-neutral-600 md:text-center dark:text-line-color0">{description}</p>
             </div>
         </div>
     )
@@ -197,7 +197,7 @@ const Footer = () => {
                 "It removes emotion from the process. You are left only with the architecture of your own discipline and
                 the numbers that prove it."
             </h2>
-            <h5 className="mt-3 text-center text-[10px] text-neutral-500 md:text-xs">
+            <h5 className="mt-3 text-center text-[10px] text-line-color0 md:text-xs">
                 DR. E. VANCE <br />
                 SPORTS SCIENTIST / ATHLETE
             </h5>
@@ -220,7 +220,7 @@ const LandingPage = () => {
 
     return (
         <motion.div
-            className="selection:bg-near-black selection:text-btn-text relative flex min-h-dvh w-full flex-col items-center justify-start overflow-x-hidden bg-neutral-50 dark:bg-near-black dark:text-neutral-50"
+            className="selection:bg-near-black selection:text-btn-text relative flex min-h-dvh w-full flex-col items-center justify-start overflow-x-hidden bg-neutral-50 dark:bg-near-black dark:text-line-color"
             initial={{
                 opacity: 0,
             }}
@@ -237,7 +237,7 @@ const LandingPage = () => {
             <Navbar>
                 <ul className="hidden items-center gap-10 md:flex">
                     <Link
-                        className="cursor-pointer text-base text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
+                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
                         to="home"
                         smooth={true}
                         offset={-240}
@@ -248,7 +248,7 @@ const LandingPage = () => {
                         Home
                     </Link>
                     <Link
-                        className="cursor-pointer text-base text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
+                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
                         to="features"
                         smooth={true}
                         offset={-140}
@@ -259,7 +259,7 @@ const LandingPage = () => {
                         Features
                     </Link>
                     <Link
-                        className="ext-gray-600 cursor-pointer text-base text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
+                        className="ext-gray-600 cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
                         to="how-it-works"
                         smooth={true}
                         offset={-70}
@@ -273,13 +273,13 @@ const LandingPage = () => {
                 <div className="flex items-center justify-center gap-4 md:gap-6">
                     <button className="flex justify-center items-center">
                         {theme === "light" ?
-                            <IconMoon className="cursor-pointer text-sm text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("dark")} size={20} />
+                            <IconMoon className="cursor-pointer text-sm text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("dark")} size={19} />
                             :
-                            <IconSun className="cursor-pointer text-sm text-neutral-500 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("light")} size={20} />
+                            <IconSun className="cursor-pointer text-sm text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("light")} size={19} />
                         }
                     </button>
                     <button
-                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-200 bg-near-black  hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-neutral-500 dark:bg-gray-100 dark:text-near-black dark:md:text-neutral-500 dark:md:bg-near-black dark:hover:text-gray-300"
+                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-200 bg-near-black  hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-line-color0 dark:bg-gray-100 dark:text-near-black dark:md:text-neutral-500 dark:md:bg-near-black dark:hover:text-gray-300"
                         onClick={() => navigate("/signin")}
                     >
                         Log in
