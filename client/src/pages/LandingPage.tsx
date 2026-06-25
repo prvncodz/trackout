@@ -271,15 +271,15 @@ const LandingPage = () => {
                     </Link>
                 </ul>
                 <div className="flex items-center justify-center gap-4 md:gap-6">
-                    <button className="flex justify-center items-center">
-                        {theme === "light" ?
-                            <IconMoon className="cursor-pointer text-sm text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("dark")} size={19} />
-                            :
-                            <IconSun className="cursor-pointer text-sm text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("light")} size={19} />
-                        }
-                    </button>
+                    {/* <button className="flex justify-center items-center"> */}
+                    {/*     {theme === "light" ? */}
+                    {/*         <IconMoon className="cursor-pointer text-sm text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("dark")} size={19} /> */}
+                    {/*         : */}
+                    {/*         <IconSun className="cursor-pointer text-sm text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("light")} size={19} /> */}
+                    {/*     } */}
+                    {/* </button> */}
                     <button
-                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-200 bg-near-black  hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-line-color0 dark:bg-gray-100 dark:text-near-black dark:md:text-neutral-500 dark:md:bg-near-black dark:hover:text-gray-300"
+                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-800 bg-near-black  hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-neutral-500 dark:bg-gray-100 dark:text-near-black dark:md:text-neutral-500 dark:md:bg-near-black dark:hover:text-gray-300"
                         onClick={() => navigate("/signin")}
                     >
                         Log in
