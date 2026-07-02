@@ -129,18 +129,13 @@ const Features = () => {
                     description={"A compact flow helps you start, update, and finish workouts with less tapping."}
                     className={"lg:col-span-3"}
                 />
-                <div className="border-line-color flex min-h-56 flex-col justify-between rounded-lg border bg-white p-6 shadow-sm md:col-span-2 lg:col-span-3">
-                    <div className="text-near-black flex h-11 w-11 items-center justify-center rounded-md bg-gray-100">
-                        <Dumbbell size={25} />
-                    </div>
-                    <div>
-                        <h3 className="text-near-black mt-8 text-lg font-bold">Designed around the set, not the spreadsheet.</h3>
-                        <p className="mt-3 max-w-2xl text-sm leading-6 text-line-color0">
-                            Trackout keeps the important numbers close, so you can focus on the next set instead of
-                            managing a complicated dashboard.
-                        </p>
-                    </div>
-                </div>
+                <FeaturesCard
+                    Logo={<Dumbbell size={27} />}
+                    title={"Designed around the set, not the spreadsheet."}
+                    description={" Trackout keeps the important numbers close, so you can focus on the next set instead of managing a complicated dashboard."}
+                    className={"lg:col-span-3"}
+                />
+
             </div>
         </section>
     )
