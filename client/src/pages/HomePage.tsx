@@ -19,6 +19,8 @@ import {
     IconDots,
     IconDotsVertical,
     IconLogs,
+    IconNotebook,
+    IconNotes,
     IconPencil,
     IconPencilPlus,
     IconPlaylistAdd,
@@ -205,7 +207,7 @@ const Log = ({ log }: LogProps) => {
         <div
             className={`border-line-color flex h-auto w-full cursor-pointer justify-between rounded-xl border bg-neutral-50 px-3 py-3 text-neutral-500 dark:border-gray-800 dark:bg-near-black dark:text-line-color ${activeLog === log?._id ? " bg-neutral-100 dark:bg-neutral-900" : ""}`}
         >
-            <IconLogs
+            <IconNotes
                 className="text-neutral-500 dark:text-line-color"
                 onClick={() => setActiveLog(activeLog === null ? log._id : activeLog == log?._id ? null : log?._id)}
             />
@@ -287,7 +289,7 @@ const AllLogs = () => {
                     </form>
                 </DialogContent>
             </Dialog>
-            <div className="flex h-screen w-full flex-col items-center justify-center gap-2 lg:mt-15">
+            <div className="flex h-screen w-full flex-col items-center justify-start gap-2 lg:mt-15">
                 {logs.length ?
                     logs?.map((log) => (
                         <Log

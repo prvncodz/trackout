@@ -268,7 +268,7 @@ const LandingPage = () => {
             <Navbar>
                 <ul className="hidden items-center gap-10 md:flex">
                     <Link
-                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900"
+                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
                         to="home"
                         smooth={true}
                         offset={-240}
@@ -279,7 +279,7 @@ const LandingPage = () => {
                         Home
                     </Link>
                     <Link
-                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900"
+                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
                         to="features"
                         smooth={true}
                         offset={-140}
@@ -290,7 +290,7 @@ const LandingPage = () => {
                         Features
                     </Link>
                     <Link
-                        className="ext-gray-600 cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900"
+                        className="ext-gray-600 cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
                         to="how-it-works"
                         smooth={true}
                         offset={-70}
@@ -303,7 +303,7 @@ const LandingPage = () => {
                 </ul>
                 <div className="flex items-center justify-center gap-4 md:gap-6">
                     <button
-                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md bg-near-black p-2 px-4 font-semibold text-gray-200 hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-neutral-500"
+                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md bg-near-black p-2 px-4 font-semibold text-gray-200 hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-neutral-500 dark:bg-gray-100 dark:text-near-black dark:md:text-neutral-500 dark:md:bg-near-black dark:hover:text-gray-300"
                         onClick={() => navigate("/signin")}
                     >
                         Log in
