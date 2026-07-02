@@ -1,17 +1,17 @@
-import { Activity, Calendar, TrendingUp } from "lucide-react"
+import { Activity, Calendar, Dumbbell, NotebookPen, TrendingUp } from "lucide-react"
 import Navbar from "../components/layout/Navbar"
 import MyButton from "../components/ui/MyButton"
-import { IconMoon, IconSun, IconTreadmill } from "@tabler/icons-react"
+import { IconTreadmill } from "@tabler/icons-react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { Link } from "react-scroll"
 import { motion } from "motion/react"
 import { useEffect } from "react"
 import { useGetUser } from "@/hooks/useUser"
-import { useThemeStore } from "@/stores/app.store"
+import Logo from "@/components/ui/Logo"
 
 const LabelChip = () => {
     return (
-        <div className="flex h-7 w-auto items-center justify-center rounded-full border border-gray-400 bg-gray-100 pr-3 pl-3  text-xs font-medium text-gray-600 dark:bg-neutral-900 dark:text-gray-500">
+        <div className="flex h-7 w-auto items-center justify-center rounded-full border border-gray-400 bg-gray-100 pr-3 pl-3  text-xs font-medium text-gray-600">
             <Activity size={14} strokeWidth={2} />
             <h3 className="ml-2 text-xs  md:text-sm">Engineered for performance</h3>
         </div>
@@ -21,7 +21,7 @@ const LabelChip = () => {
 const HeroText = () => {
     return (
         <div className="flex flex-col items-center justify-center gap-6">
-            <h1 className="text-near-black text-center text-[2.85rem] leading-12.5 font-extrabold tracking-tight md:text-7xl md:leading-17.5 dark:text-line-color">
+            <h1 className="text-near-black text-center text-[2.85rem] leading-12.5 font-extrabold tracking-tight md:text-7xl md:leading-17.5">
                 Log every rep. <br /> Track every gain.
             </h1>
             <p className="mt-2 max-w-[80vw] text-center text-sm font-normal text-line-color0 md:max-w-160 md:text-xl">
@@ -47,7 +47,7 @@ const HeroSection = () => {
                 <div >
                     <Link
                         to="features"
-                        className="text-near-black flex h-10 w-auto cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-2 px-8 text-sm font-semibold transition-all hover:bg-gray-50 hover:text-gray-900 active:scale-98 md:text-base dark:bg-near-black dark:text-gray-50 dark:hover:bg-gray-800 dark:hover:text-neutral-100"
+                        className="text-near-black flex h-10 w-auto cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-gray-50 p-2 px-8 text-sm font-semibold transition-all hover:bg-gray-50 hover:text-gray-900 active:scale-98 md:text-base"
                         smooth={true}
                         offset={-140}
                         duration={300}
@@ -77,12 +77,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 }
 
 const DashboardMockup = () => {
-    const theme = useThemeStore((state) => state.theme)
     return (
         <div className="my-20 ml-15 flex h-150 w-300 cursor-default items-center justify-center overflow-hidden rounded-lg p-5 select-none lg:ml-0 lg:w-auto">
             <img
-                src={theme === "light" ? "./mockup.png" : "/mockup-dark.png"}
-                className="shadow-aesthetic h-full w-full cursor-default rounded-lg select-none dark:shadow-aesthetic-dark"
+                src="./mockup.png"
+                className="shadow-aesthetic h-full w-full cursor-default rounded-lg select-none"
             />
         </div>
     )
@@ -92,36 +91,56 @@ const Features = () => {
     return (
         <section
             id="features"
-            className="selection:bg-near-black selection:text-btn-color my-15 w-full lg:my-35 lg:h-200"
+            className="selection:bg-near-black selection:text-btn-color my-16 w-full px-5 md:my-24 lg:my-32 lg:px-0"
         >
-            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl dark:text-line-color ">
-                Train Smarter. Stay Consistent.
-            </h2>
-            <p className="text-center text-xs text-line-color0">Everything you need,nothing you don't.</p>
+            <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
+                <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl ">Train Smarter. Stay Consistent</h2>
+                <p className="max-w-xl text-sm leading-6 text-line-color0 md:text-base">
+                    Everything you want, nothing you don&apos;t.
+                </p>
+            </div>
 
-            <div className="relative mt-15 flex flex-col items-center gap-4 px-5 lg:px-0 lg:block lg:h-200">
+            <div className="mt-10 grid gap-4 md:grid-cols-2 lg:mt-14 lg:grid-cols-6">
                 <FeaturesCard
-                    Logo={<IconTreadmill size={30} />}
-                    title={"Log Your Workout"}
+                    Logo={<NotebookPen size={26} />}
+                    title={"Log in seconds"}
                     description={
-                        "Log your workouts with ease, track your progress over time, and build real consistency through structured training"
+                        "Add exercises, sets, reps, and weight without fighting the interface during a workout."
                     }
-                    className={"w-full max-w-sm lg:absolute lg:top-10 lg:left-10 lg:z-0 lg:w-100"}
+                    className={"lg:col-span-2"}
                 />
                 <FeaturesCard
-                    Logo={<TrendingUp />}
-                    title={"Track your workouts"}
-                    description={"See how your strength improves over time with clear and simple progress tracking."}
-                    className={"w-full max-w-sm lg:absolute lg:top-75 lg:left-[33%] lg:z-10 lg:w-100"}
+                    Logo={<TrendingUp size={26} />}
+                    title={"Read your progress"}
+                    description={"Spot strength trends and training volume changes with clean, practical feedback."}
+                    className={"lg:col-span-2"}
                 />
                 <FeaturesCard
-                    Logo={<Calendar />}
+                    Logo={<Calendar size={26} />}
                     title={"Stay Consistent"}
                     description={
-                        "Build discipline with a structured routine and keep your training on track every day."
+                        "Keep routines visible, build repeatable habits, and make every completed session count."
                     }
-                    className={"w-full max-w-sm lg:absolute lg:top-10 lg:right-10 lg:z-0 lg:w-100"}
+                    className={"lg:col-span-2"}
                 />
+                <FeaturesCard
+                    Logo={<IconTreadmill size={27} />}
+                    title={"Move through sessions"}
+                    description={"A compact flow helps you start, update, and finish workouts with less tapping."}
+                    className={"lg:col-span-3"}
+                />
+                <div className="border-line-color flex min-h-56 flex-col justify-between rounded-lg border bg-white p-6 shadow-sm md:col-span-2 lg:col-span-3">
+                    <div className="text-near-black flex h-11 w-11 items-center justify-center rounded-md bg-gray-100">
+                        <Dumbbell size={25} />
+                    </div>
+                    <div>
+                        <h3 className="text-near-black mt-8 text-lg font-bold">Designed around the set, not the spreadsheet.</h3>
+                        <p className="mt-3 max-w-2xl text-sm leading-6 text-line-color0">
+                            Trackout keeps the important numbers close, so you can focus on the next set instead of
+                            managing a complicated dashboard.
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
     )
@@ -138,18 +157,20 @@ interface FeatureCardProps {
 const FeaturesCard = ({ Logo, title, description, className }: FeatureCardProps) => {
     return (
         <div
-            className={`border-line-color flex flex-col items-start gap-4 rounded-xl border bg-gray-50 p-10 pr-13 pb-13 shadow-md dark:bg-neutral-900 dark:border-gray-800 ${className}`}
+            className={`border-line-color flex min-h-56 flex-col items-start rounded-lg border bg-white p-6 shadow-sm transition-transform duration-200 hover:-translate-y-1 ${className}`}
         >
-            {Logo}
-            <h2 className="text-near-black mt-5 text-lg font-bold dark:text-line-color">{title}</h2>
-            <p className="text-line-color0">{description}</p>
+            <div className="text-near-black flex h-11 w-11 items-center justify-center rounded-md bg-gray-100">
+                {Logo}
+            </div>
+            <h2 className="text-near-black mt-8 text-lg font-bold">{title}</h2>
+            <p className="mt-3 text-sm leading-6 text-line-color0">{description}</p>
         </div>
     )
 }
 const Workflow = () => {
     return (
-        <section id="how-it-works" className="my-20 md:my-30">
-            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl dark:text-line-color ">Application Workflow</h2>
+        <section id="how-it-works" className="my-20 md:my-40">
+            <h2 className="text-near-black mb-3 text-center text-xl font-bold md:text-2xl ">Application Workflow</h2>
             <div className="relative my-15 flex w-full flex-col justify-between md:flex-row">
                 <WorkflowCard
                     no={1}
@@ -184,23 +205,40 @@ const WorkflowCard = ({ no, title, description }: WorkflowCardProps) => {
                 {no}
             </div>
             <div className="ml-5 flex flex-col">
-                <h2 className="text-near-black mt-5 text-left text-lg font-bold md:text-center dark:text-line-color">{title}</h2>
-                <p className="mt-1 w-full max-w-80 text-left text-sm text-neutral-600 md:text-center dark:text-line-color0">{description}</p>
+                <h2 className="text-near-black mt-5 text-left text-lg font-bold md:text-center">{title}</h2>
+                <p className="mt-1 w-full max-w-80 text-left text-sm text-neutral-600 md:text-center">{description}</p>
             </div>
         </div>
     )
 }
 const Footer = () => {
     return (
-        <footer className="border-line-color mt-40 flex w-full flex-col  items-center justify-center border-t py-5 md:mt-70 dark:border-neutral-200">
-            <h2 className="w-full max-w-[95%] text-center font-serif text-base text-gray-700 md:max-w-[80%] md:text-xl dark:text-neutral-400">
-                "It removes emotion from the process. You are left only with the architecture of your own discipline and
-                the numbers that prove it."
-            </h2>
-            <h5 className="mt-3 text-center text-[10px] text-line-color0 md:text-xs">
-                DR. E. VANCE <br />
-                SPORTS SCIENTIST / ATHLETE
-            </h5>
+        <footer className="border-line-color mt-24 w-full border-t px-5 py-8 md:mt-42 lg:px-0">
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <div className="flex items-center gap-2">
+                        <Logo />
+                    </div>
+                    <p className="mt-3 max-w-sm text-sm leading-6 text-line-color0">
+                        Simple workout tracking for lifters who want clean logs and useful progress signals.
+                    </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-line-color0">
+                    <Link className="cursor-pointer hover:text-near-black" to="home" smooth={true} offset={-240} duration={300}>
+                        Home
+                    </Link>
+                    <Link className="cursor-pointer hover:text-near-black" to="features" smooth={true} offset={-140} duration={300}>
+                        Features
+                    </Link>
+                    <Link className="cursor-pointer hover:text-near-black" to="how-it-works" smooth={true} offset={-70} duration={300}>
+                        How it works
+                    </Link>
+                </div>
+            </div>
+            <div className="mt-8 flex flex-col gap-2 border-t border-gray-200 pt-5 text-xs text-line-color0 sm:flex-row sm:items-center sm:justify-between">
+                <span>© {new Date().getFullYear()} Trackout. All rights reserved.</span>
+                <span>Built for focused training.</span>
+            </div>
         </footer>
     )
 }
@@ -209,8 +247,6 @@ const LandingPage = () => {
     const navigate = useNavigate()
     const [searchQueryParams] = useSearchParams()
     const userQuery = searchQueryParams.get("user")
-    const theme = useThemeStore((state) => state.theme)
-    const setTheme = useThemeStore((state) => state.setTheme)
 
     useEffect(() => {
         if (userQuery && userQuery === "google") {
@@ -220,7 +256,7 @@ const LandingPage = () => {
 
     return (
         <motion.div
-            className="selection:bg-near-black selection:text-btn-text relative flex min-h-dvh w-full flex-col items-center justify-start overflow-x-hidden bg-neutral-50 dark:bg-near-black dark:text-line-color"
+            className="selection:bg-near-black selection:text-btn-text relative flex min-h-dvh w-full flex-col items-center justify-start overflow-x-hidden bg-neutral-50"
             initial={{
                 opacity: 0,
             }}
@@ -237,7 +273,7 @@ const LandingPage = () => {
             <Navbar>
                 <ul className="hidden items-center gap-10 md:flex">
                     <Link
-                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
+                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900"
                         to="home"
                         smooth={true}
                         offset={-240}
@@ -248,7 +284,7 @@ const LandingPage = () => {
                         Home
                     </Link>
                     <Link
-                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
+                        className="cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900"
                         to="features"
                         smooth={true}
                         offset={-140}
@@ -259,7 +295,7 @@ const LandingPage = () => {
                         Features
                     </Link>
                     <Link
-                        className="ext-gray-600 cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900 dark:hover:text-gray-300 dark:active:text-gray-400"
+                        className="ext-gray-600 cursor-pointer text-base text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900"
                         to="how-it-works"
                         smooth={true}
                         offset={-70}
@@ -271,15 +307,8 @@ const LandingPage = () => {
                     </Link>
                 </ul>
                 <div className="flex items-center justify-center gap-4 md:gap-6">
-                    {/* <button className="flex justify-center items-center"> */}
-                    {/*     {theme === "light" ? */}
-                    {/*         <IconMoon className="cursor-pointer text-sm text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("dark")} size={19} /> */}
-                    {/*         : */}
-                    {/*         <IconSun className="cursor-pointer text-sm text-line-color0 transition-colors ease-in-out hover:text-gray-800 active:text-gray-900" onClick={() => setTheme("light")} size={19} /> */}
-                    {/*     } */}
-                    {/* </button> */}
                     <button
-                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md p-2 px-4 font-semibold text-gray-800 bg-near-black  hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-neutral-500 dark:bg-gray-100 dark:text-near-black dark:md:text-neutral-500 dark:md:bg-near-black dark:hover:text-gray-300"
+                        className=" flex h-9 w-auto cursor-pointer items-center justify-center rounded-md bg-near-black p-2 px-4 font-semibold text-gray-200 hover:text-gray-800 md:bg-neutral-50 md:font-normal md:text-neutral-500"
                         onClick={() => navigate("/signin")}
                     >
                         Log in
