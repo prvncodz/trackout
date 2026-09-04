@@ -82,7 +82,8 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
 
     return (
         <motion.ul
-            className="menu dropdown-content shadow-euphonious absolute top-10 right-1 z-10 mt-0 w-44 rounded-2xl border border-neutral-200 bg-white p-2 dark:border-gray-800 dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
+            className="menu dropdown-content absolute top-9 right-3 z-10 mt-2 w-44 rounded-2xl rounded-tr-md border border-neutral-200 bg-white p-2 shadow-xl dark:border-gray-800 dark:bg-neutral-900 dark:text-line-color dark:shadow-none"
+
             initial={{
                 opacity: 0,
             }}
@@ -99,7 +100,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
             <Dialog open={editing} onOpenChange={setEditing}>
                 <DialogTrigger asChild>
                     <button
-                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                        className="flex w-full items-center text-near-black  gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
                         onClick={() => setEditing(true)}
                     >
                         <IconPencil size={18} />
@@ -135,7 +136,7 @@ const Popup = ({ log, setIsOpen }: PopupProps) => {
                 </DialogContent>
             </Dialog>
             <button
-                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                className="flex w-full items-center gap-2 text-near-black rounded-xl px-3 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 onClick={() => {
                     if (isDuplicating) return
                     toast.promise(
@@ -217,8 +218,8 @@ const Log = ({ log }: LogProps) => {
             >
                 {log?.logName || "Log title"} {" "}
             </h3>
-            <div className="relative">
-                <IconDotsVertical onClick={() => setIsOpen(!isOpen)} />
+            <div className="relative hover:bg-neutral-100 dark:hover:bg-neutral-900 h-auto w-auto rounded-full p-1 m-0">
+                <IconDotsVertical size={"20"} onClick={() => setIsOpen(!isOpen)} />
                 {isOpen ? <Popup log={log} setIsOpen={setIsOpen} /> : null}
             </div>
         </div>

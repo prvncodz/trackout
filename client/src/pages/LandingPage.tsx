@@ -230,10 +230,6 @@ const Footer = () => {
                     </Link>
                 </div>
             </div>
-            <div className="mt-8 flex flex-col gap-2 border-t border-gray-200 pt-5 text-xs text-line-color0 sm:flex-row sm:items-center sm:justify-between">
-                <span>© {new Date().getFullYear()} Trackout. All rights reserved.</span>
-                <span>Built for focused training.</span>
-            </div>
         </footer>
     )
 }
