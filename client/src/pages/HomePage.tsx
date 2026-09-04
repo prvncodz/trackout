@@ -18,8 +18,6 @@ import {
     IconCopy,
     IconDots,
     IconDotsVertical,
-    IconLogs,
-    IconNotebook,
     IconNotes,
     IconPencil,
     IconPencilPlus,
