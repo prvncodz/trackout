@@ -211,7 +211,7 @@ interface UserInfoProps {
     fullName?: string;
 }
 
-const UserInfo = ({ avatarUrl, fullName }: UserInfoProps) => {
+export const UserInfo = ({ avatarUrl, fullName }: UserInfoProps) => {
     const [isOpen, setIsOpen] = useState(false)
     return (
         <div className="flex items-center justify-between border-t border-gray-100 px-3 py-4 dark:border-gray-800">
