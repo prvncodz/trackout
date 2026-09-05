@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/api/v1/:path*",
-            "destination": "https://trackout-production.up.railway.app/api/v1/:path*"
+            "destination": "https://trackout-l89o.onrender.com/api/v1/:path*"
         },
         {
             "source": "/(.*)",
