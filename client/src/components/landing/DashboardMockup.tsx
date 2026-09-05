@@ -1,7 +1,9 @@
-import { Dumbbell } from "lucide-react"
+import { Dumbbell, LucideProps } from "lucide-react"
 import Logo from "../ui/Logo"
 import { IconBrandTabler, IconUser } from "@tabler/icons-react"
 import { UserInfo } from "../layout/SideBar"
+import { ForwardRefExoticComponent, RefAttributes } from "react"
+import { motion } from "motion/react"
 
 const DashboardMockup = () => {
     const NAV_ITEMS = [
@@ -19,11 +21,20 @@ const DashboardMockup = () => {
             page: "profile",
         },
     ]
+    const handleNav = (item: {
+        label: string,
+        icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
+        path: string,
+        page: string,
+    }) => {
+        console.log("item:", item)
+    }
+
     return (
-        <div className="my-20 ml-15 flex h-150 w-300 cursor-default items-center justify-center overflow-hidden rounded-lg p-5 select-none lg:ml-0 lg:w-auto bg-neutral-200">
-            <div className={`border-line-color flex h-screen w-90 shrink-0 flex-col border-r bg-white p-3 dark:bg-near-black dark:border-gray-800`}>
+        <div className="my-20 ml-15 flex h-150 w-300 cursor-default items-center overflow-hidden rounded-lg select-none lg:ml-0 lg:w-auto bg-neutral-200">
+            <div className={`border-line-color flex h-full w-90 shrink-0 flex-col border-r bg-white p-3 dark:bg-near-black dark:border-gray-800`}>
                 <div className="flex-start mt-3 ml-0 flex w-full px-4">
-                    <Logo className={"text-xl font-extrabold text-gray-800 antialiased"} />
+                    <Logo className={"text-[13px] font-extrabold text-gray-800 antialiased"} size={"sm"} />
                 </div>
 
                 {/* Nav */}
