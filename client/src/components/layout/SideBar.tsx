@@ -209,36 +209,38 @@ const Popup = ({ setIsOpen }: { setIsOpen: Dispatch<SetStateAction<boolean>> }) 
 interface UserInfoProps {
     avatarUrl?: string;
     fullName?: string;
+    size?: string;
 }
 
-export const UserInfo = ({ avatarUrl, fullName }: UserInfoProps) => {
+export const UserInfo = ({ avatarUrl, fullName, size = "lg" }: UserInfoProps) => {
     const [isOpen, setIsOpen] = useState(false)
+    const sm = size === "sm"
     return (
-        <div className="flex items-center justify-between border-t border-gray-100 px-3 py-4 dark:border-gray-800">
-            <div className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50">
+        <div className={`flex items-center justify-between border-t border-gray-100 dark:border-gray-800 ${sm ? "px-2 py-2" : "px-3 py-4"}`}>
+            <div className={`flex cursor-pointer items-center rounded-lg transition-colors hover:bg-gray-50 ${sm ? "gap-2 px-1 py-1" : "gap-3 px-2 py-2"}`}>
                 {avatarUrl ? (
                     <img
                         src={avatarUrl}
                         alt={fullName}
-                        className="size-9 shrink-0 rounded-full object-cover ring-1 ring-gray-200"
+                        className={`shrink-0 rounded-full object-cover ring-1 ring-gray-200 ${sm ? "size-6" : "size-9"}`}
                     />
                 ) : (
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-medium text-gray-600">
+                    <div className={`flex shrink-0 items-center justify-center rounded-full bg-gray-200 font-medium text-gray-600 ${sm ? "h-7 w-7 text-[10px]" : "h-10 w-10 text-xs"}`}>
                         {fullName?.[0]?.toUpperCase() ?? "U"}
                     </div>
                 )}
                 <motion.span
-                    className="truncate text-sm font-medium text-gray-700 antialiased dark:text-line-color"
+                    className={`truncate font-medium text-gray-700 antialiased dark:text-line-color ${sm ? "text-[10px]" : "text-sm"}`}
                     whileHover={{
-                        x: 5,
+                        x: sm ? 3 : 5,
                     }}
                 >
                     {fullName ?? "Username"}
                 </motion.span>
             </div>
             <div className="relative">
-                <IconSettings onClick={() => setIsOpen(!isOpen)} className="text-gray-600 dark:text-line-color" />
-                {isOpen && <Popup setIsOpen={setIsOpen} />}
+                <IconSettings onClick={() => !sm && setIsOpen(!isOpen)} size={sm ? 14 : 24} className="text-gray-600 dark:text-line-color" />
+                {!sm && isOpen && <Popup setIsOpen={setIsOpen} />}
             </div>
         </div>
     )
